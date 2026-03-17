@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!-- AuthBrandingColorField -->
+    <t t-name="auth_branding.ColorField" owl="1">
+        <div class="d-flex align-items-center ab-color-field">
+            <input type="color" class="form-control form-control-sm form-control-color me-2 p-1" 
+                   t-att-value="color" 
+                   t-on-input="onColorInput" />
+            <input type="text" class="form-control form-control-sm w-auto" 
+                   t-att-value="state.color" 
+                   t-on-input="onTextInput" 
+                   maxlength="7" 
+                   placeholder="#000000" />
+        </div>
+    </t>
+
+    <!-- AuthBrandingTemplatePicker -->
+    <t t-name="auth_branding.TemplatePicker" owl="1">
+        <div class="d-flex gap-3 ab-template-picker flex-wrap">
+            <div class="ab-template-card" 
+                 t-att-class="{ 'active': selected === 'centered' }"
+                 t-on-click="() => this.selectTemplate('centered')">
+                <div class="ab-mockup-centered">
+                    <div class="ab-mockup-bg"></div>
+                    <div class="ab-mockup-form card bg-white"></div>
+                </div>
+                <div class="text-center mt-2 fw-bold small">Centered Card</div>
+                <div class="ab-check" t-if="selected === 'centered'">
+                    <i class="fa fa-check text-white"></i>
+                </div>
+            </div>
+
+            <div class="ab-template-card" 
+                 t-att-class="{ 'active': selected === 'split' }"
+                 t-on-click="() => this.selectTemplate('split')">
+                <div class="ab-mockup-split d-flex">
+                    <div class="ab-mockup-aside bg-secondary w-50 h-100"></div>
+                    <div class="ab-mockup-form-area w-50 h-100 d-flex align-items-center justify-content-center">
+                        <div class="ab-mockup-form card bg-white w-75 h-50"></div>
+                    </div>
+                </div>
+                <div class="text-center mt-2 fw-bold small">Split Screen</div>
+                <div class="ab-check" t-if="selected === 'split'">
+                    <i class="fa fa-check text-white"></i>
+                </div>
+            </div>
+
+            <div class="ab-template-card" 
+                 t-att-class="{ 'active': selected === 'fullbleed' }"
+                 t-on-click="() => this.selectTemplate('fullbleed')">
+                <div class="ab-mockup-fullbleed">
+                    <div class="ab-mockup-bg bg-secondary opacity-50"></div>
+                    <div class="ab-mockup-form card bg-white"></div>
+                </div>
+                <div class="text-center mt-2 fw-bold small">Full Bleed</div>
+                <div class="ab-check" t-if="selected === 'fullbleed'">
+                    <i class="fa fa-check text-white"></i>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <!-- AuthBrandingPreview -->
+    <t t-name="auth_branding.PreviewWidget" owl="1">
+        <div class="ab-preview-widget d-flex flex-column h-100 ps-xl-4 border-start">
+            <div class="d-flex mb-3 gap-2 flex-wrap">
+                <button class="btn btn-sm" t-att-class="state.page === 'login' ? 'btn-primary' : 'btn-outline-secondary'" t-on-click="() => this.setPage('login')">Login</button>
+                <button class="btn btn-sm" t-att-class="state.page === 'signup' ? 'btn-primary' : 'btn-outline-secondary'" t-on-click="() => this.setPage('signup')">Sign Up</button>
+                <button class="btn btn-sm" t-att-class="state.page === 'reset' ? 'btn-primary' : 'btn-outline-secondary'" t-on-click="() => this.setPage('reset')">Reset Password</button>
+                <span class="ms-auto text-muted small align-self-center">
+                    <i class="fa fa-spin fa-spinner me-1" t-if="!state.iframeSrc"/><t t-if="state.iframeSrc">Live Preview</t>
+                </span>
+            </div>
+            
+            <div class="ab-preview-container rounded border shadow-sm align-self-start" style="background: #e9ecef;">
+                <iframe t-att-src="state.iframeSrc" class="ab-preview-iframe" frameborder="0"></iframe>
+            </div>
+        </div>
+    </t>
+
+</templates>

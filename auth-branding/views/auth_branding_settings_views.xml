@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="auth_branding_config_view_form" model="ir.ui.view">
+        <field name="name">auth.branding.config.view.form</field>
+        <field name="model">auth.branding.config</field>
+        <field name="arch" type="xml">
+            <form string="Authentication Branding" class="o_auth_branding_form">
+                <header>
+                    <button string="Save" type="object" name="action_save" class="oe_highlight"/>
+                </header>
+                <sheet>
+                    <div class="row">
+                        <div class="col-md-5">
+                            <group string="Layout &amp; Structure">
+                                <field name="template" widget="auth_branding_template_picker"/>
+                            </group>
+                            <group string="Branding">
+                                <field name="company_logo" widget="image" options="{'size': [0, 90]}"/>
+                                <field name="favicon" widget="image" options="{'size': [0, 90]}"/>
+                                <field name="tagline"/>
+                            </group>
+                            <group string="Colors">
+                                <field name="primary_color" widget="auth_branding_color"/>
+                                <field name="secondary_color" widget="auth_branding_color"/>
+                                <field name="background_type"/>
+                                <field name="background_color" 
+                                       invisible="background_type != 'solid'"
+                                       widget="auth_branding_color"/>
+                                <field name="gradient_start" 
+                                       invisible="background_type != 'gradient'"
+                                       widget="auth_branding_color"/>
+                                <field name="gradient_end" 
+                                       invisible="background_type != 'gradient'"
+                                       widget="auth_branding_color"/>
+                                <field name="gradient_direction" 
+                                       invisible="background_type != 'gradient'"/>
+                                <field name="background_image" 
+                                       invisible="background_type != 'image'"
+                                       widget="image"/>
+                                <field name="background_overlay_opacity"
+                                       invisible="background_type != 'image'"/>
+                            </group>
+                            <group string="Typography &amp; Elements">
+                                <field name="font_family"/>
+                                <field name="text_color" widget="auth_branding_color"/>
+                                <field name="input_border_radius"/>
+                                <field name="button_border_radius"/>
+                                <field name="button_color" widget="auth_branding_color"/>
+                                <field name="button_text_color" widget="auth_branding_color"/>
+                            </group>
+                        </div>
+                        <div class="col-md-7">
+                            <widget name="auth_branding_preview"/>
+                        </div>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Server action to open the single configuration record -->
+    <record id="action_auth_branding_config_server" model="ir.actions.server">
+        <field name="name">Authentication Branding</field>
+        <field name="model_id" ref="model_auth_branding_config"/>
+        <field name="state">code</field>
+        <field name="code">
+config = env['auth.branding.config'].get_or_create()
+action = {
+    'type': 'ir.actions.act_window',
+    'name': 'Authentication Branding',
+    'res_model': 'auth.branding.config',
+    'res_id': config.id,
+    'view_mode': 'form',
+    'target': 'current',
+}
+        </field>
+    </record>
+</odoo>

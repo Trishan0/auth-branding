@@ -1,0 +1,197 @@
+/* Auth Branding Frontend Styles */
+
+/* Base overrides taking variables into account */
+:root {
+    --ab-primary: #714B67;
+    --ab-secondary: #FFFFFF;
+    --ab-bg-color: #f8f9fa;
+    --ab-grad-start: #714B67;
+    --ab-grad-end: #2B124C;
+    --ab-grad-dir: to bottom right;
+    --ab-overlay-opacity: 0.3;
+    --ab-font: system-ui, -apple-system, sans-serif;
+    --ab-text-color: #212529;
+    --ab-input-radius: 6px;
+    --ab-btn-radius: 6px;
+    --ab-btn-color: #714B67;
+    --ab-btn-text: #FFFFFF;
+}
+
+body[class*="ab-template-"] {
+    font-family: var(--ab-font) !important;
+    color: var(--ab-text-color) !important;
+}
+
+/* Base Form Styling overrides */
+body[class*="ab-template-"] .card {
+    border-radius: var(--ab-input-radius) !important;
+    overflow: hidden;
+    border: none !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08) !important;
+    background-color: var(--ab-secondary) !important;
+}
+
+body[class*="ab-template-"] .form-control {
+    border-radius: var(--ab-input-radius) !important;
+    border-color: #dee2e6;
+    padding: 0.75rem 1rem;
+}
+
+body[class*="ab-template-"] .form-control:focus {
+    border-color: var(--ab-primary);
+    box-shadow: 0 0 0 0.25rem rgba(var(--ab-primary-rgb, 113, 75, 103), 0.25);
+}
+
+body[class*="ab-template-"] .btn-primary {
+    background-color: var(--ab-btn-color) !important;
+    border-color: var(--ab-btn-color) !important;
+    color: var(--ab-btn-text) !important;
+    border-radius: var(--ab-btn-radius) !important;
+    padding: 0.6rem 1rem;
+    font-weight: 500;
+}
+
+body[class*="ab-template-"] .btn-primary:hover {
+    filter: brightness(0.9);
+}
+
+body[class*="ab-template-"] a:not(.btn) {
+    color: var(--ab-primary);
+}
+
+/* Custom Backgrounds for Body */
+body.ab-template-centered {
+    background: var(--ab-bg-color) !important;
+    min-height: 100vh;
+}
+
+body.ab-template-fullbleed, body.ab-template-split {
+    background: var(--ab-bg-color) !important;
+}
+
+
+/* Specific Template: Centered */
+.ab-template-centered .ab-logo {
+    max-height: 80px;
+    max-width: 100%;
+    margin-bottom: 20px;
+}
+.ab-template-centered .ab-card-header {
+    border-bottom: none !important;
+}
+
+
+/* Specific Template: Split */
+body.ab-template-split main {
+    display: flex;
+    min-height: 100vh;
+    width: 100vw;
+}
+
+body.ab-template-split .ab-split-aside {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem;
+    color: var(--ab-secondary);
+    background: linear-gradient(var(--ab-grad-dir), var(--ab-grad-start), var(--ab-grad-end));
+    position: relative;
+}
+
+body.ab-template-split .container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--ab-bg-color);
+    padding: 2rem !important;
+    max-width: none;
+    margin: 0;
+}
+
+body.ab-template-split .container .card {
+    box-shadow: none !important;
+    max-width: 400px !important;
+    width: 100%;
+}
+
+.ab-template-split .ab-branding-content {
+    text-align: center;
+    max-width: 80%;
+    position: relative;
+    z-index: 2;
+}
+
+.ab-template-split .ab-logo {
+    max-height: 120px;
+    max-width: 100%;
+}
+
+.ab-template-split .ab-tagline {
+    font-size: 1.5rem;
+    font-weight: 300;
+    opacity: 0.9;
+    color: var(--ab-secondary);
+}
+
+/* Responsive Split */
+@media (max-width: 768px) {
+    body.ab-template-split main {
+        flex-direction: column;
+    }
+    body.ab-template-split .ab-split-aside {
+        flex: 0 0 auto;
+        padding: 2rem 1rem;
+    }
+    body.ab-template-split .container {
+        flex: 1 0 auto;
+    }
+}
+
+
+/* Specific Template: Fullbleed */
+.ab-template-fullbleed .ab-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(var(--ab-grad-dir), var(--ab-grad-start), var(--ab-grad-end));
+    position: relative;
+    padding: 2rem;
+}
+
+.ab-background-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #000;
+    pointer-events: none;
+    z-index: 0;
+    display: none;
+}
+
+.ab-template-fullbleed .ab-background-overlay {
+    display: block;
+}
+
+.ab-template-fullbleed .container {
+    position: relative;
+    z-index: 1;
+}
+
+.ab-template-fullbleed .card {
+    background: rgba(255, 255, 255, 0.9) !important; /* Slight glassmorphism base */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.ab-template-fullbleed .ab-logo {
+    max-height: 100px;
+    max-width: 100%;
+}
+
+/* Database Selector Alignment fixes */
+.o_database_list .list-group-item {
+    background: transparent !important;
+}
