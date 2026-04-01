@@ -79,7 +79,8 @@ export class AuthBrandingPreview extends Component {
                 'background_type', 'background_color', 'gradient_start', 
                 'gradient_end', 'gradient_direction', 'background_overlay_opacity',
                 'font_family', 'text_color', 'input_border_radius', 
-                'button_border_radius', 'button_color', 'button_text_color'
+                'button_border_radius', 'button_color', 'button_text_color',
+                'show_manage_databases', 'show_powered_by_odoo'
             ];
             
             for (const f of fieldsToWatch) {

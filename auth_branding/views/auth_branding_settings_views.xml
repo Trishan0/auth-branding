@@ -48,6 +48,10 @@
                                 <field name="button_color" widget="auth_branding_color"/>
                                 <field name="button_text_color" widget="auth_branding_color"/>
                             </group>
+                            <group string="Footer Elements">
+                                <field name="show_manage_databases" widget="boolean_toggle"/>
+                                <field name="show_powered_by_odoo" widget="boolean_toggle"/>
+                            </group>
                         </div>
                         <div class="col-md-7">
                             <widget name="auth_branding_preview"/>

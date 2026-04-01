@@ -11,9 +11,12 @@
         </xpath>
 
         <xpath expr="//div[hasclass('container')]" position="before">
-            <t t-set="ab_has_logo" t-value="ab.get('company_logo') if is_dict else getattr(ab, 'company_logo', False)"/>
+            <t t-set="ab_has_logo" t-value="ab.get('company_logo') if is_dict else bool(ab.company_logo)"/>
             <t t-set="ab_tagline" t-value="ab.get('tagline') if is_dict else ab.tagline"/>
             <t t-set="ab_is_preview" t-value="ab.get('is_preview') if is_dict else False"/>
+
+            <t t-set="ab_show_manage_databases" t-value="ab.get('show_manage_databases') if is_dict else ab.show_manage_databases"/>
+            <t t-set="ab_show_powered_by_odoo" t-value="ab.get('show_powered_by_odoo') if is_dict else ab.show_powered_by_odoo"/>
 
             <!-- Inject Dynamic CSS or Link -->
             <style t-if="ab_is_preview" t-out="ab.get('inline_style', '')"/>

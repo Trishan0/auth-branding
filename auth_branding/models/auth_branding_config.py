@@ -62,6 +62,10 @@ class AuthBrandingConfig(models.Model):
     button_color = fields.Char(string='Button Color', default='#714B67', required=True)
     button_text_color = fields.Char(string='Button Text Color', default='#FFFFFF', required=True)
 
+    # Footer
+    show_manage_databases = fields.Boolean(string='Show Manage Databases', default=True)
+    show_powered_by_odoo = fields.Boolean(string='Show Powered by Odoo', default=True)
+
     @api.model
     def get_or_create(self):
         config = self.search([], limit=1)

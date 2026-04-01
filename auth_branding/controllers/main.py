@@ -27,6 +27,8 @@ class AuthBrandingController(http.Controller):
             'button_border_radius': kwargs.get('button_border_radius', str(config.button_border_radius)),
             'button_color': kwargs.get('button_color', config.button_color),
             'button_text_color': kwargs.get('button_text_color', config.button_text_color),
+            'show_manage_databases': kwargs.get('show_manage_databases') == 'true' if 'show_manage_databases' in kwargs else config.show_manage_databases,
+            'show_powered_by_odoo': kwargs.get('show_powered_by_odoo') == 'true' if 'show_powered_by_odoo' in kwargs else config.show_powered_by_odoo,
             'is_preview': True,
         }
         
