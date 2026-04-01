@@ -7,10 +7,12 @@ class AuthBrandingController(http.Controller):
     @http.route('/auth_branding/preview', type='http', auth='user', website=True)
     def preview(self, page='login', **kwargs):
         # Fetch config
-        config = request.env['auth.branding.config'].sudo().get_or_create()
+        company_id = int(kwargs.get('company_id', 0))
+        config = request.env['auth.branding.config'].sudo().get_or_create(company_id=company_id)
         
         # Merge saved config with kwargs overrides for live preview
         ab_config = {
+            'company_id': config.company_id.id,
             'template': kwargs.get('template', config.template),
             'tagline': kwargs.get('tagline', config.tagline or ''),
             'primary_color': kwargs.get('primary_color', config.primary_color),
@@ -41,6 +43,8 @@ class AuthBrandingController(http.Controller):
             'privacy_url': kwargs.get('privacy_url', config.privacy_url or ''),
             'terms_label': kwargs.get('terms_label', config.terms_label or 'Terms of Service'),
             'privacy_label': kwargs.get('privacy_label', config.privacy_label or 'Privacy Policy'),
+            'auth_signup_uninvited': kwargs.get('auth_signup_uninvited', config.auth_signup_uninvited),
+            'auth_signup_reset_password': kwargs.get('auth_signup_reset_password') == 'true' if 'auth_signup_reset_password' in kwargs else config.auth_signup_reset_password,
             'is_preview': True,
         }
         
@@ -66,7 +70,7 @@ class AuthBrandingController(http.Controller):
             bg_css = f"background: linear-gradient(-45deg, {ab_config['gradient_start'] or '#714B67'}, {ab_config['gradient_end'] or '#2B124C'}, {ab_config['primary_color'] or '#714B67'}) !important; background-size: 400% 400% !important; animation: abGradientAnim 15s ease infinite !important;"
         elif bg_type == 'image':
             # Rely on saved image, we can't preview image blob directly from iframe unless we base64 it
-            bg_css = f"background: url('/auth_branding/image/background_image') no-repeat center center fixed !important; background-size: cover !important;"
+            bg_css = f"background: url('/auth_branding/image/background_image?company_id={ab_config['company_id']}') no-repeat center center fixed !important; background-size: cover !important;"
 
         # Build inline styles using the overrides to inject into the template
         inline_style = f"""
@@ -107,8 +111,8 @@ class AuthBrandingController(http.Controller):
             'login': 'admin',
             'redirect': '',
             'providers': [],
-            'signup_enabled': True,
-            'reset_password_enabled': True,
+            'signup_enabled': ab_config['auth_signup_uninvited'] == 'b2c',
+            'reset_password_enabled': ab_config['auth_signup_reset_password'],
             'token': False,
         }
         
@@ -122,7 +126,8 @@ class AuthBrandingController(http.Controller):
 
     @http.route('/auth_branding/theme.css', type='http', auth='public')
     def theme_css(self, **kwargs):
-        config = request.env['auth.branding.config'].sudo().get_or_create()
+        company_id = int(kwargs.get('company_id', 0))
+        config = request.env['auth.branding.config'].sudo().get_or_create(company_id=company_id)
         
         font_map = {
             'system-ui': 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
@@ -143,7 +148,7 @@ class AuthBrandingController(http.Controller):
         elif config.background_type == 'animated_gradient':
             bg_css = f"background: linear-gradient(-45deg, {config.gradient_start or '#714B67'}, {config.gradient_end or '#2B124C'}, {config.primary_color or '#714B67'}) !important; background-size: 400% 400% !important; animation: abGradientAnim 15s ease infinite !important;"
         elif config.background_type == 'image':
-            bg_css = f"background: url('/auth_branding/image/background_image') no-repeat center center fixed !important; background-size: cover !important;"
+            bg_css = f"background: url('/auth_branding/image/background_image?company_id={config.company_id.id}') no-repeat center center fixed !important; background-size: cover !important;"
             
         css = f"""
 @keyframes abGradientAnim {{
@@ -155,7 +160,7 @@ class AuthBrandingController(http.Controller):
     --ab-primary: {config.primary_color or '#714B67'};
     --ab-secondary: {config.secondary_color or '#FFFFFF'};
     --ab-overlay-opacity: {config.background_overlay_opacity or '0.3'};
-    --ab-font: {font_map.get(config.font_family, font_map['system-ui'])};
+    --ab-font: {font_map.get(config.font_family, font_map['system_ui'])};
     --ab-text-color: {config.text_color or '#212529'};
     --ab-card-bg: {config.card_background_color or '#FFFFFF'};
     --ab-glass-blur: {config.glassmorphism_blur or '10'}px;
@@ -180,7 +185,8 @@ body.ab-template-split .ab-split-aside {{
         
     @http.route('/auth_branding/image/<string:field>', type='http', auth='public')
     def get_image(self, field, **kwargs):
-        config = request.env['auth.branding.config'].sudo().get_or_create()
+        company_id = int(kwargs.get('company_id', 0))
+        config = request.env['auth.branding.config'].sudo().get_or_create(company_id=company_id)
         if not getattr(config, field, False):
             return request.not_found()
         return request.env['ir.binary']._get_stream_from(config, field).get_response()

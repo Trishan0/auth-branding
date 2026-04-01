@@ -75,22 +75,27 @@ export class AuthBrandingPreview extends Component {
             params.append('page', this.state.page);
             
             const fieldsToWatch = [
-                'template', 'tagline', 'primary_color', 'secondary_color',
+                'company_id', 'template', 'tagline', 'primary_color', 'secondary_color',
                 'background_type', 'background_color', 'gradient_start', 
                 'gradient_end', 'gradient_direction', 'background_overlay_opacity',
                 'font_family', 'text_color', 'input_border_radius', 
                 'button_border_radius', 'button_color', 'button_text_color',
                 'show_manage_databases', 'show_powered_by_odoo',
                 'split_alignment', 'card_background_color', 'glassmorphism_blur', 'glassmorphism_opacity',
+                'auth_signup_uninvited', 'auth_signup_reset_password',
             ];
             
             // Boolean fields need special handling — send 'true'/'false' as strings
-            const boolFields = new Set(['show_manage_databases', 'show_powered_by_odoo', 'glassmorphism']);
+            const boolFields = new Set(['show_manage_databases', 'show_powered_by_odoo', 'glassmorphism', 'auth_signup_reset_password']);
             for (const f of fieldsToWatch) {
+                let val = data[f];
+                if (f === 'company_id' && Array.isArray(val)) {
+                    val = val[0]; // Many2one returns [id, name]
+                }
                 if (boolFields.has(f)) {
-                    params.append(f, data[f] ? 'true' : 'false');
-                } else if (data[f] !== undefined && data[f] !== false && data[f] !== '') {
-                    params.append(f, data[f]);
+                    params.append(f, val ? 'true' : 'false');
+                } else if (val !== undefined && val !== false && val !== '') {
+                    params.append(f, val);
                 }
             }
 
@@ -105,6 +110,7 @@ export class AuthBrandingPreview extends Component {
             const data = this.props.record.data;
             return [
                 this.state.page,
+                data.company_id,
                 data.template,
                 data.tagline,
                 data.primary_color,
@@ -128,6 +134,8 @@ export class AuthBrandingPreview extends Component {
                 data.glassmorphism,
                 data.glassmorphism_blur,
                 data.glassmorphism_opacity,
+                data.auth_signup_uninvited,
+                data.auth_signup_reset_password,
             ];
         });
     }

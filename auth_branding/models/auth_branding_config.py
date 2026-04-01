@@ -87,11 +87,44 @@ class AuthBrandingConfig(models.Model):
     terms_label = fields.Char(string='Terms Label', default='Terms of Service')
     privacy_label = fields.Char(string='Privacy Label', default='Privacy Policy')
 
+    # Security Toggles (Synced with Odoo General Settings)
+    auth_signup_uninvited = fields.Selection([
+        ('b2b', 'On Invitation (B2B)'),
+        ('b2c', 'Free Sign Up (B2C)')
+    ], string='Customer Account', compute='_compute_auth_settings', inverse='_inverse_auth_signup_uninvited',
+    help='B2B: User must be invited. B2C: Any user can sign up.')
+
+    auth_signup_reset_password = fields.Boolean(
+        string='Password Reset', compute='_compute_auth_settings', inverse='_inverse_auth_signup_reset_password',
+        help='Show/Hide "Reset Password" link on the login page.')
+
+    company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
+
+    def _compute_auth_settings(self):
+        get_param = self.env['ir.config_parameter'].sudo().get_param
+        for record in self:
+            record.auth_signup_uninvited = get_param('auth_signup.invitation_scope', 'b2b')
+            record.auth_signup_reset_password = get_param('auth_signup.reset_password', 'False').lower() == 'true'
+
+    def _inverse_auth_signup_uninvited(self):
+        for record in self:
+            self.env['ir.config_parameter'].sudo().set_param('auth_signup.invitation_scope', record.auth_signup_uninvited)
+
+    def _inverse_auth_signup_reset_password(self):
+        for record in self:
+            self.env['ir.config_parameter'].sudo().set_param('auth_signup.reset_password', str(record.auth_signup_reset_password))
+
+    _sql_constraints = [
+        ('company_uniq', 'unique (company_id)', 'The branding configuration must be unique per company !'),
+    ]
+
     @api.model
-    def get_or_create(self):
-        config = self.search([], limit=1)
+    def get_or_create(self, company_id=False):
+        if not company_id:
+            company_id = self.env.company.id
+        config = self.search([('company_id', '=', company_id)], limit=1)
         if not config:
-            config = self.create({})
+            config = self.create({'company_id': company_id})
         return config
 
     def action_save(self):

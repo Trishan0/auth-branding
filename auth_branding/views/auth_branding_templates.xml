@@ -4,7 +4,8 @@
         <!-- Safely inject our body layout class by replacing the body_classname t-set -->
         <xpath expr="//t[@t-set='body_classname']" position="replace">
             <t t-set="ab_preview" t-value="request.env.context.get('ab_preview_config')"/>
-            <t t-set="ab" t-value="ab_preview if ab_preview else request.env['auth.branding.config'].sudo().get_or_create()"/>
+            <t t-set="ab_company_id" t-value="ab_preview.get('company_id') if ab_preview else (int(request.params.get('company_id')) if request.params.get('company_id') else (res_company.id if res_company else request.env.company.id))"/>
+            <t t-set="ab" t-value="ab_preview if ab_preview else request.env['auth.branding.config'].sudo().get_or_create(company_id=ab_company_id)"/>
             <t t-set="is_dict" t-value="bool(ab_preview)"/>
             <t t-set="ab_template" t-value="ab.get('template') if is_dict else ab.template"/>
             <t t-set="ab_glassmorphism" t-value="ab.get('glassmorphism') if is_dict else ab.glassmorphism"/>
@@ -32,7 +33,7 @@
 
             <!-- Inject Dynamic CSS or Link -->
             <style t-if="ab_is_preview" t-out="ab.get('inline_style', '')"/>
-            <link t-else="" rel="stylesheet" href="/auth_branding/theme.css"/>
+            <link t-else="" rel="stylesheet" t-attf-href="/auth_branding/theme.css?company_id={{ab_company_id}}"/>
 
             <!-- Background Overlay (for fullbleed templates and images) -->
             <div class="ab-background-overlay" t-att-style="'opacity: ' + str(ab.get('background_overlay_opacity') if is_dict else ab.background_overlay_opacity)"/>
@@ -41,7 +42,7 @@
             <div class="ab-split-aside" t-if="ab_template == 'split'">
                 <div class="ab-branding-content">
                     <t t-if="ab_has_logo">
-                        <img t-attf-src="/auth_branding/image/company_logo{{ '?dbname='+db if db else '' }}" alt="Logo" class="ab-logo"/>
+                        <img t-attf-src="/auth_branding/image/company_logo?company_id={{ab_company_id}}{{ '&amp;dbname='+db if db else '' }}" alt="Logo" class="ab-logo"/>
                     </t>
                     <t t-else="">
                         <img t-attf-src="/web/binary/company_logo{{ '?dbname='+db if db else '' }}" alt="Logo" class="ab-logo"/>
@@ -55,7 +56,7 @@
             <!-- Center Header inside the card -->
             <div t-attf-class="text-center pb-3 border-bottom mb-4 ab-card-header #{'d-none' if ab_template == 'split' else ''}">
                 <t t-if="ab_has_logo">
-                    <img t-attf-src="/auth_branding/image/company_logo{{ '?dbname='+db if db else '' }}" alt="Logo" class="ab-logo"/>
+                    <img t-attf-src="/auth_branding/image/company_logo?company_id={{ab_company_id}}{{ '&amp;dbname='+db if db else '' }}" alt="Logo" class="ab-logo"/>
                 </t>
                 <t t-else="">
                     <img t-attf-src="/web/binary/company_logo{{ '?dbname='+db if db else '' }}" alt="Logo" class="ab-logo"/>

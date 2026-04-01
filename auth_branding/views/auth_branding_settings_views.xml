@@ -7,8 +7,14 @@
             <form string="Authentication Branding" class="o_auth_branding_form">
                 <header>
                     <button string="Save" type="object" name="action_save" class="oe_highlight"/>
+                    <field name="company_id" invisible="1"/>
                 </header>
                 <sheet>
+                    <div class="o_auth_branding_header d-flex align-items-center mb-4">
+                        <div class="flex-grow-1">
+                            <h3>Branding for <field name="company_id" readonly="1" options="{'no_open': True}"/></h3>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-5">
                             <group string="Layout &amp; Structure">
@@ -69,6 +75,10 @@
                                 <field name="terms_label"/>
                                 <field name="privacy_url" placeholder="https://yoursite.com/privacy"/>
                                 <field name="privacy_label"/>
+                            </group>
+                            <group string="Security &amp; Auth">
+                                <field name="auth_signup_uninvited" widget="radio" options="{'horizontal': true}"/>
+                                <field name="auth_signup_reset_password" widget="boolean_toggle"/>
                             </group>
                         </div>
                         <div class="col-md-7">
