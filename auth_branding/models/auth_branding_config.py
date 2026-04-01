@@ -125,7 +125,8 @@ class AuthBrandingConfig(models.Model):
         string="Customer Account",
         compute="_compute_auth_settings",
         inverse="_inverse_auth_signup_uninvited",
-        help="B2B: User must be invited. B2C: Any user can sign up.")
+        help="B2B: User must be invited. B2C: Any user can sign up.",
+    )
 
     auth_signup_reset_password = fields.Boolean(
         string="Password Reset",
@@ -141,7 +142,6 @@ class AuthBrandingConfig(models.Model):
         required=True,
     )
 
-    @api.depends_context("company")
     def _compute_auth_settings(self):
         get_param = self.env["ir.config_parameter"].sudo().get_param
         for record in self:
