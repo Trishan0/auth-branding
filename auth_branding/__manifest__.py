@@ -2,8 +2,23 @@
     'name': 'Auth Branding',
     'version': '19.0.1.0.0',
     'author':'Trishan Fernando',
+    'website':'trishanfernando.com',
     'category': 'Technical',
     'summary': 'Customize login, signup and password reset pages with live preview',
+    'images': ['static/src/description/main_screenshot.png'],
+    'description': """
+        Auth Branding for Odoo 19
+        =========================
+        This module allows you to fully customize the appearance of Odoo's authentication pages (Login, Sign Up, Reset Password).
+        
+        Key Features:
+        - Multiple Layouts: Centered, Split Screen, Full Bleed.
+        - Backgrounds: Solid, Gradients, Animated Gradients, Images.
+        - Modern Design: Glassmorphism effects (blur & opacity).
+        - Branding: Custom logo, favicon, tagline, and footer text.
+        - Styling: Control colors, fonts, and border radius.
+        - Live Preview: See changes in real-time within the backend.
+    """,
     'depends': ['web', 'auth_signup', 'base_setup'],
     'data': [
         'security/ir.model.access.csv',
