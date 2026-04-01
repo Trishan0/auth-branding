@@ -81,7 +81,7 @@ export class AuthBrandingPreview extends Component {
                 'font_family', 'text_color', 'input_border_radius', 
                 'button_border_radius', 'button_color', 'button_text_color',
                 'show_manage_databases', 'show_powered_by_odoo',
-                'split_alignment', 'card_background_color', 'glassmorphism_blur', 'glassmorphism_opacity',
+                'split_alignment', 'card_background_color', 'glassmorphism', 'glassmorphism_blur', 'glassmorphism_opacity',
                 'auth_signup_uninvited', 'auth_signup_reset_password',
             ];
             
