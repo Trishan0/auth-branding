@@ -21,6 +21,15 @@
             <t t-set="ab_show_manage_databases" t-value="ab.get('show_manage_databases') if is_dict else ab.show_manage_databases"/>
             <t t-set="ab_show_powered_by_odoo" t-value="ab.get('show_powered_by_odoo') if is_dict else ab.show_powered_by_odoo"/>
 
+            <!-- Custom Content Variables -->
+            <t t-set="ab_welcome_title" t-value="ab.get('login_welcome_title') if is_dict else ab.login_welcome_title"/>
+            <t t-set="ab_welcome_subtitle" t-value="ab.get('login_welcome_subtitle') if is_dict else ab.login_welcome_subtitle"/>
+            <t t-set="ab_terms_url" t-value="ab.get('terms_url') if is_dict else ab.terms_url"/>
+            <t t-set="ab_privacy_url" t-value="ab.get('privacy_url') if is_dict else ab.privacy_url"/>
+            <t t-set="ab_terms_label" t-value="ab.get('terms_label') if is_dict else ab.terms_label"/>
+            <t t-set="ab_privacy_label" t-value="ab.get('privacy_label') if is_dict else ab.privacy_label"/>
+            <t t-set="ab_custom_footer_text" t-value="ab.get('custom_footer_text') if is_dict else ab.custom_footer_text"/>
+
             <!-- Inject Dynamic CSS or Link -->
             <style t-if="ab_is_preview" t-out="ab.get('inline_style', '')"/>
             <link t-else="" rel="stylesheet" href="/auth_branding/theme.css"/>
@@ -56,11 +65,24 @@
         </xpath>
 
         <xpath expr="//div[hasclass('text-center', 'small', 'mt-4', 'pt-3', 'border-top')]" position="replace">
-            <div t-if="not disable_footer and (ab_show_manage_databases or ab_show_powered_by_odoo)" class="text-center small mt-4 pt-3 border-top">
-                <t t-if="not disable_database_manager and ab_show_manage_databases">
-                    <a t-attf-class="#{ab_show_powered_by_odoo and 'border-end pe-2 me-1' or ''}" href="/web/database/manager">Manage Databases</a>
-                </t>
-                <a t-if="ab_show_powered_by_odoo" href="https://www.odoo.com?utm_source=db&amp;utm_medium=auth" target="_blank">Powered by <span>Odoo</span></a>
+            <!-- Welcome Title (injected above the form) -->
+            <div t-if="ab_welcome_title or ab_welcome_subtitle" class="ab-welcome-block text-center mb-3">
+                <h4 t-if="ab_welcome_title" class="ab-welcome-title mb-1 fw-semibold"><t t-out="ab_welcome_title"/></h4>
+                <p t-if="ab_welcome_subtitle" class="ab-welcome-subtitle small text-muted mb-0"><t t-out="ab_welcome_subtitle"/></p>
+            </div>
+            <!-- Enhanced Footer -->
+            <div t-if="not disable_footer" class="text-center small mt-4 pt-3 border-top">
+                <div t-if="not disable_database_manager and ab_show_manage_databases or ab_show_powered_by_odoo" class="mb-1">
+                    <t t-if="not disable_database_manager and ab_show_manage_databases">
+                        <a t-attf-class="#{ab_show_powered_by_odoo and 'border-end pe-2 me-1' or ''}" href="/web/database/manager">Manage Databases</a>
+                    </t>
+                    <a t-if="ab_show_powered_by_odoo" href="https://www.odoo.com?utm_source=db&amp;utm_medium=auth" target="_blank">Powered by <span>Odoo</span></a>
+                </div>
+                <div t-if="ab_terms_url or ab_privacy_url" class="mt-1">
+                    <a t-if="ab_terms_url" t-att-href="ab_terms_url" target="_blank" class="text-muted me-2"><t t-out="ab_terms_label or 'Terms of Service'"/></a>
+                    <a t-if="ab_privacy_url" t-att-href="ab_privacy_url" target="_blank" class="text-muted"><t t-out="ab_privacy_label or 'Privacy Policy'"/></a>
+                </div>
+                <p t-if="ab_custom_footer_text" class="text-muted mt-1 mb-0"><t t-out="ab_custom_footer_text"/></p>
             </div>
         </xpath>
     </template>

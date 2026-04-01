@@ -77,6 +77,15 @@ class AuthBrandingConfig(models.Model):
     # Footer
     show_manage_databases = fields.Boolean(string='Show Manage Databases', default=True)
     show_powered_by_odoo = fields.Boolean(string='Show Powered by Odoo', default=True)
+    custom_footer_text = fields.Char(string='Custom Footer Text', help='Custom text shown in the footer, e.g. your helpdesk number')
+
+    # Custom Content
+    login_welcome_title = fields.Char(string='Login Welcome Title', help='Override the default login heading, e.g. "Welcome back!"')
+    login_welcome_subtitle = fields.Char(string='Login Welcome Subtitle', help='A short subtitle below the title, e.g. "Sign in to continue."')
+    terms_url = fields.Char(string='Terms of Service URL')
+    privacy_url = fields.Char(string='Privacy Policy URL')
+    terms_label = fields.Char(string='Terms Label', default='Terms of Service')
+    privacy_label = fields.Char(string='Privacy Label', default='Privacy Policy')
 
     @api.model
     def get_or_create(self):

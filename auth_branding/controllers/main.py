@@ -34,6 +34,13 @@ class AuthBrandingController(http.Controller):
             'glassmorphism': kwargs.get('glassmorphism') == 'true' if 'glassmorphism' in kwargs else config.glassmorphism,
             'glassmorphism_blur': kwargs.get('glassmorphism_blur', str(config.glassmorphism_blur)),
             'glassmorphism_opacity': kwargs.get('glassmorphism_opacity', str(config.glassmorphism_opacity)),
+            'custom_footer_text': kwargs.get('custom_footer_text', config.custom_footer_text or ''),
+            'login_welcome_title': kwargs.get('login_welcome_title', config.login_welcome_title or ''),
+            'login_welcome_subtitle': kwargs.get('login_welcome_subtitle', config.login_welcome_subtitle or ''),
+            'terms_url': kwargs.get('terms_url', config.terms_url or ''),
+            'privacy_url': kwargs.get('privacy_url', config.privacy_url or ''),
+            'terms_label': kwargs.get('terms_label', config.terms_label or 'Terms of Service'),
+            'privacy_label': kwargs.get('privacy_label', config.privacy_label or 'Privacy Policy'),
             'is_preview': True,
         }
         
@@ -55,18 +62,28 @@ class AuthBrandingController(http.Controller):
             bg_css = f"background: {ab_config['background_color'] or '#f8f9fa'} !important;"
         elif bg_type == 'gradient':
             bg_css = f"background: linear-gradient({ab_config['gradient_direction'] or 'to bottom right'}, {ab_config['gradient_start'] or '#714B67'}, {ab_config['gradient_end'] or '#2B124C'}) !important;"
+        elif bg_type == 'animated_gradient':
+            bg_css = f"background: linear-gradient(-45deg, {ab_config['gradient_start'] or '#714B67'}, {ab_config['gradient_end'] or '#2B124C'}, {ab_config['primary_color'] or '#714B67'}) !important; background-size: 400% 400% !important; animation: abGradientAnim 15s ease infinite !important;"
         elif bg_type == 'image':
             # Rely on saved image, we can't preview image blob directly from iframe unless we base64 it
             bg_css = f"background: url('/auth_branding/image/background_image') no-repeat center center fixed !important; background-size: cover !important;"
 
         # Build inline styles using the overrides to inject into the template
         inline_style = f"""
+        @keyframes abGradientAnim {{
+            0% {{ background-position: 0% 50%; }}
+            50% {{ background-position: 100% 50%; }}
+            100% {{ background-position: 0% 50%; }}
+        }}
         :root {{
             --ab-primary: {ab_config['primary_color'] or '#714B67'};
             --ab-secondary: {ab_config['secondary_color'] or '#FFFFFF'};
             --ab-overlay-opacity: {ab_config['background_overlay_opacity'] or '0.3'};
             --ab-font: {ab_config['font_family_css']};
             --ab-text-color: {ab_config['text_color'] or '#212529'};
+            --ab-card-bg: {ab_config['card_background_color'] or '#FFFFFF'};
+            --ab-glass-blur: {ab_config['glassmorphism_blur'] or '10'}px;
+            --ab-glass-opacity: {ab_config['glassmorphism_opacity'] or '0.2'};
             --ab-input-radius: {ab_config['input_border_radius'] or '6'}px;
             --ab-btn-radius: {ab_config['button_border_radius'] or '6'}px;
             --ab-btn-color: {ab_config['button_color'] or '#714B67'};
@@ -123,16 +140,26 @@ class AuthBrandingController(http.Controller):
             bg_css = f"background: {config.background_color or '#f8f9fa'} !important;"
         elif config.background_type == 'gradient':
             bg_css = f"background: linear-gradient({config.gradient_direction or 'to bottom right'}, {config.gradient_start or '#714B67'}, {config.gradient_end or '#2B124C'}) !important;"
+        elif config.background_type == 'animated_gradient':
+            bg_css = f"background: linear-gradient(-45deg, {config.gradient_start or '#714B67'}, {config.gradient_end or '#2B124C'}, {config.primary_color or '#714B67'}) !important; background-size: 400% 400% !important; animation: abGradientAnim 15s ease infinite !important;"
         elif config.background_type == 'image':
             bg_css = f"background: url('/auth_branding/image/background_image') no-repeat center center fixed !important; background-size: cover !important;"
             
         css = f"""
+@keyframes abGradientAnim {{
+    0% {{ background-position: 0% 50%; }}
+    50% {{ background-position: 100% 50%; }}
+    100% {{ background-position: 0% 50%; }}
+}}
 :root {{
     --ab-primary: {config.primary_color or '#714B67'};
     --ab-secondary: {config.secondary_color or '#FFFFFF'};
     --ab-overlay-opacity: {config.background_overlay_opacity or '0.3'};
     --ab-font: {font_map.get(config.font_family, font_map['system-ui'])};
     --ab-text-color: {config.text_color or '#212529'};
+    --ab-card-bg: {config.card_background_color or '#FFFFFF'};
+    --ab-glass-blur: {config.glassmorphism_blur or '10'}px;
+    --ab-glass-opacity: {config.glassmorphism_opacity or '0.2'};
     --ab-input-radius: {config.input_border_radius or '6'}px;
     --ab-btn-radius: {config.button_border_radius or '6'}px;
     --ab-btn-color: {config.button_color or config.primary_color or '#714B67'};
