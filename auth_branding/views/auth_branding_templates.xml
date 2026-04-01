@@ -7,7 +7,10 @@
             <t t-set="ab" t-value="ab_preview if ab_preview else request.env['auth.branding.config'].sudo().get_or_create()"/>
             <t t-set="is_dict" t-value="bool(ab_preview)"/>
             <t t-set="ab_template" t-value="ab.get('template') if is_dict else ab.template"/>
-            <t t-set="body_classname" t-value="'bg-100 ab-template-' + ab_template"/>
+            <t t-set="ab_glassmorphism" t-value="ab.get('glassmorphism') if is_dict else ab.glassmorphism"/>
+            <t t-set="ab_split_alignment" t-value="ab.get('split_alignment') if is_dict else ab.split_alignment"/>
+            <t t-set="ab_bg_type" t-value="ab.get('background_type') if is_dict else ab.background_type"/>
+            <t t-set="body_classname" t-value="'bg-100 ab-template-' + ab_template + (' ab-glass' if ab_glassmorphism else '') + (' ab-split-right' if ab_split_alignment == 'right' else '') + (' ab-bg-animated' if ab_bg_type == 'animated_gradient' else '')"/>
         </xpath>
 
         <xpath expr="//div[hasclass('container')]" position="before">
@@ -49,6 +52,15 @@
                     <img t-attf-src="/web/binary/company_logo{{ '?dbname='+db if db else '' }}" alt="Logo" class="ab-logo"/>
                 </t>
                 <p t-if="ab_tagline" class="ab-tagline mt-2 text-muted mb-0"><t t-out="ab_tagline"/></p>
+            </div>
+        </xpath>
+
+        <xpath expr="//div[hasclass('text-center', 'small', 'mt-4', 'pt-3', 'border-top')]" position="replace">
+            <div t-if="not disable_footer and (ab_show_manage_databases or ab_show_powered_by_odoo)" class="text-center small mt-4 pt-3 border-top">
+                <t t-if="not disable_database_manager and ab_show_manage_databases">
+                    <a t-attf-class="#{ab_show_powered_by_odoo and 'border-end pe-2 me-1' or ''}" href="/web/database/manager">Manage Databases</a>
+                </t>
+                <a t-if="ab_show_powered_by_odoo" href="https://www.odoo.com?utm_source=db&amp;utm_medium=auth" target="_blank">Powered by <span>Odoo</span></a>
             </div>
         </xpath>
     </template>

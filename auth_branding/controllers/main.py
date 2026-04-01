@@ -29,6 +29,11 @@ class AuthBrandingController(http.Controller):
             'button_text_color': kwargs.get('button_text_color', config.button_text_color),
             'show_manage_databases': kwargs.get('show_manage_databases') == 'true' if 'show_manage_databases' in kwargs else config.show_manage_databases,
             'show_powered_by_odoo': kwargs.get('show_powered_by_odoo') == 'true' if 'show_powered_by_odoo' in kwargs else config.show_powered_by_odoo,
+            'split_alignment': kwargs.get('split_alignment', config.split_alignment or 'left'),
+            'card_background_color': kwargs.get('card_background_color', config.card_background_color or '#FFFFFF'),
+            'glassmorphism': kwargs.get('glassmorphism') == 'true' if 'glassmorphism' in kwargs else config.glassmorphism,
+            'glassmorphism_blur': kwargs.get('glassmorphism_blur', str(config.glassmorphism_blur)),
+            'glassmorphism_opacity': kwargs.get('glassmorphism_opacity', str(config.glassmorphism_opacity)),
             'is_preview': True,
         }
         

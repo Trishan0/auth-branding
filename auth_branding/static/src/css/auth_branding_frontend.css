@@ -11,6 +11,9 @@
     --ab-overlay-opacity: 0.3;
     --ab-font: system-ui, -apple-system, sans-serif;
     --ab-text-color: #212529;
+    --ab-card-bg: #FFFFFF;
+    --ab-glass-blur: 10px;
+    --ab-glass-opacity: 0.2;
     --ab-input-radius: 6px;
     --ab-btn-radius: 6px;
     --ab-btn-color: #714B67;
@@ -189,6 +192,41 @@ body.ab-template-split .container .card {
 .ab-template-fullbleed .ab-logo {
     max-height: 100px;
     max-width: 100%;
+}
+
+/* Glassmorphism card effect */
+body[class*="ab-template-"].ab-glass .card {
+    background: rgba(255, 255, 255, var(--ab-glass-opacity)) !important;
+    backdrop-filter: blur(var(--ab-glass-blur)) !important;
+    -webkit-backdrop-filter: blur(var(--ab-glass-blur)) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Card background color (non-glass mode) */
+body[class*="ab-template-"]:not(.ab-glass) .card {
+    background-color: var(--ab-card-bg) !important;
+}
+
+/* Animated gradient background */
+@keyframes abGradientAnim {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+body.ab-template-centered.ab-bg-animated,
+body.ab-template-fullbleed.ab-bg-animated {
+    background-size: 400% 400% !important;
+    animation: abGradientAnim 15s ease infinite !important;
+}
+body.ab-template-split.ab-bg-animated .ab-split-aside {
+    background-size: 400% 400% !important;
+    animation: abGradientAnim 15s ease infinite !important;
+}
+
+/* Split alignment: image on right */
+body.ab-template-split.ab-split-right main {
+    flex-direction: row-reverse;
 }
 
 /* Database Selector Alignment fixes */

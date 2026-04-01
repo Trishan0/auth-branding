@@ -13,6 +13,13 @@
                         <div class="col-md-5">
                             <group string="Layout &amp; Structure">
                                 <field name="template" widget="auth_branding_template_picker"/>
+                                <field name="split_alignment" invisible="template != 'split'"/>
+                            </group>
+                            <group string="Card &amp; Effects">
+                                <field name="card_background_color" widget="auth_branding_color"/>
+                                <field name="glassmorphism" widget="boolean_toggle"/>
+                                <field name="glassmorphism_blur" invisible="glassmorphism == False"/>
+                                <field name="glassmorphism_opacity" invisible="glassmorphism == False"/>
                             </group>
                             <group string="Branding">
                                 <field name="company_logo" widget="image" options="{'size': [0, 90]}"/>
@@ -51,6 +58,17 @@
                             <group string="Footer Elements">
                                 <field name="show_manage_databases" widget="boolean_toggle"/>
                                 <field name="show_powered_by_odoo" widget="boolean_toggle"/>
+                                <field name="custom_footer_text" placeholder="e.g. Support: +1 800 000 0000"/>
+                            </group>
+                            <group string="Custom Content">
+                                <field name="login_welcome_title" placeholder="e.g. Welcome back!"/>
+                                <field name="login_welcome_subtitle" placeholder="e.g. Sign in to continue."/>
+                            </group>
+                            <group string="Terms &amp; Privacy Links">
+                                <field name="terms_url" placeholder="https://yoursite.com/terms"/>
+                                <field name="terms_label"/>
+                                <field name="privacy_url" placeholder="https://yoursite.com/privacy"/>
+                                <field name="privacy_label"/>
                             </group>
                         </div>
                         <div class="col-md-7">

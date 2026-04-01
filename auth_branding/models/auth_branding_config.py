@@ -11,6 +11,17 @@ class AuthBrandingConfig(models.Model):
         ('fullbleed', 'Full Bleed Background')
     ], string='Template', default='centered', required=True)
 
+    split_alignment = fields.Selection([
+        ('left', 'Image on Left'),
+        ('right', 'Image on Right')
+    ], string='Split Alignment', default='left', help='Side for the image in Split Screen template')
+
+    # Card & Glassmorphism
+    card_background_color = fields.Char(string='Card Background Color', default='#FFFFFF')
+    glassmorphism = fields.Boolean(string='Enable Glassmorphism', default=False, help='Make the login card semi-transparent and blurred')
+    glassmorphism_blur = fields.Integer(string='Blur Factor (px)', default=10)
+    glassmorphism_opacity = fields.Float(string='Card Opacity (0.0 - 1.0)', default=0.2)
+
     # Branding
     company_logo = fields.Binary(string='Company Logo')
     favicon = fields.Binary(string='Favicon')
@@ -23,6 +34,7 @@ class AuthBrandingConfig(models.Model):
     background_type = fields.Selection([
         ('solid', 'Solid Color'),
         ('gradient', 'Gradient'),
+        ('animated_gradient', 'Animated Gradient'),
         ('image', 'Image')
     ], string='Background Type', default='solid', required=True)
     

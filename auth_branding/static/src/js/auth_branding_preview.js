@@ -80,11 +80,16 @@ export class AuthBrandingPreview extends Component {
                 'gradient_end', 'gradient_direction', 'background_overlay_opacity',
                 'font_family', 'text_color', 'input_border_radius', 
                 'button_border_radius', 'button_color', 'button_text_color',
-                'show_manage_databases', 'show_powered_by_odoo'
+                'show_manage_databases', 'show_powered_by_odoo',
+                'split_alignment', 'card_background_color', 'glassmorphism_blur', 'glassmorphism_opacity',
             ];
             
+            // Boolean fields need special handling — send 'true'/'false' as strings
+            const boolFields = new Set(['show_manage_databases', 'show_powered_by_odoo', 'glassmorphism']);
             for (const f of fieldsToWatch) {
-                if (data[f] !== undefined && data[f] !== false) {
+                if (boolFields.has(f)) {
+                    params.append(f, data[f] ? 'true' : 'false');
+                } else if (data[f] !== undefined && data[f] !== false && data[f] !== '') {
                     params.append(f, data[f]);
                 }
             }
@@ -116,6 +121,13 @@ export class AuthBrandingPreview extends Component {
                 data.button_border_radius,
                 data.button_color,
                 data.button_text_color,
+                data.show_manage_databases,
+                data.show_powered_by_odoo,
+                data.split_alignment,
+                data.card_background_color,
+                data.glassmorphism,
+                data.glassmorphism_blur,
+                data.glassmorphism_opacity,
             ];
         });
     }
