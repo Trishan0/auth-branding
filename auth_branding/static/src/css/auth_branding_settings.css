@@ -14,7 +14,9 @@
     max-width: 100% !important;
     margin: 0 !important;
 }
-
+.o_auth_branding_form{
+    padding-left:10px;
+}
 .o_auth_branding_form .o_form_sheet_bg {
     max-width: 100% !important;
     padding-left: 0 !important;
