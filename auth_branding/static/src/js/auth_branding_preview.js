@@ -89,9 +89,13 @@ export class AuthBrandingPreview extends Component {
             const boolFields = new Set(['show_manage_databases', 'show_powered_by_odoo', 'glassmorphism', 'auth_signup_reset_password']);
             for (const f of fieldsToWatch) {
                 let val = data[f];
-                if (f === 'company_id' && Array.isArray(val)) {
-                    val = val[0]; // Many2one returns [id, name]
+                // Extract ID from Many2one (which can be [id, name] or an object {id: 123, ...})
+                if (Array.isArray(val)) {
+                    val = val[0];
+                } else if (val && typeof val === 'object' && val.id) {
+                    val = val.id;
                 }
+
                 if (boolFields.has(f)) {
                     params.append(f, val ? 'true' : 'false');
                 } else if (val !== undefined && val !== false && val !== '') {

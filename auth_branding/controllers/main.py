@@ -160,7 +160,7 @@ class AuthBrandingController(http.Controller):
     --ab-primary: {config.primary_color or '#714B67'};
     --ab-secondary: {config.secondary_color or '#FFFFFF'};
     --ab-overlay-opacity: {config.background_overlay_opacity or '0.3'};
-    --ab-font: {font_map.get(config.font_family, font_map['system_ui'])};
+    --ab-font: {font_map.get(config.font_family, font_map['system-ui'])};
     --ab-text-color: {config.text_color or '#212529'};
     --ab-card-bg: {config.card_background_color or '#FFFFFF'};
     --ab-glass-blur: {config.glassmorphism_blur or '10'}px;
