@@ -64,15 +64,18 @@
             </div>
         </xpath>
 
-        <xpath expr="//div[hasclass('text-center', 'small', 'mt-4', 'pt-3', 'border-top')]" position="replace">
-            <!-- Welcome Title (injected above the form) -->
+        <!-- Inject welcome title/subtitle ABOVE the login form (before the t-out="0" slot) -->
+        <xpath expr="//t[@t-out='0']" position="before">
             <div t-if="ab_welcome_title or ab_welcome_subtitle" class="ab-welcome-block text-center mb-3">
                 <h4 t-if="ab_welcome_title" class="ab-welcome-title mb-1 fw-semibold"><t t-out="ab_welcome_title"/></h4>
                 <p t-if="ab_welcome_subtitle" class="ab-welcome-subtitle small text-muted mb-0"><t t-out="ab_welcome_subtitle"/></p>
             </div>
-            <!-- Enhanced Footer -->
+        </xpath>
+
+        <!-- Replace default footer with enhanced version -->
+        <xpath expr="//div[hasclass('text-center', 'small', 'mt-4', 'pt-3', 'border-top')]" position="replace">
             <div t-if="not disable_footer" class="text-center small mt-4 pt-3 border-top">
-                <div t-if="not disable_database_manager and ab_show_manage_databases or ab_show_powered_by_odoo" class="mb-1">
+                <div t-if="(not disable_database_manager and ab_show_manage_databases) or ab_show_powered_by_odoo" class="mb-1">
                     <t t-if="not disable_database_manager and ab_show_manage_databases">
                         <a t-attf-class="#{ab_show_powered_by_odoo and 'border-end pe-2 me-1' or ''}" href="/web/database/manager">Manage Databases</a>
                     </t>
