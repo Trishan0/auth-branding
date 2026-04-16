@@ -26,6 +26,8 @@
         'views/res_config_settings_views.xml',
         'views/auth_branding_templates.xml',
     ],
+    "images": ['static/description/banner.gif'],
+
     'assets': {
         'web.assets_backend': [
             'auth_branding/static/src/js/auth_branding_preview.js',
