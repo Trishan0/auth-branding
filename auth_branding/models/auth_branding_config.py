@@ -18,7 +18,7 @@ class AuthBrandingConfig(models.Model):
     EXPORT_SCHEMA_VERSION = 1
     UNSAFE_CSS_PATTERN = re.compile(
         r"(?:[<>\\]|@(?:import|charset|namespace)\b|expression\s*\(|"
-        r"url\s*\(|https?\s*:|(?:java|vb)script\s*:|data\s*:|"
+        r"url\s*\(|(?:https?|ftp|file|blob)\s*:|//|(?:java|vb)script\s*:|data\s*:|"
         r"-moz-binding\b|behavior\s*:)",
         re.IGNORECASE,
     )

@@ -25,9 +25,14 @@ const NUMBER_VARIABLES = {
     input_border_radius: ["--ab-input-radius", 0, 100, "px"],
     button_border_radius: ["--ab-btn-radius", 0, 100, "px"],
 };
+const TEXT_FALLBACKS = {
+    terms_label: "Terms of Service",
+    privacy_label: "Privacy Policy",
+    powered_by_text: "Powered by Odoo",
+};
 let loaderHideTimeout;
 let lastLoaderSignature;
-const UNSAFE_CSS_PATTERN = /[<>\\]|@(?:import|charset|namespace)\b|expression\s*\(|url\s*\(|https?\s*:|(?:java|vb)script\s*:|data\s*:|-moz-binding\b|behavior\s*:/i;
+const UNSAFE_CSS_PATTERN = /[<>\\]|@(?:import|charset|namespace)\b|expression\s*\(|url\s*\(|(?:https?|ftp|file|blob)\s*:|\/\/|(?:java|vb)script\s*:|data\s*:|-moz-binding\b|behavior\s*:/i;
 
 function safeNumber(value, minimum, maximum) {
     const parsed = Number(value);
@@ -248,7 +253,7 @@ function applyUpdate(values) {
         "powered_by_text",
     ]) {
         if (values[field] !== undefined) {
-            setText(field, values[field]);
+            setText(field, values[field] || TEXT_FALLBACKS[field] || "");
         }
     }
     if (
@@ -269,7 +274,10 @@ function applyUpdate(values) {
         setExternalLink("privacy_url", values.privacy_url);
     }
     if (values.powered_by_url !== undefined) {
-        setExternalLink("powered_by_url", values.powered_by_url);
+        setExternalLink(
+            "powered_by_url",
+            values.powered_by_url || "https://www.odoo.com"
+        );
     }
     if (typeof values.show_manage_databases === "boolean") {
         setVisibility("show_manage_databases", values.show_manage_databases);

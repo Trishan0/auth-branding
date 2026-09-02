@@ -71,6 +71,7 @@ class TestAuthBrandingConfig(TransactionCase):
             "div { width: expression(alert(1)); }",
             "body { background: u/**/rl(https://tracker.example); }",
             "body { background: u\\72l(https://tracker.example); }",
+            'body { background: image-set("//tracker.example/pixel"); }',
         ):
             with self.subTest(css=unsafe_css), self.assertRaises(
                 ValidationError

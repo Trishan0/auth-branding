@@ -71,3 +71,12 @@ class TestAuthBrandingImport(TransactionCase):
 
         self.assertTrue(self.config.company_logo)
         self.assertEqual(self.config.tagline, "No asset section")
+
+    def test_apply_revalidates_file_after_review(self):
+        payload = self.config._get_export_payload()
+        wizard = self._wizard_for_payload(payload)
+        wizard.action_review()
+        wizard.import_file = base64.b64encode(b"not json anymore")
+
+        with self.assertRaises(UserError):
+            wizard.action_apply()

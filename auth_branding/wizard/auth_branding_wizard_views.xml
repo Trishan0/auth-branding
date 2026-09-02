@@ -118,7 +118,6 @@ action = config.action_open_setup_wizard()
                 <field name="config_id" invisible="1" />
                 <field name="company_id" invisible="1" />
                 <field name="state" invisible="1" />
-                <field name="normalized_payload" invisible="1" />
                 <sheet>
                     <div invisible="state != 'upload'">
                         <h3>Import a branding package</h3>

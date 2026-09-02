@@ -25,7 +25,6 @@ class AuthBrandingImportWizard(models.TransientModel):
     )
     import_file = fields.Binary(string="Branding JSON File", required=True)
     import_filename = fields.Char(string="Filename")
-    normalized_payload = fields.Text(readonly=True)
     import_summary = fields.Text(readonly=True)
 
     def _decode_payload(self):
@@ -147,7 +146,6 @@ class AuthBrandingImportWizard(models.TransientModel):
         self.write(
             {
                 "state": "review",
-                "normalized_payload": json.dumps(normalized),
                 "import_summary": "\n".join(summary_lines),
             }
         )
@@ -172,14 +170,9 @@ class AuthBrandingImportWizard(models.TransientModel):
 
     def action_apply(self):
         self.ensure_one()
-        if self.state != "review" or not self.normalized_payload:
+        if self.state != "review":
             raise UserError(_("Review the import before applying it."))
-        try:
-            normalized = json.loads(self.normalized_payload)
-        except json.JSONDecodeError as error:
-            raise UserError(
-                _("The reviewed import data is no longer valid.")
-            ) from error
+        normalized = self._normalize_payload(self._decode_payload())
         values = {**normalized["settings"], **normalized["assets"]}
         self.config_id.write(values)
         return {
