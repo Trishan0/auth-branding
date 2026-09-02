@@ -53,6 +53,7 @@
         <field name="is_system" eval="True" />
         <field name="company_id" eval="False" />
         <field name="template">fullbleed</field>
+        <field name="dark_mode">on</field>
         <field name="primary_color">#D4AF37</field>
         <field name="secondary_color">#F8FAFC</field>
         <field name="gradient_start">#020617</field>
@@ -73,7 +74,7 @@
         <field name="sequence">50</field>
         <field name="is_system" eval="True" />
         <field name="company_id" eval="False" />
-        <field name="template">centered</field>
+        <field name="template">minimal</field>
         <field name="primary_color">#111827</field>
         <field name="background_type">solid</field>
         <field name="background_color">#F8FAFC</field>
@@ -120,7 +121,7 @@
         <field name="sequence">80</field>
         <field name="is_system" eval="True" />
         <field name="company_id" eval="False" />
-        <field name="template">fullbleed</field>
+        <field name="template">sidebar</field>
         <field name="primary_color">#38BDF8</field>
         <field name="secondary_color">#F8FAFC</field>
         <field name="gradient_start">#0F172A</field>

@@ -33,7 +33,7 @@
                             <div class="col-lg-5">
                                 <group string="Layout &amp; Colors">
                                     <field name="template" />
-                                    <field name="split_alignment" invisible="template != 'split'" />
+                                    <field name="split_alignment" invisible="template not in ('split', 'sidebar')" />
                                     <field name="primary_color" widget="auth_branding_color" />
                                     <field name="secondary_color" widget="auth_branding_color" />
                                     <field name="background_type" />
@@ -154,6 +154,37 @@ action = config.action_open_setup_wizard()
         <field name="res_model">auth.branding.import.wizard</field>
         <field name="view_mode">form</field>
         <field name="view_id" ref="auth_branding_import_wizard_view_form" />
+        <field name="target">new</field>
+    </record>
+
+    <record id="auth_branding_preset_wizard_view_form" model="ir.ui.view">
+        <field name="name">auth.branding.preset.wizard.view.form</field>
+        <field name="model">auth.branding.preset.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Save Current Theme">
+                <field name="config_id" invisible="1" />
+                <field name="company_id" invisible="1" />
+                <sheet>
+                    <h3>Turn these visual settings into a reusable theme</h3>
+                    <p class="text-muted">The custom theme is available only to this company and can be deleted later.</p>
+                    <group>
+                        <field name="name" placeholder="e.g. Spring Campaign" />
+                        <field name="description" placeholder="A short note to help teammates choose it" />
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_save" string="Save Theme" type="object" class="btn-primary" />
+                    <button string="Cancel" special="cancel" class="btn-secondary" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_auth_branding_preset_wizard" model="ir.actions.act_window">
+        <field name="name">Save Current Theme</field>
+        <field name="res_model">auth.branding.preset.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="auth_branding_preset_wizard_view_form" />
         <field name="target">new</field>
     </record>
 </odoo>

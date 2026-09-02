@@ -19,6 +19,7 @@ class AuthBrandingPreset(models.Model):
         "primary_color",
         "secondary_color",
         "background_type",
+        "background_image",
         "background_color",
         "gradient_start",
         "gradient_end",
@@ -30,6 +31,12 @@ class AuthBrandingPreset(models.Model):
         "button_border_radius",
         "button_color",
         "button_text_color",
+        "dark_mode",
+        "social_button_style",
+        "hide_social_labels",
+        "show_loading_animation",
+        "loading_animation_type",
+        "custom_css",
     )
 
     name = fields.Char(required=True, translate=True)
@@ -76,6 +83,7 @@ class AuthBrandingPreset(models.Model):
         default="solid",
         required=True,
     )
+    background_image = fields.Binary()
     background_color = fields.Char(default="#F8F9FA", required=True)
     gradient_start = fields.Char(default="#714B67", required=True)
     gradient_end = fields.Char(default="#2B124C", required=True)
@@ -108,10 +116,46 @@ class AuthBrandingPreset(models.Model):
     button_border_radius = fields.Integer(default=6)
     button_color = fields.Char(default="#714B67", required=True)
     button_text_color = fields.Char(default="#FFFFFF", required=True)
+    dark_mode = fields.Selection(
+        [("off", "Always Light"), ("auto", "Follow Device"), ("on", "Always Dark")],
+        default="off",
+        required=True,
+    )
+    social_button_style = fields.Selection(
+        [
+            ("rounded", "Rounded"),
+            ("pill", "Pill"),
+            ("square", "Square"),
+            ("icon", "Icon Focused"),
+        ],
+        default="rounded",
+        required=True,
+    )
+    hide_social_labels = fields.Boolean()
+    show_loading_animation = fields.Boolean(default=True)
+    loading_animation_type = fields.Selection(
+        [("spinner", "Spinner"), ("progress", "Progress Bar"), ("pulse", "Logo Pulse")],
+        default="spinner",
+        required=True,
+    )
+    custom_css = fields.Text()
 
     @api.model
     def get_editor_fields(self):
-        return ["id", "name", "description", "is_system", *self.CONFIG_FIELDS]
+        return [
+            "id",
+            "name",
+            "description",
+            "is_system",
+            "background_type",
+            "background_color",
+            "gradient_start",
+            "gradient_end",
+            "card_background_color",
+            "primary_color",
+            "button_color",
+            "button_border_radius",
+        ]
 
     @api.constrains(*AuthBrandingConfig.COLOR_FIELDS)
     def _check_color_format(self):
@@ -145,6 +189,14 @@ class AuthBrandingPreset(models.Model):
             ):
                 raise ValidationError(_("Preset dimensions must be positive or zero."))
 
+    @api.constrains("custom_css")
+    def _check_custom_css(self):
+        for preset in self:
+            if preset.custom_css and not AuthBrandingConfig._sanitize_custom_css(
+                preset.custom_css
+            ):
+                raise ValidationError(_("Preset custom CSS contains unsafe content."))
+
     def get_values_for_editor(self):
         self.ensure_one()
         return {field_name: self[field_name] for field_name in self.CONFIG_FIELDS}
@@ -158,14 +210,20 @@ class AuthBrandingPreset(models.Model):
         return True
 
     @api.model
-    def create_from_config(self, config_id, name):
+    def create_from_config(self, config_id, name, description=False):
         config = self.env["auth.branding.config"].browse(config_id).exists()
         if not config:
             raise UserError(_("The branding configuration no longer exists."))
         values = {
             field_name: config[field_name] for field_name in self.CONFIG_FIELDS
         }
-        values.update({"name": name, "company_id": config.company_id.id})
+        values.update(
+            {
+                "name": name,
+                "description": description,
+                "company_id": config.company_id.id,
+            }
+        )
         return self.create(values).id
 
     @api.model_create_multi

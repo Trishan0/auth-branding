@@ -637,6 +637,17 @@ class AuthBrandingConfig(models.Model):
         }
         return action
 
+    def action_open_save_preset_wizard(self):
+        self.ensure_one()
+        action = self.env["ir.actions.actions"]._for_xml_id(
+            "auth_branding.action_auth_branding_preset_wizard"
+        )
+        action["context"] = {
+            **self.env.context,
+            "default_config_id": self.id,
+        }
+        return action
+
     def _create_published_version(self):
         self.ensure_one()
         published_at = fields.Datetime.now()

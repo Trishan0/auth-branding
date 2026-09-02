@@ -26,12 +26,18 @@
                             <div class="d-flex align-items-center gap-2">
                                 <strong class="flex-grow-1"><t t-out="preset.name"/></strong>
                                 <span class="badge text-bg-light" t-if="preset.is_system">Built in</span>
+                                <span class="badge text-bg-info" t-else="">Custom</span>
                                 <i class="fa fa-check-circle text-success" t-if="state.selectedId === preset.id"/>
                                 <i class="fa fa-spin fa-spinner" t-if="state.applyingId === preset.id"/>
                             </div>
                             <p class="small text-muted mb-0 mt-1"><t t-out="preset.description"/></p>
                         </div>
                     </button>
+                    <div class="d-flex justify-content-end mt-1" t-if="!preset.is_system">
+                        <button type="button" class="btn btn-sm btn-link text-danger" t-on-click="() => this.deletePreset(preset)" t-att-disabled="state.applyingId !== null">
+                            <i class="fa fa-trash me-1"/>Delete custom theme
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

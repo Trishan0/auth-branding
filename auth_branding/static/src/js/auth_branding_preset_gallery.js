@@ -2,6 +2,7 @@
 
 import { Component, onWillStart, useState } from "@odoo/owl";
 import { registry } from "@web/core/registry";
+import { ConfirmationDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
 import { useService } from "@web/core/utils/hooks";
 
 
@@ -12,6 +13,7 @@ export class AuthBrandingPresetGallery extends Component {
     setup() {
         this.orm = useService("orm");
         this.notification = useService("notification");
+        this.dialog = useService("dialog");
         this.state = useState({
             loading: true,
             applyingId: null,
@@ -59,6 +61,27 @@ export class AuthBrandingPresetGallery extends Component {
         } finally {
             this.state.applyingId = null;
         }
+    }
+
+    deletePreset(preset) {
+        this.dialog.add(ConfirmationDialog, {
+            title: "Delete custom theme?",
+            body: `${preset.name} will be permanently removed. Your current draft is not changed.`,
+            confirmLabel: "Delete Theme",
+            confirm: async () => {
+                await this.orm.unlink("auth.branding.preset", [preset.id]);
+                this.state.presets = this.state.presets.filter(
+                    (item) => item.id !== preset.id
+                );
+                if (this.state.selectedId === preset.id) {
+                    this.state.selectedId = null;
+                }
+                this.notification.add(`${preset.name} deleted.`, {
+                    title: "Theme deleted",
+                    type: "success",
+                });
+            },
+        });
     }
 }
 
