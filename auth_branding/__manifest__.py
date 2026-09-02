@@ -6,13 +6,13 @@
     "maintainers": ["Trishan Fernando"],
     "website": "https://trishanfernando.com",
     "category": "Technical",
-    "summary": "Customize login, signup and password reset pages with live preview",
+    "summary": "Visual auth page studio with presets, live preview and safe publishing",
     "description": """
 Auth Branding for Odoo 19
 =========================
 
-Customize Odoo authentication pages with company-specific layouts, colors,
-backgrounds, logos, typography, and a live backend preview.
+Build company-specific authentication pages with guided themes, instant responsive
+preview, accessible styling, draft publishing, rollback, and portable brand packages.
     """,
     "depends": ["web", "auth_signup", "base_setup"],
     "data": [

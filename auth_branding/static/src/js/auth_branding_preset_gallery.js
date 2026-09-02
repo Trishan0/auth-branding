@@ -3,6 +3,7 @@
 import { Component, onWillStart, useState } from "@odoo/owl";
 import { registry } from "@web/core/registry";
 import { ConfirmationDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
+import { _t } from "@web/core/l10n/translation";
 import { useService } from "@web/core/utils/hooks";
 
 
@@ -54,8 +55,8 @@ export class AuthBrandingPresetGallery extends Component {
             );
             await this.props.record.update(values);
             this.state.selectedId = preset.id;
-            this.notification.add(`${preset.name} applied to the preview.`, {
-                title: "Theme applied",
+            this.notification.add(_t("%s applied to the preview.", preset.name), {
+                title: _t("Theme applied"),
                 type: "success",
             });
         } finally {
@@ -65,9 +66,12 @@ export class AuthBrandingPresetGallery extends Component {
 
     deletePreset(preset) {
         this.dialog.add(ConfirmationDialog, {
-            title: "Delete custom theme?",
-            body: `${preset.name} will be permanently removed. Your current draft is not changed.`,
-            confirmLabel: "Delete Theme",
+            title: _t("Delete custom theme?"),
+            body: _t(
+                "%s will be permanently removed. Your current draft is not changed.",
+                preset.name
+            ),
+            confirmLabel: _t("Delete Theme"),
             confirm: async () => {
                 await this.orm.unlink("auth.branding.preset", [preset.id]);
                 this.state.presets = this.state.presets.filter(
@@ -76,8 +80,8 @@ export class AuthBrandingPresetGallery extends Component {
                 if (this.state.selectedId === preset.id) {
                     this.state.selectedId = null;
                 }
-                this.notification.add(`${preset.name} deleted.`, {
-                    title: "Theme deleted",
+                this.notification.add(_t("%s deleted.", preset.name), {
+                    title: _t("Theme deleted"),
                     type: "success",
                 });
             },

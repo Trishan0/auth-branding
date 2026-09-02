@@ -2,6 +2,7 @@
 
 import { Component } from "@odoo/owl";
 import { registry } from "@web/core/registry";
+import { _t } from "@web/core/l10n/translation";
 
 
 function rgbFromHex(value, fallback) {
@@ -56,24 +57,24 @@ export class AuthBrandingAccessibility extends Component {
         return [
             {
                 key: "text",
-                label: "Body text contrast",
+                label: _t("Body text contrast"),
                 ratio: lowestText,
                 pass: lowestText >= 4.5,
-                hint: "Text and card background should reach 4.5:1.",
+                hint: _t("Text and card background should reach 4.5:1."),
             },
             {
                 key: "button",
-                label: "Button label contrast",
+                label: _t("Button label contrast"),
                 ratio: button,
                 pass: button >= 4.5,
-                hint: "Button text and button color should reach 4.5:1.",
+                hint: _t("Button text and button color should reach 4.5:1."),
             },
             {
                 key: "link",
-                label: "Link color contrast",
+                label: _t("Link color contrast"),
                 ratio: lowestLink,
                 pass: lowestLink >= 4.5,
-                hint: "Primary-color links should reach 4.5:1 on the card.",
+                hint: _t("Primary-color links should reach 4.5:1 on the card."),
             },
         ];
     }
