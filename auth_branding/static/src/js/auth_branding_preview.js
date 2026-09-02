@@ -73,12 +73,15 @@ const PREVIEW_FIELDS = [
     "reset_welcome_title", "reset_welcome_subtitle", "page_title", "page_title_signup",
     "page_title_reset", "social_button_style", "hide_social_labels", "terms_url",
     "privacy_url", "terms_label", "privacy_label",
+    "dark_mode", "show_loading_animation", "loading_animation_type",
+    "powered_by_text", "powered_by_url",
 ];
 const BOOLEAN_FIELDS = new Set([
     "show_manage_databases",
     "show_powered_by_odoo",
     "glassmorphism",
     "hide_social_labels",
+    "show_loading_animation",
 ]);
 
 

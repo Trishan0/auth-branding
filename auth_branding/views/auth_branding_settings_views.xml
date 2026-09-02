@@ -74,7 +74,7 @@
                                 <page string="Layout" name="layout">
                                     <group string="Page Structure">
                                         <field name="template" widget="auth_branding_template_picker" nolabel="1" colspan="2" />
-                                        <field name="split_alignment" invisible="template != 'split'" />
+                                        <field name="split_alignment" invisible="template not in ('split', 'sidebar')" />
                                     </group>
                                     <group string="Card Style">
                                         <field name="card_background_color" widget="auth_branding_color" />
@@ -85,6 +85,9 @@
                                         <field name="button_border_radius" />
                                         <field name="button_color" widget="auth_branding_color" />
                                         <field name="button_text_color" widget="auth_branding_color" />
+                                    </group>
+                                    <group string="Display Mode">
+                                        <field name="dark_mode" />
                                     </group>
                                 </page>
 
@@ -154,6 +157,12 @@
                                     <group string="Odoo Links">
                                         <field name="show_manage_databases" widget="boolean_toggle" />
                                         <field name="show_powered_by_odoo" widget="boolean_toggle" />
+                                        <field name="powered_by_text" invisible="not show_powered_by_odoo" />
+                                        <field name="powered_by_url" invisible="not show_powered_by_odoo" placeholder="https://www.odoo.com" />
+                                    </group>
+                                    <group string="Loading Experience">
+                                        <field name="show_loading_animation" widget="boolean_toggle" />
+                                        <field name="loading_animation_type" invisible="not show_loading_animation" />
                                     </group>
                                     <group string="Social Login Buttons">
                                         <field name="social_button_style" />

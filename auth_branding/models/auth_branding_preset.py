@@ -50,6 +50,8 @@ class AuthBrandingPreset(models.Model):
             ("centered", "Centered Card"),
             ("split", "Split Screen"),
             ("fullbleed", "Full Bleed Background"),
+            ("minimal", "Minimal"),
+            ("sidebar", "Sidebar"),
         ],
         default="centered",
         required=True,

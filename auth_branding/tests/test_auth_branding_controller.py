@@ -37,6 +37,11 @@ class TestAuthBrandingController(HttpCase):
                 "favicon": b"aGVsbG8=",
                 "social_button_style": "pill",
                 "hide_social_labels": True,
+                "template": "sidebar",
+                "dark_mode": "on",
+                "loading_animation_type": "progress",
+                "powered_by_text": "Secured by Branding Test",
+                "powered_by_url": "https://example.com/security",
             }
         )
         config.with_user(self.env.user).action_publish()
@@ -49,6 +54,11 @@ class TestAuthBrandingController(HttpCase):
         self.assertIn("/auth_branding/image/favicon", response.text)
         self.assertIn("ab-social-pill", response.text)
         self.assertIn("ab-social-hide-labels", response.text)
+        self.assertIn("ab-template-sidebar", response.text)
+        self.assertIn("ab-dark-on", response.text)
+        self.assertIn("ab-loading-progress", response.text)
+        self.assertIn("Secured by Branding Test", response.text)
+        self.assertIn("https://example.com/security", response.text)
 
     def test_public_route_cannot_select_an_unrelated_company(self):
         other_company = self.env["res.company"].create(

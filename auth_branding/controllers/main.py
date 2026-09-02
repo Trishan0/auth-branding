@@ -38,7 +38,7 @@ class AuthBrandingController(http.Controller):
         "to bottom left",
     }
     _BACKGROUND_TYPES = {"solid", "gradient", "animated_gradient", "image"}
-    _TEMPLATES = {"centered", "split", "fullbleed"}
+    _TEMPLATES = {"centered", "split", "fullbleed", "minimal", "sidebar"}
     _SPLIT_ALIGNMENTS = {"left", "right"}
     _COLOR_PATTERN = re.compile(r"^#[0-9A-Fa-f]{6}$")
 
@@ -203,10 +203,11 @@ class AuthBrandingController(http.Controller):
 }}
 {variables}
 
-body.ab-template-centered, body.ab-template-fullbleed {{
+body.ab-template-centered, body.ab-template-minimal, body.ab-template-fullbleed {{
     {background}
 }}
-body.ab-template-split .ab-split-aside {{
+body.ab-template-split .ab-split-aside,
+body.ab-template-sidebar .ab-split-aside {{
     {background}
 }}
 """
@@ -323,6 +324,29 @@ body.ab-template-split .ab-split-aside {{
             ),
             "hide_social_labels": self._boolean_parameter(
                 kwargs, "hide_social_labels", config.hide_social_labels
+            ),
+            "dark_mode": self._safe_selection(
+                kwargs.get("dark_mode", config.dark_mode),
+                {"off", "auto", "on"},
+                "off",
+            ),
+            "show_loading_animation": self._boolean_parameter(
+                kwargs,
+                "show_loading_animation",
+                config.show_loading_animation,
+            ),
+            "loading_animation_type": self._safe_selection(
+                kwargs.get(
+                    "loading_animation_type", config.loading_animation_type
+                ),
+                {"spinner", "progress", "pulse"},
+                "spinner",
+            ),
+            "powered_by_text": kwargs.get(
+                "powered_by_text", config.powered_by_text or ""
+            )[:200],
+            "powered_by_url": self._safe_url(
+                kwargs.get("powered_by_url", config.powered_by_url or "")
             ),
             "terms_url": self._safe_url(
                 kwargs.get("terms_url", config.terms_url or "")

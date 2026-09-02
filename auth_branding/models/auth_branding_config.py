@@ -75,6 +75,11 @@ class AuthBrandingConfig(models.Model):
         "page_title_reset",
         "social_button_style",
         "hide_social_labels",
+        "dark_mode",
+        "show_loading_animation",
+        "loading_animation_type",
+        "powered_by_text",
+        "powered_by_url",
         "terms_url",
         "privacy_url",
         "terms_label",
@@ -88,6 +93,8 @@ class AuthBrandingConfig(models.Model):
             ("centered", "Centered Card"),
             ("split", "Split Screen"),
             ("fullbleed", "Full Bleed Background"),
+            ("minimal", "Minimal"),
+            ("sidebar", "Sidebar"),
         ],
         string="Template",
         default="centered",
@@ -236,6 +243,33 @@ class AuthBrandingConfig(models.Model):
         required=True,
     )
     hide_social_labels = fields.Boolean(string="Hide Social Login Labels")
+    dark_mode = fields.Selection(
+        [
+            ("off", "Always Light"),
+            ("auto", "Follow Device"),
+            ("on", "Always Dark"),
+        ],
+        string="Dark Mode",
+        default="off",
+        required=True,
+    )
+    show_loading_animation = fields.Boolean(
+        string="Show Loading Animation", default=True
+    )
+    loading_animation_type = fields.Selection(
+        [
+            ("spinner", "Spinner"),
+            ("progress", "Progress Bar"),
+            ("pulse", "Logo Pulse"),
+        ],
+        string="Loading Style",
+        default="spinner",
+        required=True,
+    )
+    powered_by_text = fields.Char(string="Powered-by Text", default="Powered by Odoo")
+    powered_by_url = fields.Char(
+        string="Powered-by URL", default="https://www.odoo.com"
+    )
     terms_url = fields.Char(string="Terms of Service URL")
     privacy_url = fields.Char(string="Privacy Policy URL")
     terms_label = fields.Char(string="Terms Label", default="Terms of Service")
@@ -295,10 +329,10 @@ class AuthBrandingConfig(models.Model):
                     )
                 )
 
-    @api.constrains("terms_url", "privacy_url")
+    @api.constrains("terms_url", "privacy_url", "powered_by_url")
     def _check_url_format(self):
         for record in self:
-            for field_name in ("terms_url", "privacy_url"):
+            for field_name in ("terms_url", "privacy_url", "powered_by_url"):
                 value = record[field_name]
                 if not value:
                     continue
@@ -324,7 +358,7 @@ class AuthBrandingConfig(models.Model):
 
     def _get_safe_external_url(self, field_name):
         self.ensure_one()
-        if field_name not in {"terms_url", "privacy_url"}:
+        if field_name not in {"terms_url", "privacy_url", "powered_by_url"}:
             return False
         value = self[field_name]
         return value if value and self._is_safe_http_url(value) else False
@@ -377,6 +411,9 @@ class AuthBrandingConfig(models.Model):
                 else False,
                 "privacy_url": values.get("privacy_url")
                 if self._is_safe_http_url(values.get("privacy_url") or "")
+                else False,
+                "powered_by_url": values.get("powered_by_url")
+                if self._is_safe_http_url(values.get("powered_by_url") or "")
                 else False,
                 "is_preview": False,
             }

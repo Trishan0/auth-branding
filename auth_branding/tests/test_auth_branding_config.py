@@ -54,6 +54,15 @@ class TestAuthBrandingConfig(TransactionCase):
                 self.config.write({"terms_url": invalid_url})
         self.config.write({"terms_url": "https://example.com/terms"})
 
+        with self.assertRaises(ValidationError), self.env.cr.savepoint():
+            self.config.write({"powered_by_url": "javascript:alert(1)"})
+
+    def test_presentation_defaults(self):
+        self.assertEqual(self.config.dark_mode, "off")
+        self.assertTrue(self.config.show_loading_animation)
+        self.assertEqual(self.config.loading_animation_type, "spinner")
+        self.assertEqual(self.config.powered_by_text, "Powered by Odoo")
+
     def test_opacity_and_dimension_validation(self):
         with self.assertRaises(ValidationError), self.env.cr.savepoint():
             self.config.write({"background_overlay_opacity": 1.1})

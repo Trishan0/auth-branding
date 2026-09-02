@@ -33,6 +33,34 @@
                 </div>
             </div>
 
+            <div class="ab-template-card"
+                 t-att-class="{ 'active': selected === 'minimal' }"
+                 t-on-click="() => this.selectTemplate('minimal')">
+                <div class="ab-mockup-centered ab-mockup-minimal">
+                    <div class="ab-mockup-bg"></div>
+                    <div class="ab-mockup-form card bg-white"></div>
+                </div>
+                <div class="text-center mt-2 fw-bold small">Minimal</div>
+                <div class="ab-check" t-if="selected === 'minimal'">
+                    <i class="fa fa-check text-white"></i>
+                </div>
+            </div>
+
+            <div class="ab-template-card"
+                 t-att-class="{ 'active': selected === 'sidebar' }"
+                 t-on-click="() => this.selectTemplate('sidebar')">
+                <div class="ab-mockup-split ab-mockup-sidebar d-flex">
+                    <div class="ab-mockup-aside bg-secondary h-100"></div>
+                    <div class="ab-mockup-form-area h-100 d-flex align-items-center justify-content-center">
+                        <div class="ab-mockup-form card bg-white w-75 h-50"></div>
+                    </div>
+                </div>
+                <div class="text-center mt-2 fw-bold small">Sidebar</div>
+                <div class="ab-check" t-if="selected === 'sidebar'">
+                    <i class="fa fa-check text-white"></i>
+                </div>
+            </div>
+
             <div class="ab-template-card" 
                  t-att-class="{ 'active': selected === 'split' }"
                  t-on-click="() => this.selectTemplate('split')">

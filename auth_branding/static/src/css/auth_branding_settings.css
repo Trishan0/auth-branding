@@ -314,6 +314,21 @@
     z-index: 1;
 }
 
+.ab-mockup-minimal .ab-mockup-form {
+    width: 48px;
+    height: 42px;
+    border: 0;
+    box-shadow: none;
+}
+
+.ab-mockup-sidebar .ab-mockup-aside {
+    width: 32%;
+}
+
+.ab-mockup-sidebar .ab-mockup-form-area {
+    width: 68%;
+}
+
 .ab-mockup-fullbleed {
     display: flex;
     align-items: center;

@@ -25,6 +25,8 @@ const NUMBER_VARIABLES = {
     input_border_radius: ["--ab-input-radius", 0, 100, "px"],
     button_border_radius: ["--ab-btn-radius", 0, 100, "px"],
 };
+let loaderHideTimeout;
+let lastLoaderSignature;
 
 function safeNumber(value, minimum, maximum) {
     const parsed = Number(value);
@@ -66,6 +68,21 @@ function setExternalLink(name, value) {
     }
 }
 
+function updateLoaderPreview(visible) {
+    window.clearTimeout(loaderHideTimeout);
+    for (const loader of document.querySelectorAll(".ab-page-loader")) {
+        loader.classList.toggle("d-none", !visible);
+        loader.classList.toggle("is-hidden", !visible);
+    }
+    if (visible) {
+        loaderHideTimeout = window.setTimeout(() => {
+            for (const loader of document.querySelectorAll(".ab-page-loader")) {
+                loader.classList.add("is-hidden");
+            }
+        }, 650);
+    }
+}
+
 function updateBackground(values) {
     const type = ["solid", "gradient", "animated_gradient", "image"].includes(
         values.background_type
@@ -104,7 +121,8 @@ function updateBackground(values) {
     }
 
     const targets = document.querySelectorAll(
-        "body.ab-template-centered, body.ab-template-fullbleed, body.ab-template-split .ab-split-aside"
+        "body.ab-template-centered, body.ab-template-minimal, body.ab-template-fullbleed, " +
+            "body.ab-template-split .ab-split-aside, body.ab-template-sidebar .ab-split-aside"
     );
     for (const target of targets) {
         target.style.setProperty("background", background, "important");
@@ -146,11 +164,21 @@ function applyUpdate(values) {
         root.style.setProperty("--ab-font", FONT_MAP[values.font_family]);
     }
 
-    document.body.classList.toggle("ab-glass", values.glassmorphism === true);
-    document.body.classList.toggle(
-        "ab-split-right",
-        values.split_alignment === "right"
-    );
+    if (typeof values.glassmorphism === "boolean") {
+        document.body.classList.toggle("ab-glass", values.glassmorphism);
+    }
+    if (["left", "right"].includes(values.split_alignment)) {
+        document.body.classList.toggle(
+            "ab-split-right",
+            values.split_alignment === "right"
+        );
+    }
+    const darkModes = ["off", "auto", "on"];
+    if (darkModes.includes(values.dark_mode)) {
+        for (const mode of darkModes) {
+            document.body.classList.toggle(`ab-dark-${mode}`, values.dark_mode === mode);
+        }
+    }
     const socialStyles = ["rounded", "pill", "square", "icon"];
     if (socialStyles.includes(values.social_button_style)) {
         for (const style of socialStyles) {
@@ -166,6 +194,17 @@ function applyUpdate(values) {
             values.hide_social_labels
         );
     }
+    const loadingTypes = ["spinner", "progress", "pulse"];
+    if (loadingTypes.includes(values.loading_animation_type)) {
+        for (const loader of document.querySelectorAll(".ab-page-loader")) {
+            for (const type of loadingTypes) {
+                loader.classList.toggle(
+                    `ab-loading-${type}`,
+                    values.loading_animation_type === type
+                );
+            }
+        }
+    }
     updateBackground(values);
 
     for (const field of [
@@ -175,6 +214,7 @@ function applyUpdate(values) {
         "custom_footer_text",
         "terms_label",
         "privacy_label",
+        "powered_by_text",
     ]) {
         if (values[field] !== undefined) {
             setText(field, values[field]);
@@ -191,17 +231,27 @@ function applyUpdate(values) {
             block.classList.toggle("d-none", !hasVisibleContent);
         }
     }
+    if (values.terms_url !== undefined) {
+        setExternalLink("terms_url", values.terms_url);
+    }
+    if (values.privacy_url !== undefined) {
+        setExternalLink("privacy_url", values.privacy_url);
+    }
+    if (values.powered_by_url !== undefined) {
+        setExternalLink("powered_by_url", values.powered_by_url);
+    }
     if (typeof values.show_manage_databases === "boolean") {
         setVisibility("show_manage_databases", values.show_manage_databases);
     }
     if (typeof values.show_powered_by_odoo === "boolean") {
         setVisibility("show_powered_by_odoo", values.show_powered_by_odoo);
     }
-    if (values.terms_url !== undefined) {
-        setExternalLink("terms_url", values.terms_url);
-    }
-    if (values.privacy_url !== undefined) {
-        setExternalLink("privacy_url", values.privacy_url);
+    if (typeof values.show_loading_animation === "boolean") {
+        const loaderSignature = `${values.show_loading_animation}:${values.loading_animation_type}`;
+        if (loaderSignature !== lastLoaderSignature) {
+            lastLoaderSignature = loaderSignature;
+            updateLoaderPreview(values.show_loading_animation);
+        }
     }
 }
 
