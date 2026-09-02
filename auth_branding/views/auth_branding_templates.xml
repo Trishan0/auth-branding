@@ -6,9 +6,9 @@
             <t t-set="ab_preview" t-value="request.env.context.get('ab_preview_config')" />
             <t
                 t-set="ab"
-                t-value="ab_preview if ab_preview else request.env['auth.branding.config']._get_request_config(company_id=request.params.get('company_id'))"
+                t-value="ab_preview if ab_preview else request.env['auth.branding.config']._get_request_config(company_id=request.params.get('company_id'))._get_frontend_values()"
             />
-            <t t-set="ab_is_dict" t-value="bool(ab_preview)" />
+            <t t-set="ab_is_dict" t-value="True" />
             <t
                 t-set="ab_company_id"
                 t-value="ab.get('company_id') if ab_is_dict else ab.company_id.id"
@@ -34,8 +34,8 @@
             <!-- Custom Content Variables -->
             <t t-set="ab_welcome_title" t-value="ab.get('login_welcome_title') if ab_is_dict else ab.login_welcome_title" />
             <t t-set="ab_welcome_subtitle" t-value="ab.get('login_welcome_subtitle') if ab_is_dict else ab.login_welcome_subtitle" />
-            <t t-set="ab_terms_url" t-value="ab.get('terms_url') if ab_is_dict else ab._get_safe_external_url('terms_url')" />
-            <t t-set="ab_privacy_url" t-value="ab.get('privacy_url') if ab_is_dict else ab._get_safe_external_url('privacy_url')" />
+            <t t-set="ab_terms_url" t-value="ab.get('terms_url')" />
+            <t t-set="ab_privacy_url" t-value="ab.get('privacy_url')" />
             <t t-set="ab_terms_label" t-value="ab.get('terms_label') if ab_is_dict else ab.terms_label" />
             <t t-set="ab_privacy_label" t-value="ab.get('privacy_label') if ab_is_dict else ab.privacy_label" />
             <t t-set="ab_custom_footer_text" t-value="ab.get('custom_footer_text') if ab_is_dict else ab.custom_footer_text" />

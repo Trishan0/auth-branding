@@ -20,6 +20,7 @@ backgrounds, logos, typography, and a live backend preview.
         "security/ir.model.access.csv",
         "data/auth_branding_preset_data.xml",
         "wizard/auth_branding_wizard_views.xml",
+        "views/auth_branding_version_views.xml",
         "views/auth_branding_settings_views.xml",
         "views/res_config_settings_views.xml",
         "views/auth_branding_templates.xml",

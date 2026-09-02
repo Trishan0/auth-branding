@@ -41,6 +41,7 @@ class TestAuthBrandingController(HttpCase):
             ._get_or_create_config(self.env.company.id)
         )
         current_config.primary_color = "#445566"
+        current_config.action_publish()
 
         response = self.url_open(
             f"/auth_branding/theme.css?company_id={other_company.id}"
@@ -48,6 +49,20 @@ class TestAuthBrandingController(HttpCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("#445566", response.text)
         self.assertNotIn("#010203", response.text)
+
+    def test_theme_route_uses_published_version_not_draft(self):
+        config = (
+            self.env["auth.branding.config"]
+            .sudo()
+            ._get_or_create_config(self.env.company.id)
+        )
+        config.primary_color = "#112233"
+        config.with_user(self.env.user).action_publish()
+        config.primary_color = "#445566"
+
+        response = self.url_open("/auth_branding/theme.css")
+        self.assertIn("#112233", response.text)
+        self.assertNotIn("#445566", response.text)
 
     def test_preview_css_parameters_are_sanitized(self):
         self.authenticate("admin", "admin")

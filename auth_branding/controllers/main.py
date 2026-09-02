@@ -329,7 +329,7 @@ body.ab-template-split .ab-split-aside {{
         if modified.tzinfo is None:
             modified = modified.replace(tzinfo=timezone.utc)
         modified = modified.replace(microsecond=0)
-        identity = f"{config.id}:{config.write_date}:{variant}".encode()
+        identity = f"{config._name}:{config.id}:{config.write_date}:{variant}".encode()
         etag = hashlib.sha256(identity).hexdigest()
         return etag, modified, [
             ("ETag", f'"{etag}"'),
@@ -380,12 +380,15 @@ body.ab-template-split .ab-split-aside {{
     )
     def theme_css(self, **kwargs):
         config = self._get_config(kwargs.get("company_id"))
-        etag, modified, headers = self._cache_headers(config, "theme.css")
+        published_resource = config._get_published_resource()
+        etag, modified, headers = self._cache_headers(
+            published_resource, "theme.css"
+        )
         headers.append(("Content-Type", "text/css; charset=utf-8"))
         if self._is_not_modified(etag, modified):
             return request.make_response("", headers=headers, status=304)
         return request.make_response(
-            self._build_theme_css(config), headers=headers
+            self._build_theme_css(config._get_frontend_values()), headers=headers
         )
 
     @http.route(
@@ -399,10 +402,11 @@ body.ab-template-split .ab-split-aside {{
             return request.not_found()
 
         config = self._get_config(kwargs.get("company_id"))
-        if not config[field]:
+        published_resource = config._get_published_resource()
+        if not published_resource[field]:
             return request.not_found()
 
-        etag, modified, headers = self._cache_headers(config, field)
+        etag, modified, headers = self._cache_headers(published_resource, field)
         headers.extend(
             [
                 ("Content-Security-Policy", "default-src 'none'; sandbox"),
@@ -413,7 +417,7 @@ body.ab-template-split .ab-split-aside {{
             return request.make_response("", headers=headers, status=304)
 
         response = request.env["ir.binary"]._get_stream_from(
-            config, field
+            published_resource, field
         ).get_response()
         for header, value in headers:
             response.headers[header] = value

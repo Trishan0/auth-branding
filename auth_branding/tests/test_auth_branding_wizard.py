@@ -40,6 +40,7 @@ class TestAuthBrandingWizard(TransactionCase):
         self.assertEqual(config.tagline, "A guided welcome")
         self.assertEqual(config.template, "split")
         self.assertEqual(config.primary_color, wizard.primary_color)
+        self.assertTrue(config.active_version_id)
 
     def test_open_wizard_carries_current_configuration(self):
         config = self.env["auth.branding.config"]._get_or_create_config()

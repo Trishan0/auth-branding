@@ -6,8 +6,11 @@
         <field name="arch" type="xml">
             <form string="Authentication Branding" class="o_auth_branding_form">
                 <header>
-                    <button name="action_save" string="Save" type="object" class="oe_highlight" />
+                    <button name="action_save" string="Save Draft" type="object" />
+                    <button name="action_publish" string="Publish" type="object" class="oe_highlight" />
+                    <button name="action_discard_draft" string="Discard Draft" type="object" invisible="not active_version_id or not has_unpublished_changes" confirm="Discard the current draft and restore the published version?" />
                     <button name="action_open_setup_wizard" string="Quick Setup" type="object" icon="fa-magic" />
+                    <button name="action_open_version_history" string="Version History" type="object" icon="fa-history" invisible="not version_ids" />
                     <button
                         name="action_reset_defaults"
                         string="Reset to Defaults"
@@ -15,6 +18,9 @@
                         confirm="Reset all branding options for this company to their defaults?"
                     />
                     <field name="company_id" invisible="1" />
+                    <field name="active_version_id" invisible="1" />
+                    <field name="version_ids" invisible="1" />
+                    <field name="has_unpublished_changes" invisible="1" />
                 </header>
                 <sheet>
                     <div class="o_auth_branding_header d-flex align-items-center mb-3">
@@ -25,6 +31,15 @@
                                 <field name="company_id" readonly="1" options="{'no_open': True}" class="d-inline-block" />
                             </p>
                         </div>
+                    </div>
+                    <div class="alert alert-warning d-flex align-items-center py-2" invisible="not has_unpublished_changes">
+                        <i class="fa fa-pencil me-2" />
+                        <span>This is a draft. Publish when you are ready to update the live authentication pages.</span>
+                    </div>
+                    <div class="alert alert-success d-flex align-items-center py-2" invisible="has_unpublished_changes or not active_version_id">
+                        <i class="fa fa-check-circle me-2" />
+                        <span>Published and up to date.</span>
+                        <field name="published_at" class="ms-auto" readonly="1" />
                     </div>
                     <div class="row g-4 o_auth_branding_workspace">
                         <div class="col-xl-5 col-lg-6 o_auth_branding_editor">

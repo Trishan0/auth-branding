@@ -153,12 +153,13 @@ class AuthBrandingWizard(models.TransientModel):
         }
         values.update({"company_logo": self.company_logo, "tagline": self.tagline})
         self.config_id.write(values)
+        self.config_id.action_publish()
         return {
             "type": "ir.actions.client",
             "tag": "display_notification",
             "params": {
-                "title": _("Branding applied"),
-                "message": _("Your authentication branding has been updated."),
+                "title": _("Branding published"),
+                "message": _("Your authentication branding is now live."),
                 "type": "success",
                 "next": {"type": "ir.actions.act_window_close"},
             },

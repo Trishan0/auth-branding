@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="auth_branding_version_view_list" model="ir.ui.view">
+        <field name="name">auth.branding.version.view.list</field>
+        <field name="model">auth.branding.version</field>
+        <field name="arch" type="xml">
+            <list string="Published Branding Versions" create="0" edit="0">
+                <field name="name" />
+                <field name="published_at" />
+                <field name="published_by" />
+                <field name="is_active" />
+                <button name="action_restore" string="Restore" type="object" icon="fa-history" invisible="is_active" />
+            </list>
+        </field>
+    </record>
+
+    <record id="auth_branding_version_view_form" model="ir.ui.view">
+        <field name="name">auth.branding.version.view.form</field>
+        <field name="model">auth.branding.version</field>
+        <field name="arch" type="xml">
+            <form string="Published Branding Version" create="0" edit="0">
+                <header>
+                    <button name="action_restore" string="Restore and Publish" type="object" class="btn-primary" invisible="is_active" />
+                    <field name="is_active" readonly="1" />
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" /></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="config_id" />
+                            <field name="company_id" />
+                        </group>
+                        <group>
+                            <field name="published_at" />
+                            <field name="published_by" />
+                        </group>
+                    </group>
+                    <group string="Archived Assets">
+                        <field name="company_logo" widget="image" />
+                        <field name="favicon" widget="image" />
+                        <field name="background_image" widget="image" />
+                    </group>
+                    <group string="Technical Snapshot" groups="base.group_no_one">
+                        <field name="settings_snapshot" widget="json" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_auth_branding_version" model="ir.actions.act_window">
+        <field name="name">Published Branding Versions</field>
+        <field name="res_model">auth.branding.version</field>
+        <field name="view_mode">list,form</field>
+        <field name="target">current</field>
+    </record>
+</odoo>

@@ -71,6 +71,8 @@ class AuthBrandingConfig(models.Model):
         "terms_label",
         "privacy_label",
     )
+    BINARY_FIELDS = ("company_logo", "favicon", "background_image")
+    VERSIONED_FIELDS = RESETTABLE_FIELDS
 
     template = fields.Selection(
         [
@@ -204,6 +206,34 @@ class AuthBrandingConfig(models.Model):
         index=True,
         ondelete="cascade",
     )
+    active_version_id = fields.Many2one(
+        "auth.branding.version",
+        string="Published Version",
+        copy=False,
+        readonly=True,
+        ondelete="set null",
+    )
+    version_ids = fields.One2many(
+        "auth.branding.version", "config_id", string="Published Versions", readonly=True
+    )
+    published_at = fields.Datetime(
+        related="active_version_id.published_at", string="Last Published", readonly=True
+    )
+    has_unpublished_changes = fields.Boolean(
+        compute="_compute_has_unpublished_changes", string="Unpublished Changes"
+    )
+
+    @api.depends(*VERSIONED_FIELDS, "active_version_id", "active_version_id.settings_snapshot")
+    def _compute_has_unpublished_changes(self):
+        for config in self:
+            if not config.active_version_id:
+                config.has_unpublished_changes = True
+                continue
+            version_values = config._get_version_values(config.active_version_id)
+            config.has_unpublished_changes = any(
+                config[field_name] != version_values[field_name]
+                for field_name in self.VERSIONED_FIELDS
+            )
 
     @api.constrains(*COLOR_FIELDS)
     def _check_color_format(self):
@@ -255,6 +285,60 @@ class AuthBrandingConfig(models.Model):
             return False
         value = self[field_name]
         return value if value and self._is_safe_http_url(value) else False
+
+    def _get_snapshot_values(self):
+        self.ensure_one()
+        return {
+            field_name: self[field_name]
+            for field_name in self.VERSIONED_FIELDS
+            if field_name not in self.BINARY_FIELDS
+        }
+
+    def _get_version_values(self, version):
+        self.ensure_one()
+        snapshot_fields = [
+            field_name
+            for field_name in self.VERSIONED_FIELDS
+            if field_name not in self.BINARY_FIELDS
+        ]
+        defaults = self.default_get(snapshot_fields)
+        values = {
+            field_name: version.settings_snapshot.get(
+                field_name, defaults.get(field_name, False)
+            )
+            for field_name in snapshot_fields
+        }
+        values.update(
+            {field_name: version[field_name] for field_name in self.BINARY_FIELDS}
+        )
+        return values
+
+    def _get_published_resource(self):
+        self.ensure_one()
+        return self.active_version_id or self
+
+    def _get_frontend_values(self):
+        self.ensure_one()
+        if self.active_version_id:
+            values = self._get_version_values(self.active_version_id)
+        else:
+            values = {field_name: self[field_name] for field_name in self.VERSIONED_FIELDS}
+        values.update(
+            {
+                "company_id": self.company_id.id,
+                "company_logo": bool(values.get("company_logo")),
+                "favicon": bool(values.get("favicon")),
+                "background_image": bool(values.get("background_image")),
+                "terms_url": values.get("terms_url")
+                if self._is_safe_http_url(values.get("terms_url") or "")
+                else False,
+                "privacy_url": values.get("privacy_url")
+                if self._is_safe_http_url(values.get("privacy_url") or "")
+                else False,
+                "is_preview": False,
+            }
+        )
+        return values
 
     @api.constrains("background_overlay_opacity", "glassmorphism_opacity")
     def _check_opacity_range(self):
@@ -311,7 +395,16 @@ class AuthBrandingConfig(models.Model):
         config = self.search([("company_id", "=", company.id)], limit=1)
         if not config:
             config = self.create({"company_id": company.id})
+        elif not config.active_version_id:
+            config.active_version_id = config._create_published_version()
         return config
+
+    @api.model_create_multi
+    def create(self, values_list):
+        configs = super().create(values_list)
+        for config in configs:
+            config.active_version_id = config._create_published_version()
+        return configs
 
     @api.model
     def _get_request_config(self, company_id=False):
@@ -379,5 +472,68 @@ class AuthBrandingConfig(models.Model):
         action["context"] = {**self.env.context, **defaults}
         return action
 
-    def action_save(self):
+    def _create_published_version(self):
+        self.ensure_one()
+        published_at = fields.Datetime.now()
+        return self.env["auth.branding.version"].sudo().create(
+            {
+                "name": _(
+                    "%(company)s — %(date)s",
+                    company=self.company_id.display_name,
+                    date=fields.Datetime.to_string(published_at),
+                ),
+                "config_id": self.id,
+                "settings_snapshot": self._get_snapshot_values(),
+                "company_logo": self.company_logo,
+                "favicon": self.favicon,
+                "background_image": self.background_image,
+                "published_at": published_at,
+                "published_by": self.env.user.id,
+            }
+        )
+
+    def action_publish(self):
+        self.ensure_one()
+        self.active_version_id = self._create_published_version()
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Branding published"),
+                "message": _("The new authentication experience is now live."),
+                "type": "success",
+                "next": {"type": "ir.actions.client", "tag": "reload"},
+            },
+        }
+
+    def _restore_version(self, version):
+        self.ensure_one()
+        if version.config_id != self:
+            raise UserError(_("This version belongs to another configuration."))
+        self.write(self._get_version_values(version))
+
+    def action_discard_draft(self):
+        self.ensure_one()
+        if self.active_version_id:
+            self._restore_version(self.active_version_id)
         return {"type": "ir.actions.client", "tag": "reload"}
+
+    def action_open_version_history(self):
+        self.ensure_one()
+        action = self.env["ir.actions.actions"]._for_xml_id(
+            "auth_branding.action_auth_branding_version"
+        )
+        action["domain"] = [("config_id", "=", self.id)]
+        action["context"] = {"default_config_id": self.id, "create": False}
+        return action
+
+    def action_save(self):
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Draft saved"),
+                "message": _("Your changes are saved but are not published yet."),
+                "type": "info",
+            },
+        }
