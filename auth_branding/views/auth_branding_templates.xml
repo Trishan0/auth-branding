@@ -43,6 +43,7 @@
             <!-- Inject Dynamic CSS or Link -->
             <style t-if="ab_is_preview" t-out="ab.get('inline_style', '')" />
             <link t-else="" rel="stylesheet" t-attf-href="/auth_branding/theme.css?company_id={{ab_company_id}}" />
+            <span t-if="ab_is_preview" data-auth-branding-preview="1" class="d-none" />
 
             <!-- Background Overlay (for fullbleed templates and images) -->
             <div
@@ -67,7 +68,11 @@
                             class="ab-logo"
                         />
                     </t>
-                    <h2 t-if="ab_tagline" class="ab-tagline mt-4 h4"><t t-out="ab_tagline" /></h2>
+                    <h2
+                        t-if="ab_tagline or ab_is_preview"
+                        t-attf-class="ab-tagline mt-4 h4 #{'d-none' if not ab_tagline else ''}"
+                        data-ab-text="tagline"
+                    ><t t-out="ab_tagline" /></h2>
                 </div>
             </div>
         </xpath>
@@ -89,32 +94,74 @@
                         class="ab-logo"
                     />
                 </t>
-                <p t-if="ab_tagline" class="ab-tagline mt-2 text-muted mb-0"><t t-out="ab_tagline" /></p>
+                <p
+                    t-if="ab_tagline or ab_is_preview"
+                    t-attf-class="ab-tagline mt-2 text-muted mb-0 #{'d-none' if not ab_tagline else ''}"
+                    data-ab-text="tagline"
+                ><t t-out="ab_tagline" /></p>
             </div>
         </xpath>
 
         <!-- Inject welcome title/subtitle above the login form (before the t-out="0" slot) -->
         <xpath expr="//t[@t-out='0']" position="before">
-            <div t-if="ab_welcome_title or ab_welcome_subtitle" class="ab-welcome-block text-center mb-3">
-                <h4 t-if="ab_welcome_title" class="ab-welcome-title mb-1 fw-semibold"><t t-out="ab_welcome_title" /></h4>
-                <p t-if="ab_welcome_subtitle" class="ab-welcome-subtitle small text-muted mb-0"><t t-out="ab_welcome_subtitle" /></p>
+            <div t-if="ab_welcome_title or ab_welcome_subtitle or ab_is_preview" class="ab-welcome-block text-center mb-3">
+                <h4
+                    t-if="ab_welcome_title or ab_is_preview"
+                    t-attf-class="ab-welcome-title mb-1 fw-semibold #{'d-none' if not ab_welcome_title else ''}"
+                    data-ab-text="login_welcome_title"
+                ><t t-out="ab_welcome_title" /></h4>
+                <p
+                    t-if="ab_welcome_subtitle or ab_is_preview"
+                    t-attf-class="ab-welcome-subtitle small text-muted mb-0 #{'d-none' if not ab_welcome_subtitle else ''}"
+                    data-ab-text="login_welcome_subtitle"
+                ><t t-out="ab_welcome_subtitle" /></p>
             </div>
         </xpath>
 
         <!-- Replace default footer with enhanced version -->
         <xpath expr="//div[hasclass('text-center', 'small', 'mt-4', 'pt-3', 'border-top')]" position="replace">
             <div t-if="not disable_footer" class="text-center small mt-4 pt-3 border-top">
-                <div t-if="(not disable_database_manager and ab_show_manage_databases) or ab_show_powered_by_odoo" class="mb-1">
-                    <t t-if="not disable_database_manager and ab_show_manage_databases">
-                        <a t-attf-class="#{ab_show_powered_by_odoo and 'border-end pe-2 me-1' or ''}" href="/web/database/manager">Manage Databases</a>
-                    </t>
-                    <a t-if="ab_show_powered_by_odoo" href="https://www.odoo.com?utm_source=db&amp;utm_medium=auth" target="_blank" rel="noopener noreferrer">Powered by <span>Odoo</span></a>
+                <div t-if="(not disable_database_manager and ab_show_manage_databases) or ab_show_powered_by_odoo or ab_is_preview" class="mb-1">
+                    <a
+                        t-if="not disable_database_manager and (ab_show_manage_databases or ab_is_preview)"
+                        t-attf-class="#{ab_show_powered_by_odoo and 'border-end pe-2 me-1' or ''} #{'d-none' if not ab_show_manage_databases else ''}"
+                        data-ab-visible="show_manage_databases"
+                        href="/web/database/manager"
+                    >Manage Databases</a>
+                    <a
+                        t-if="ab_show_powered_by_odoo or ab_is_preview"
+                        t-attf-class="#{'d-none' if not ab_show_powered_by_odoo else ''}"
+                        data-ab-visible="show_powered_by_odoo"
+                        href="https://www.odoo.com?utm_source=db&amp;utm_medium=auth"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >Powered by <span>Odoo</span></a>
                 </div>
-                <div t-if="ab_terms_url or ab_privacy_url" class="mt-1">
-                    <a t-if="ab_terms_url" t-att-href="ab_terms_url" target="_blank" rel="noopener noreferrer" class="text-muted me-2"><t t-out="ab_terms_label or 'Terms of Service'" /></a>
-                    <a t-if="ab_privacy_url" t-att-href="ab_privacy_url" target="_blank" rel="noopener noreferrer" class="text-muted"><t t-out="ab_privacy_label or 'Privacy Policy'" /></a>
+                <div t-if="ab_terms_url or ab_privacy_url or ab_is_preview" class="mt-1">
+                    <a
+                        t-if="ab_terms_url or ab_is_preview"
+                        t-att-href="ab_terms_url or '#'"
+                        t-attf-class="text-muted me-2 #{'d-none' if not ab_terms_url else ''}"
+                        data-ab-link="terms_url"
+                        data-ab-text="terms_label"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    ><t t-out="ab_terms_label or 'Terms of Service'" /></a>
+                    <a
+                        t-if="ab_privacy_url or ab_is_preview"
+                        t-att-href="ab_privacy_url or '#'"
+                        t-attf-class="text-muted #{'d-none' if not ab_privacy_url else ''}"
+                        data-ab-link="privacy_url"
+                        data-ab-text="privacy_label"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    ><t t-out="ab_privacy_label or 'Privacy Policy'" /></a>
                 </div>
-                <p t-if="ab_custom_footer_text" class="text-muted mt-1 mb-0"><t t-out="ab_custom_footer_text" /></p>
+                <p
+                    t-if="ab_custom_footer_text or ab_is_preview"
+                    t-attf-class="text-muted mt-1 mb-0 #{'d-none' if not ab_custom_footer_text else ''}"
+                    data-ab-text="custom_footer_text"
+                ><t t-out="ab_custom_footer_text" /></p>
             </div>
         </xpath>
     </template>

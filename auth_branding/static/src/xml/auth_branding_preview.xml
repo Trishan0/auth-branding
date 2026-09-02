@@ -89,7 +89,8 @@
             </div>
 
             <div class="ab-preview-status d-flex align-items-center mb-2 small text-muted">
-                <span><i class="fa fa-circle text-success me-1"/>Live preview</span>
+                <span t-if="state.ready"><i class="fa fa-circle text-success me-1"/>Live preview</span>
+                <span t-else=""><i class="fa fa-spin fa-spinner me-1"/>Refreshing preview</span>
                 <span class="ms-auto text-capitalize"><t t-out="state.device"/></span>
             </div>
             <div class="ab-preview-shell rounded-3">
@@ -97,7 +98,13 @@
                     <div class="ab-preview-loading" t-if="!state.iframeSrc">
                         <i class="fa fa-spin fa-spinner me-2"/>Preparing preview…
                     </div>
-                <iframe t-att-src="state.iframeSrc" class="ab-preview-iframe" frameborder="0"></iframe>
+                <iframe
+                    t-ref="previewFrame"
+                    t-att-src="state.iframeSrc"
+                    t-on-load="onIframeLoad"
+                    class="ab-preview-iframe"
+                    frameborder="0"
+                ></iframe>
                 </div>
             </div>
         </div>

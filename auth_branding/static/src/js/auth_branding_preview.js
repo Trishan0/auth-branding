@@ -1,7 +1,7 @@
 /** @odoo-module **/
 
 import { registry } from "@web/core/registry";
-import { Component, useState, useEffect } from "@odoo/owl";
+import { Component, onWillUnmount, useEffect, useRef, useState } from "@odoo/owl";
 import { standardFieldProps } from "@web/views/fields/standard_field_props";
 
 // 1. Color Field Component
@@ -61,6 +61,23 @@ registry.category("fields").add("auth_branding_template_picker", {
 });
 
 
+const PREVIEW_FIELDS = [
+    "company_id", "template", "tagline", "primary_color", "secondary_color",
+    "background_type", "background_color", "gradient_start", "gradient_end",
+    "gradient_direction", "background_overlay_opacity", "font_family", "text_color",
+    "input_border_radius", "button_border_radius", "button_color", "button_text_color",
+    "show_manage_databases", "show_powered_by_odoo", "split_alignment",
+    "card_background_color", "glassmorphism", "glassmorphism_blur",
+    "glassmorphism_opacity", "custom_footer_text", "login_welcome_title",
+    "login_welcome_subtitle", "terms_url", "privacy_url", "terms_label", "privacy_label",
+];
+const BOOLEAN_FIELDS = new Set([
+    "show_manage_databases",
+    "show_powered_by_odoo",
+    "glassmorphism",
+]);
+
+
 // 3. Preview Widget
 export class AuthBrandingPreview extends Component {
     static template = "auth_branding.PreviewWidget";
@@ -71,89 +88,87 @@ export class AuthBrandingPreview extends Component {
             page: "login",
             device: "desktop",
             iframeSrc: "",
+            ready: false,
         });
-        
-        this.debounceTimeout = null;
+        this.previewFrame = useRef("previewFrame");
+        this.reloadTimeout = null;
 
         useEffect(() => {
             const data = this.props.record.data;
-            const params = new URLSearchParams();
-            params.append('page', this.state.page);
-            
-            const fieldsToWatch = [
-                'company_id', 'template', 'tagline', 'primary_color', 'secondary_color',
-                'background_type', 'background_color', 'gradient_start', 
-                'gradient_end', 'gradient_direction', 'background_overlay_opacity',
-                'font_family', 'text_color', 'input_border_radius', 
-                'button_border_radius', 'button_color', 'button_text_color',
-                'show_manage_databases', 'show_powered_by_odoo',
-                'split_alignment', 'card_background_color', 'glassmorphism', 'glassmorphism_blur', 'glassmorphism_opacity',
-                'custom_footer_text', 'login_welcome_title', 'login_welcome_subtitle',
-                'terms_url', 'privacy_url', 'terms_label', 'privacy_label',
-            ];
-            
-            // Boolean fields need special handling — send 'true'/'false' as strings
-            const boolFields = new Set(['show_manage_databases', 'show_powered_by_odoo', 'glassmorphism']);
-            for (const f of fieldsToWatch) {
-                let val = data[f];
-                // Extract ID from Many2one (which can be [id, name] or an object {id: 123, ...})
-                if (Array.isArray(val)) {
-                    val = val[0];
-                } else if (val && typeof val === 'object' && val.id) {
-                    val = val.id;
-                }
-
-                if (boolFields.has(f) && val !== undefined) {
-                    params.append(f, val ? 'true' : 'false');
-                } else if (val !== undefined && val !== false && val !== '') {
-                    params.append(f, val);
-                }
-            }
-
-            const newSrc = `/auth_branding/preview?${params.toString()}`;
-            
-            clearTimeout(this.debounceTimeout);
-            this.debounceTimeout = setTimeout(() => {
+            const newSrc = this.buildPreviewUrl(data);
+            this.state.ready = false;
+            clearTimeout(this.reloadTimeout);
+            this.reloadTimeout = setTimeout(() => {
                 this.state.iframeSrc = newSrc;
-            }, 200);
-
+            }, 120);
         }, () => {
             const data = this.props.record.data;
             return [
                 this.state.page,
-                data.company_id,
+                this.extractValue(data.company_id),
                 data.template,
-                data.tagline,
-                data.primary_color,
-                data.secondary_color,
-                data.background_type,
-                data.background_color,
-                data.gradient_start,
-                data.gradient_end,
-                data.gradient_direction,
-                data.background_overlay_opacity,
-                data.font_family,
-                data.text_color,
-                data.input_border_radius,
-                data.button_border_radius,
-                data.button_color,
-                data.button_text_color,
-                data.show_manage_databases,
-                data.show_powered_by_odoo,
-                data.split_alignment,
-                data.card_background_color,
-                data.glassmorphism,
-                data.glassmorphism_blur,
-                data.glassmorphism_opacity,
-                data.custom_footer_text,
-                data.login_welcome_title,
-                data.login_welcome_subtitle,
-                data.terms_url,
-                data.privacy_url,
-                data.terms_label,
-                data.privacy_label,
             ];
         });
+
+        useEffect(() => {
+            this.sendPreviewUpdate();
+        }, () => [
+            this.state.iframeSrc,
+            ...PREVIEW_FIELDS.map((fieldName) =>
+                this.extractValue(this.props.record.data[fieldName])
+            ),
+        ]);
+
+        onWillUnmount(() => clearTimeout(this.reloadTimeout));
+    }
+
+    extractValue(value) {
+        if (Array.isArray(value)) {
+            return value[0];
+        }
+        if (value && typeof value === "object" && value.id) {
+            return value.id;
+        }
+        return value;
+    }
+
+    getPreviewValues() {
+        const data = this.props.record.data;
+        return Object.fromEntries(
+            PREVIEW_FIELDS.map((fieldName) => [
+                fieldName,
+                this.extractValue(data[fieldName]),
+            ])
+        );
+    }
+
+    buildPreviewUrl(data) {
+        const params = new URLSearchParams({ page: this.state.page });
+        for (const fieldName of PREVIEW_FIELDS) {
+            const value = this.extractValue(data[fieldName]);
+            if (BOOLEAN_FIELDS.has(fieldName) && value !== undefined) {
+                params.append(fieldName, value ? "true" : "false");
+            } else if (value !== undefined && value !== false && value !== "") {
+                params.append(fieldName, value);
+            }
+        }
+        return `/auth_branding/preview?${params.toString()}`;
+    }
+
+    sendPreviewUpdate() {
+        const frameWindow = this.previewFrame.el?.contentWindow;
+        if (!frameWindow) {
+            return;
+        }
+        frameWindow.postMessage(
+            { type: "auth_branding:update", values: this.getPreviewValues() },
+            window.location.origin
+        );
+    }
+
+    onIframeLoad() {
+        this.state.ready = true;
+        this.sendPreviewUpdate();
     }
 
     setPage(page) {

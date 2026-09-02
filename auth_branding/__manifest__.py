@@ -34,6 +34,7 @@ backgrounds, logos, typography, and a live backend preview.
         ],
         "web.assets_frontend": [
             "auth_branding/static/src/css/auth_branding_frontend.css",
+            "auth_branding/static/src/js/auth_branding_preview_receiver.js",
         ],
     },
     "images": [
