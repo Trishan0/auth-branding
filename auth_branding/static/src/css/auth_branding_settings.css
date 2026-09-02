@@ -213,6 +213,27 @@
     margin-top: 3px;
 }
 
+/* Quick setup wizard */
+.modal-dialog:has(.o_auth_branding_wizard) {
+    max-width: min(1180px, 94vw);
+}
+
+.o_auth_branding_wizard .ab-wizard-progress .o_field_statusbar {
+    justify-content: center;
+}
+
+.o_auth_branding_wizard .ab-preview-widget {
+    padding-inline-start: 16px;
+}
+
+.o_auth_branding_wizard .ab-preview-container.ab-device-desktop {
+    --ab-preview-scale: 0.38;
+}
+
+.o_auth_branding_wizard .ab-preview-container.ab-device-tablet {
+    --ab-preview-scale: 0.4;
+}
+
 /* Template Picker Styling */
 .ab-template-picker {
     display: flex;

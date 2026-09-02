@@ -20,12 +20,18 @@ export class AuthBrandingColorField extends Component {
     }
 
     onColorInput(ev) {
+        if (this.props.readonly) {
+            return;
+        }
         const val = ev.target.value;
         this.state.color = val;
         this.props.record.update({ [this.props.name]: val });
     }
 
     onTextInput(ev) {
+        if (this.props.readonly) {
+            return;
+        }
         const val = ev.target.value;
         this.state.color = val;
         if (/^#[0-9A-F]{6}$/i.test(val)) {
@@ -97,7 +103,7 @@ export class AuthBrandingPreview extends Component {
                     val = val.id;
                 }
 
-                if (boolFields.has(f)) {
+                if (boolFields.has(f) && val !== undefined) {
                     params.append(f, val ? 'true' : 'false');
                 } else if (val !== undefined && val !== false && val !== '') {
                     params.append(f, val);

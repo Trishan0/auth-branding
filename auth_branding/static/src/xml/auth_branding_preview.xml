@@ -6,9 +6,11 @@
         <div class="d-flex align-items-center ab-color-field">
             <input type="color" class="form-control form-control-sm form-control-color me-2 p-1" 
                    t-att-value="color" 
+                   t-att-disabled="props.readonly"
                    t-on-input="onColorInput" />
             <input type="text" class="form-control form-control-sm w-auto" 
                    t-att-value="state.color" 
+                   t-att-disabled="props.readonly"
                    t-on-input="onTextInput" 
                    maxlength="7" 
                    placeholder="#000000" />

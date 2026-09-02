@@ -358,5 +358,26 @@ class AuthBrandingConfig(models.Model):
         )
         return {"type": "ir.actions.client", "tag": "reload"}
 
+    def action_open_setup_wizard(self):
+        self.ensure_one()
+        wizard_fields = self.env["auth.branding.wizard"]._fields
+        defaults = {
+            f"default_{field_name}": self[field_name]
+            for field_name in self.env["auth.branding.preset"].CONFIG_FIELDS
+            if field_name in wizard_fields
+        }
+        defaults.update(
+            {
+                "default_config_id": self.id,
+                "default_company_logo": self.company_logo,
+                "default_tagline": self.tagline,
+            }
+        )
+        action = self.env["ir.actions.actions"]._for_xml_id(
+            "auth_branding.action_auth_branding_wizard"
+        )
+        action["context"] = {**self.env.context, **defaults}
+        return action
+
     def action_save(self):
         return {"type": "ir.actions.client", "tag": "reload"}

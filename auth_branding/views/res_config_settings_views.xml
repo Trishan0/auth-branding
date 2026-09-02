@@ -17,6 +17,13 @@
                                 class="btn-link"
                                 icon="oi-arrow-right"
                             />
+                            <button
+                                name="%(auth_branding.action_auth_branding_wizard_server)d"
+                                type="action"
+                                string="Quick Setup Wizard"
+                                class="btn-link ms-3"
+                                icon="fa-magic"
+                            />
                         </div>
                     </setting>
                 </block>

@@ -7,6 +7,7 @@
             <form string="Authentication Branding" class="o_auth_branding_form">
                 <header>
                     <button name="action_save" string="Save" type="object" class="oe_highlight" />
+                    <button name="action_open_setup_wizard" string="Quick Setup" type="object" icon="fa-magic" />
                     <button
                         name="action_reset_defaults"
                         string="Reset to Defaults"

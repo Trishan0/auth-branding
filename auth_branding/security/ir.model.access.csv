@@ -4,3 +4,4 @@ access_auth_branding_config_user,auth.branding.config.user,model_auth_branding_c
 access_auth_branding_config_public,auth.branding.config.public,model_auth_branding_config,base.group_public,1,0,0,0
 access_auth_branding_preset_manager,auth.branding.preset.manager,model_auth_branding_preset,auth_branding.group_auth_branding_manager,1,1,1,1
 access_auth_branding_preset_user,auth.branding.preset.user,model_auth_branding_preset,base.group_user,1,0,0,0
+access_auth_branding_wizard_manager,auth.branding.wizard.manager,model_auth_branding_wizard,auth_branding.group_auth_branding_manager,1,1,1,1
