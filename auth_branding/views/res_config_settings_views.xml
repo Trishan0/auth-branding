@@ -8,6 +8,7 @@
             <xpath expr="//div[@id='companies']" position="after">
                 <block title="Authentication Branding" id="auth_branding">
                     <setting help="Customize your login, signup and password reset pages">
+                        <field name="auth_branding_config_id" invisible="1" />
                         <div class="content-group">
                             <button
                                 name="%(auth_branding.action_auth_branding_config_server)d"

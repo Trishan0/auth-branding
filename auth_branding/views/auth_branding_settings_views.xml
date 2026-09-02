@@ -7,6 +7,12 @@
             <form string="Authentication Branding" class="o_auth_branding_form">
                 <header>
                     <button name="action_save" string="Save" type="object" class="oe_highlight" />
+                    <button
+                        name="action_reset_defaults"
+                        string="Reset to Defaults"
+                        type="object"
+                        confirm="Reset all branding options for this company to their defaults?"
+                    />
                     <field name="company_id" invisible="1" />
                 </header>
                 <sheet>
@@ -87,10 +93,6 @@
                                 <field name="privacy_url" placeholder="https://yoursite.com/privacy" />
                                 <field name="privacy_label" />
                             </group>
-                            <group string="Security &amp; Auth">
-                                <field name="auth_signup_uninvited" widget="radio" options="{'horizontal': true}" />
-                                <field name="auth_signup_reset_password" widget="boolean_toggle" />
-                            </group>
                         </div>
                         <div class="col-md-7">
                             <widget name="auth_branding_preview" />
@@ -107,7 +109,7 @@
         <field name="model_id" ref="model_auth_branding_config" />
         <field name="state">code</field>
         <field name="code">
-config = env['auth.branding.config'].get_or_create()
+config = env['auth.branding.config']._get_or_create_config()
 action = {
     'type': 'ir.actions.act_window',
     'name': 'Authentication Branding',

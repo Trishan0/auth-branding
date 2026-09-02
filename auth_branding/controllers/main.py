@@ -1,18 +1,46 @@
-from odoo import http
+import hashlib
+import math
+import re
+from datetime import timezone
+from email.utils import format_datetime
+from urllib.parse import urlsplit
+
+from markupsafe import Markup
+
+from odoo import fields, http
 from odoo.http import request
+
+from ..models.auth_branding_config import AuthBrandingConfig
 
 
 class AuthBrandingController(http.Controller):
     _ALLOWED_IMAGE_FIELDS = {"company_logo", "favicon", "background_image"}
-    _FONT_MAP = {
-        "system-ui": 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-        "Inter": '"Inter", sans-serif',
-        "Roboto": '"Roboto", sans-serif',
-        "Open Sans": '"Open Sans", sans-serif',
-        "Lato": '"Lato", sans-serif',
-        "Poppins": '"Poppins", sans-serif',
-        "Georgia": "Georgia, serif",
+    _ALLOWED_PAGES = {
+        "login": "web.login",
+        "signup": "auth_signup.signup",
+        "reset": "auth_signup.reset_password",
     }
+    _COLOR_DEFAULTS = {
+        "primary_color": "#714B67",
+        "secondary_color": "#FFFFFF",
+        "background_color": "#F8F9FA",
+        "gradient_start": "#714B67",
+        "gradient_end": "#2B124C",
+        "text_color": "#212529",
+        "card_background_color": "#FFFFFF",
+        "button_color": "#714B67",
+        "button_text_color": "#FFFFFF",
+    }
+    _GRADIENT_DIRECTIONS = {
+        "to right",
+        "to bottom",
+        "to bottom right",
+        "to bottom left",
+    }
+    _BACKGROUND_TYPES = {"solid", "gradient", "animated_gradient", "image"}
+    _TEMPLATES = {"centered", "split", "fullbleed"}
+    _SPLIT_ALIGNMENTS = {"left", "right"}
+    _COLOR_PATTERN = re.compile(r"^#[0-9A-Fa-f]{6}$")
 
     @staticmethod
     def _safe_int(value, default=0):
@@ -21,103 +49,312 @@ class AuthBrandingController(http.Controller):
         except (TypeError, ValueError):
             return default
 
+    @staticmethod
+    def _value(config, field_name, default=False):
+        if isinstance(config, dict):
+            return config.get(field_name, default)
+        return getattr(config, field_name, default)
+
+    @classmethod
+    def _safe_color(cls, value, default):
+        return value if value and cls._COLOR_PATTERN.fullmatch(str(value)) else default
+
+    @staticmethod
+    def _safe_number(value, default, minimum=0.0, maximum=None):
+        try:
+            number = float(value)
+        except (TypeError, ValueError):
+            number = float(default)
+        if not math.isfinite(number):
+            number = float(default)
+        number = max(minimum, number)
+        if maximum is not None:
+            number = min(maximum, number)
+        return f"{number:g}"
+
+    @staticmethod
+    def _safe_selection(value, allowed, default):
+        return value if value in allowed else default
+
+    @staticmethod
+    def _safe_url(value, default=""):
+        if not value:
+            return ""
+        value = str(value)
+        try:
+            parsed = urlsplit(value)
+        except ValueError:
+            return default
+        if (
+            value != value.strip()
+            or parsed.scheme.lower() not in {"http", "https"}
+            or not parsed.netloc
+        ):
+            return default
+        return value
+
+    def _get_config(self, requested_company_id):
+        return request.env["auth.branding.config"]._get_request_config(
+            company_id=requested_company_id
+        )
+
+    def _normalized_css_values(self, config):
+        values = {
+            field_name: self._safe_color(
+                self._value(config, field_name), default_value
+            )
+            for field_name, default_value in self._COLOR_DEFAULTS.items()
+        }
+        values.update(
+            {
+                "company_id": self._safe_int(
+                    self._value(config, "company_id")
+                    if isinstance(config, dict)
+                    else config.company_id.id,
+                    request.env.company.id,
+                ),
+                "background_type": self._safe_selection(
+                    self._value(config, "background_type"),
+                    self._BACKGROUND_TYPES,
+                    "solid",
+                ),
+                "gradient_direction": self._safe_selection(
+                    self._value(config, "gradient_direction"),
+                    self._GRADIENT_DIRECTIONS,
+                    "to bottom right",
+                ),
+                "font_family": self._safe_selection(
+                    self._value(config, "font_family"),
+                    set(AuthBrandingConfig.FONT_MAP),
+                    "system-ui",
+                ),
+                "background_overlay_opacity": self._safe_number(
+                    self._value(config, "background_overlay_opacity"),
+                    0.3,
+                    maximum=1.0,
+                ),
+                "glassmorphism_blur": self._safe_number(
+                    self._value(config, "glassmorphism_blur"), 10
+                ),
+                "glassmorphism_opacity": self._safe_number(
+                    self._value(config, "glassmorphism_opacity"),
+                    0.2,
+                    maximum=1.0,
+                ),
+                "input_border_radius": self._safe_number(
+                    self._value(config, "input_border_radius"), 6
+                ),
+                "button_border_radius": self._safe_number(
+                    self._value(config, "button_border_radius"), 6
+                ),
+            }
+        )
+        return values
+
+    def _build_css_variables(self, config):
+        values = self._normalized_css_values(config)
+        font_family = AuthBrandingConfig.FONT_MAP[values["font_family"]]
+        return f""":root {{
+    --ab-primary: {values['primary_color']};
+    --ab-secondary: {values['secondary_color']};
+    --ab-overlay-opacity: {values['background_overlay_opacity']};
+    --ab-font: {font_family};
+    --ab-text-color: {values['text_color']};
+    --ab-card-bg: {values['card_background_color']};
+    --ab-glass-blur: {values['glassmorphism_blur']}px;
+    --ab-glass-opacity: {values['glassmorphism_opacity']};
+    --ab-input-radius: {values['input_border_radius']}px;
+    --ab-btn-radius: {values['button_border_radius']}px;
+    --ab-btn-color: {values['button_color']};
+    --ab-btn-text: {values['button_text_color']};
+}}"""
+
     def _build_background_css(self, config):
-        bg_css = ""
-        if config["background_type"] == "solid":
-            bg_css = f"background: {config['background_color'] or '#f8f9fa'} !important;"
-        elif config["background_type"] == "gradient":
-            bg_css = (
-                f"background: linear-gradient({config['gradient_direction'] or 'to bottom right'}, "
-                f"{config['gradient_start'] or '#714B67'}, {config['gradient_end'] or '#2B124C'}) !important;"
+        values = self._normalized_css_values(config)
+        if values["background_type"] == "solid":
+            return f"background: {values['background_color']} !important;"
+        if values["background_type"] == "gradient":
+            return (
+                "background: linear-gradient("
+                f"{values['gradient_direction']}, {values['gradient_start']}, "
+                f"{values['gradient_end']}) !important;"
             )
-        elif config["background_type"] == "animated_gradient":
-            bg_css = (
-                f"background: linear-gradient(-45deg, {config['gradient_start'] or '#714B67'}, "
-                f"{config['gradient_end'] or '#2B124C'}, {config['primary_color'] or '#714B67'}) !important; "
-                "background-size: 400% 400% !important; animation: abGradientAnim 15s ease infinite !important;"
+        if values["background_type"] == "animated_gradient":
+            return (
+                "background: linear-gradient(-45deg, "
+                f"{values['gradient_start']}, {values['gradient_end']}, "
+                f"{values['primary_color']}) !important; "
+                "background-size: 400% 400% !important; "
+                "animation: abGradientAnim 15s ease infinite !important;"
             )
-        elif config["background_type"] == "image":
-            bg_css = (
-                "background: url('/auth_branding/image/background_image?company_id="
-                f"{config['company_id']}') no-repeat center center fixed !important; "
-                "background-size: cover !important;"
-            )
-        return bg_css
+        return (
+            "background: url('/auth_branding/image/background_image?company_id="
+            f"{values['company_id']}') no-repeat center center fixed !important; "
+            "background-size: cover !important;"
+        )
 
-    @http.route('/auth_branding/preview', type='http', auth='user', website=True)
-    def preview(self, page='login', **kwargs):
-        company_id = self._safe_int(kwargs.get("company_id"), 0)
-        config = request.env['auth.branding.config'].sudo().get_or_create(company_id=company_id)
+    def _build_theme_css(self, config):
+        variables = self._build_css_variables(config)
+        background = self._build_background_css(config)
+        return f"""@keyframes abGradientAnim {{
+    0% {{ background-position: 0% 50%; }}
+    50% {{ background-position: 100% 50%; }}
+    100% {{ background-position: 0% 50%; }}
+}}
+{variables}
 
-        ab_config = {
+body.ab-template-centered, body.ab-template-fullbleed {{
+    {background}
+}}
+body.ab-template-split .ab-split-aside {{
+    {background}
+}}
+"""
+
+    @staticmethod
+    def _boolean_parameter(kwargs, field_name, default):
+        if field_name not in kwargs:
+            return default
+        return kwargs[field_name] == "true"
+
+    def _build_preview_config(self, config, kwargs):
+        color_values = {
+            field_name: self._safe_color(
+                kwargs.get(field_name, config[field_name]), default_value
+            )
+            for field_name, default_value in self._COLOR_DEFAULTS.items()
+        }
+        config_values = {
             "company_id": config.company_id.id,
-            "template": kwargs.get("template", config.template),
-            "tagline": kwargs.get("tagline", config.tagline or ""),
-            "primary_color": kwargs.get("primary_color", config.primary_color),
-            "secondary_color": kwargs.get("secondary_color", config.secondary_color),
-            "background_type": kwargs.get("background_type", config.background_type),
-            "background_color": kwargs.get("background_color", config.background_color),
-            "gradient_start": kwargs.get("gradient_start", config.gradient_start),
-            "gradient_end": kwargs.get("gradient_end", config.gradient_end),
-            "gradient_direction": kwargs.get("gradient_direction", config.gradient_direction),
-            "background_overlay_opacity": kwargs.get("background_overlay_opacity", str(config.background_overlay_opacity)),
-            "font_family": kwargs.get("font_family", config.font_family),
-            "text_color": kwargs.get("text_color", config.text_color),
-            "input_border_radius": kwargs.get("input_border_radius", str(config.input_border_radius)),
-            "button_border_radius": kwargs.get("button_border_radius", str(config.button_border_radius)),
-            "button_color": kwargs.get("button_color", config.button_color),
-            "button_text_color": kwargs.get("button_text_color", config.button_text_color),
-            "show_manage_databases": kwargs.get("show_manage_databases") == "true" if "show_manage_databases" in kwargs else config.show_manage_databases,
-            "show_powered_by_odoo": kwargs.get("show_powered_by_odoo") == "true" if "show_powered_by_odoo" in kwargs else config.show_powered_by_odoo,
-            "split_alignment": kwargs.get("split_alignment", config.split_alignment or "left"),
-            "card_background_color": kwargs.get("card_background_color", config.card_background_color or "#FFFFFF"),
-            "glassmorphism": kwargs.get("glassmorphism") == "true" if "glassmorphism" in kwargs else config.glassmorphism,
-            "glassmorphism_blur": kwargs.get("glassmorphism_blur", str(config.glassmorphism_blur)),
-            "glassmorphism_opacity": kwargs.get("glassmorphism_opacity", str(config.glassmorphism_opacity)),
-            "custom_footer_text": kwargs.get("custom_footer_text", config.custom_footer_text or ""),
-            "login_welcome_title": kwargs.get("login_welcome_title", config.login_welcome_title or ""),
-            "login_welcome_subtitle": kwargs.get("login_welcome_subtitle", config.login_welcome_subtitle or ""),
-            "terms_url": kwargs.get("terms_url", config.terms_url or ""),
-            "privacy_url": kwargs.get("privacy_url", config.privacy_url or ""),
-            "terms_label": kwargs.get("terms_label", config.terms_label or "Terms of Service"),
-            "privacy_label": kwargs.get("privacy_label", config.privacy_label or "Privacy Policy"),
-            "auth_signup_uninvited": kwargs.get("auth_signup_uninvited", config.auth_signup_uninvited),
-            "auth_signup_reset_password": kwargs.get("auth_signup_reset_password") == "true" if "auth_signup_reset_password" in kwargs else config.auth_signup_reset_password,
+            "template": self._safe_selection(
+                kwargs.get("template", config.template),
+                self._TEMPLATES,
+                config.template,
+            ),
+            "split_alignment": self._safe_selection(
+                kwargs.get("split_alignment", config.split_alignment),
+                self._SPLIT_ALIGNMENTS,
+                config.split_alignment or "left",
+            ),
+            "background_type": self._safe_selection(
+                kwargs.get("background_type", config.background_type),
+                self._BACKGROUND_TYPES,
+                config.background_type,
+            ),
+            "gradient_direction": self._safe_selection(
+                kwargs.get("gradient_direction", config.gradient_direction),
+                self._GRADIENT_DIRECTIONS,
+                config.gradient_direction or "to bottom right",
+            ),
+            "font_family": self._safe_selection(
+                kwargs.get("font_family", config.font_family),
+                set(AuthBrandingConfig.FONT_MAP),
+                config.font_family,
+            ),
+            "background_overlay_opacity": self._safe_number(
+                kwargs.get(
+                    "background_overlay_opacity",
+                    config.background_overlay_opacity,
+                ),
+                config.background_overlay_opacity,
+                maximum=1.0,
+            ),
+            "glassmorphism_blur": self._safe_number(
+                kwargs.get("glassmorphism_blur", config.glassmorphism_blur),
+                config.glassmorphism_blur,
+            ),
+            "glassmorphism_opacity": self._safe_number(
+                kwargs.get("glassmorphism_opacity", config.glassmorphism_opacity),
+                config.glassmorphism_opacity,
+                maximum=1.0,
+            ),
+            "input_border_radius": self._safe_number(
+                kwargs.get("input_border_radius", config.input_border_radius),
+                config.input_border_radius,
+            ),
+            "button_border_radius": self._safe_number(
+                kwargs.get("button_border_radius", config.button_border_radius),
+                config.button_border_radius,
+            ),
+            "glassmorphism": self._boolean_parameter(
+                kwargs, "glassmorphism", config.glassmorphism
+            ),
+            "show_manage_databases": self._boolean_parameter(
+                kwargs, "show_manage_databases", config.show_manage_databases
+            ),
+            "show_powered_by_odoo": self._boolean_parameter(
+                kwargs, "show_powered_by_odoo", config.show_powered_by_odoo
+            ),
+            "tagline": kwargs.get("tagline", config.tagline or "")[:500],
+            "custom_footer_text": kwargs.get(
+                "custom_footer_text", config.custom_footer_text or ""
+            )[:500],
+            "login_welcome_title": kwargs.get(
+                "login_welcome_title", config.login_welcome_title or ""
+            )[:500],
+            "login_welcome_subtitle": kwargs.get(
+                "login_welcome_subtitle", config.login_welcome_subtitle or ""
+            )[:500],
+            "terms_url": self._safe_url(
+                kwargs.get("terms_url", config.terms_url or "")
+            ),
+            "privacy_url": self._safe_url(
+                kwargs.get("privacy_url", config.privacy_url or "")
+            ),
+            "terms_label": kwargs.get(
+                "terms_label", config.terms_label or "Terms of Service"
+            )[:200],
+            "privacy_label": kwargs.get(
+                "privacy_label", config.privacy_label or "Privacy Policy"
+            )[:200],
             "is_preview": True,
         }
+        config_values.update(color_values)
 
-        ab_config["font_family_css"] = self._FONT_MAP.get(ab_config["font_family"], self._FONT_MAP["system-ui"])
-        bg_css = self._build_background_css(ab_config)
+        get_param = request.env["ir.config_parameter"].sudo().get_param
+        config_values["auth_signup_uninvited"] = get_param(
+            "auth_signup.invitation_scope", "b2b"
+        )
+        config_values["auth_signup_reset_password"] = (
+            get_param("auth_signup.reset_password", "False").lower() == "true"
+        )
+        config_values["inline_style"] = Markup(
+            self._build_theme_css(config_values)
+        )
+        return config_values
 
-        inline_style = f"""
-        @keyframes abGradientAnim {{
-            0% {{ background-position: 0% 50%; }}
-            50% {{ background-position: 100% 50%; }}
-            100% {{ background-position: 0% 50%; }}
-        }}
-        :root {{
-            --ab-primary: {ab_config['primary_color'] or '#714B67'};
-            --ab-secondary: {ab_config['secondary_color'] or '#FFFFFF'};
-            --ab-overlay-opacity: {ab_config['background_overlay_opacity'] or '0.3'};
-            --ab-font: {ab_config['font_family_css']};
-            --ab-text-color: {ab_config['text_color'] or '#212529'};
-            --ab-card-bg: {ab_config['card_background_color'] or '#FFFFFF'};
-            --ab-glass-blur: {ab_config['glassmorphism_blur'] or '10'}px;
-            --ab-glass-opacity: {ab_config['glassmorphism_opacity'] or '0.2'};
-            --ab-input-radius: {ab_config['input_border_radius'] or '6'}px;
-            --ab-btn-radius: {ab_config['button_border_radius'] or '6'}px;
-            --ab-btn-color: {ab_config['button_color'] or '#714B67'};
-            --ab-btn-text: {ab_config['button_text_color'] or '#FFFFFF'};
-        }}
-        body.ab-template-centered, body.ab-template-fullbleed {{
-            {bg_css}
-        }}
-        body.ab-template-split .ab-split-aside {{
-            {bg_css}
-        }}
-        """
-        ab_config["inline_style"] = inline_style
+    @staticmethod
+    def _cache_headers(config, variant):
+        modified = config.write_date or config.create_date or fields.Datetime.now()
+        if modified.tzinfo is None:
+            modified = modified.replace(tzinfo=timezone.utc)
+        modified = modified.replace(microsecond=0)
+        identity = f"{config.id}:{config.write_date}:{variant}".encode()
+        etag = hashlib.sha256(identity).hexdigest()
+        return etag, modified, [
+            ("ETag", f'"{etag}"'),
+            ("Last-Modified", format_datetime(modified, usegmt=True)),
+            ("Cache-Control", "public, max-age=3600, must-revalidate"),
+            ("X-Content-Type-Options", "nosniff"),
+        ]
 
+    @staticmethod
+    def _is_not_modified(etag, modified):
+        if request.httprequest.if_none_match:
+            return request.httprequest.if_none_match.contains(etag)
+        if_modified_since = request.httprequest.if_modified_since
+        return bool(if_modified_since and modified <= if_modified_since)
+
+    @http.route(
+        "/auth_branding/preview",
+        type="http",
+        auth="user",
+        website=True,
+        sitemap=False,
+    )
+    def preview(self, page="login", **kwargs):
+        config = self._get_config(kwargs.get("company_id"))
+        ab_config = self._build_preview_config(config, kwargs)
         request.update_context(ab_preview_config=ab_config)
 
         qcontext = {
@@ -130,71 +367,54 @@ class AuthBrandingController(http.Controller):
             "reset_password_enabled": ab_config["auth_signup_reset_password"],
             "token": False,
         }
+        template = self._ALLOWED_PAGES.get(page, self._ALLOWED_PAGES["login"])
+        response = request.render(template, qcontext)
+        response.headers["Content-Security-Policy"] = "frame-ancestors 'self'"
+        return response
 
-        template = "web.login"
-        if page == "signup":
-            template = "auth_signup.signup"
-        elif page == "reset":
-            template = "auth_signup.reset_password"
-
-        return request.render(template, qcontext)
-
-    @http.route('/auth_branding/theme.css', type='http', auth='public')
+    @http.route(
+        "/auth_branding/theme.css",
+        type="http",
+        auth="public",
+        sitemap=False,
+    )
     def theme_css(self, **kwargs):
-        company_id = self._safe_int(kwargs.get("company_id"), 0)
-        config = request.env['auth.branding.config'].sudo().get_or_create(company_id=company_id)
+        config = self._get_config(kwargs.get("company_id"))
+        etag, modified, headers = self._cache_headers(config, "theme.css")
+        headers.append(("Content-Type", "text/css; charset=utf-8"))
+        if self._is_not_modified(etag, modified):
+            return request.make_response("", headers=headers, status=304)
+        return request.make_response(
+            self._build_theme_css(config), headers=headers
+        )
 
-        config_map = {
-            "background_type": config.background_type,
-            "background_color": config.background_color,
-            "gradient_direction": config.gradient_direction,
-            "gradient_start": config.gradient_start,
-            "gradient_end": config.gradient_end,
-            "primary_color": config.primary_color,
-            "company_id": config.company_id.id,
-        }
-        bg_css = self._build_background_css(config_map)
-
-        css = f"""
-@keyframes abGradientAnim {{
-    0% {{ background-position: 0% 50%; }}
-    50% {{ background-position: 100% 50%; }}
-    100% {{ background-position: 0% 50%; }}
-}}
-:root {{
-    --ab-primary: {config.primary_color or '#714B67'};
-    --ab-secondary: {config.secondary_color or '#FFFFFF'};
-    --ab-overlay-opacity: {config.background_overlay_opacity or '0.3'};
-    --ab-font: {self._FONT_MAP.get(config.font_family, self._FONT_MAP['system-ui'])};
-    --ab-text-color: {config.text_color or '#212529'};
-    --ab-card-bg: {config.card_background_color or '#FFFFFF'};
-    --ab-glass-blur: {config.glassmorphism_blur or '10'}px;
-    --ab-glass-opacity: {config.glassmorphism_opacity or '0.2'};
-    --ab-input-radius: {config.input_border_radius or '6'}px;
-    --ab-btn-radius: {config.button_border_radius or '6'}px;
-    --ab-btn-color: {config.button_color or config.primary_color or '#714B67'};
-    --ab-btn-text: {config.button_text_color or '#FFFFFF'};
-}}
-
-body.ab-template-centered, body.ab-template-fullbleed {{
-    {bg_css}
-}}
-body.ab-template-split .ab-split-aside {{
-    {bg_css}
-}}
-"""
-        return request.make_response(css, headers=[
-            ("Content-Type", "text/css"),
-            ("Cache-Control", "max-age=60"),
-        ])
-
-    @http.route('/auth_branding/image/<string:field>', type='http', auth='public')
+    @http.route(
+        "/auth_branding/image/<string:field>",
+        type="http",
+        auth="public",
+        sitemap=False,
+    )
     def get_image(self, field, **kwargs):
         if field not in self._ALLOWED_IMAGE_FIELDS:
             return request.not_found()
 
-        company_id = self._safe_int(kwargs.get("company_id"), 0)
-        config = request.env['auth.branding.config'].sudo().get_or_create(company_id=company_id)
-        if not getattr(config, field, False):
+        config = self._get_config(kwargs.get("company_id"))
+        if not config[field]:
             return request.not_found()
-        return request.env['ir.binary']._get_stream_from(config, field).get_response()
+
+        etag, modified, headers = self._cache_headers(config, field)
+        headers.extend(
+            [
+                ("Content-Security-Policy", "default-src 'none'; sandbox"),
+                ("Cross-Origin-Resource-Policy", "same-origin"),
+            ]
+        )
+        if self._is_not_modified(etag, modified):
+            return request.make_response("", headers=headers, status=304)
+
+        response = request.env["ir.binary"]._get_stream_from(
+            config, field
+        ).get_response()
+        for header, value in headers:
+            response.headers[header] = value
+        return response

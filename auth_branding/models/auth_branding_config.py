@@ -1,9 +1,76 @@
-from odoo import api, fields, models
+import re
+import warnings
+from urllib.parse import urlsplit
+
+from odoo import _, api, fields, models
+from odoo.exceptions import UserError, ValidationError
 
 
 class AuthBrandingConfig(models.Model):
     _name = "auth.branding.config"
     _description = "Authentication Branding Configuration"
+    _rec_name = "company_id"
+    _order = "company_id"
+
+    COLOR_PATTERN = re.compile(r"^#[0-9A-Fa-f]{6}$")
+    COLOR_FIELDS = (
+        "card_background_color",
+        "primary_color",
+        "secondary_color",
+        "background_color",
+        "gradient_start",
+        "gradient_end",
+        "text_color",
+        "button_color",
+        "button_text_color",
+    )
+    FONT_MAP = {
+        "system-ui": (
+            'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", '
+            'Roboto, "Helvetica Neue", Arial, sans-serif'
+        ),
+        "Inter": '"Inter", sans-serif',
+        "Roboto": '"Roboto", sans-serif',
+        "Open Sans": '"Open Sans", sans-serif',
+        "Lato": '"Lato", sans-serif',
+        "Poppins": '"Poppins", sans-serif',
+        "Georgia": "Georgia, serif",
+    }
+    RESETTABLE_FIELDS = (
+        "template",
+        "split_alignment",
+        "card_background_color",
+        "glassmorphism",
+        "glassmorphism_blur",
+        "glassmorphism_opacity",
+        "company_logo",
+        "favicon",
+        "tagline",
+        "primary_color",
+        "secondary_color",
+        "background_type",
+        "background_color",
+        "gradient_start",
+        "gradient_end",
+        "gradient_direction",
+        "background_image",
+        "background_overlay_opacity",
+        "font_family",
+        "text_color",
+        "input_border_radius",
+        "button_border_radius",
+        "button_color",
+        "button_text_color",
+        "show_manage_databases",
+        "show_powered_by_odoo",
+        "custom_footer_text",
+        "login_welcome_title",
+        "login_welcome_subtitle",
+        "terms_url",
+        "privacy_url",
+        "terms_label",
+        "privacy_label",
+    )
 
     template = fields.Selection(
         [
@@ -15,33 +82,38 @@ class AuthBrandingConfig(models.Model):
         default="centered",
         required=True,
     )
-
     split_alignment = fields.Selection(
-        [
-            ("left", "Image on Left"),
-            ("right", "Image on Right"),
-        ],
+        [("left", "Image on Left"), ("right", "Image on Right")],
         string="Split Alignment",
         default="left",
         help="Side for the image in Split Screen template",
     )
-
-    card_background_color = fields.Char(string="Card Background Color", default="#FFFFFF")
+    card_background_color = fields.Char(
+        string="Card Background Color", default="#FFFFFF"
+    )
     glassmorphism = fields.Boolean(
         string="Enable Glassmorphism",
         default=False,
         help="Make the login card semi-transparent and blurred",
     )
     glassmorphism_blur = fields.Integer(string="Blur Factor (px)", default=10)
-    glassmorphism_opacity = fields.Float(string="Card Opacity (0.0 - 1.0)", default=0.2)
+    glassmorphism_opacity = fields.Float(
+        string="Card Opacity (0.0 - 1.0)", default=0.2
+    )
 
     company_logo = fields.Binary(string="Company Logo")
     favicon = fields.Binary(string="Favicon")
-    tagline = fields.Char(string="Tagline", help='Optional text shown below logo, e.g. "Welcome back."')
+    tagline = fields.Char(
+        string="Tagline",
+        help='Optional text shown below logo, e.g. "Welcome back."',
+    )
 
-    primary_color = fields.Char(string="Primary Color", default="#714B67", required=True)
-    secondary_color = fields.Char(string="Secondary Color", default="#FFFFFF", required=True)
-
+    primary_color = fields.Char(
+        string="Primary Color", default="#714B67", required=True
+    )
+    secondary_color = fields.Char(
+        string="Secondary Color", default="#FFFFFF", required=True
+    )
     background_type = fields.Selection(
         [
             ("solid", "Solid Color"),
@@ -53,8 +125,7 @@ class AuthBrandingConfig(models.Model):
         default="solid",
         required=True,
     )
-
-    background_color = fields.Char(string="Background Color", default="#f8f9fa")
+    background_color = fields.Char(string="Background Color", default="#F8F9FA")
     gradient_start = fields.Char(string="Gradient Start", default="#714B67")
     gradient_end = fields.Char(string="Gradient End", default="#2B124C")
     gradient_direction = fields.Selection(
@@ -67,7 +138,6 @@ class AuthBrandingConfig(models.Model):
         string="Gradient Direction",
         default="to bottom right",
     )
-
     background_image = fields.Binary(string="Background Image")
     background_overlay_opacity = fields.Float(
         string="Overlay Opacity",
@@ -89,21 +159,30 @@ class AuthBrandingConfig(models.Model):
         default="Inter",
         required=True,
     )
-
     text_color = fields.Char(string="Text Color", default="#212529", required=True)
-    input_border_radius = fields.Integer(string="Input Border Radius (px)", default=6)
-    button_border_radius = fields.Integer(string="Button Border Radius (px)", default=6)
+    input_border_radius = fields.Integer(
+        string="Input Border Radius (px)", default=6
+    )
+    button_border_radius = fields.Integer(
+        string="Button Border Radius (px)", default=6
+    )
+    button_color = fields.Char(
+        string="Button Color", default="#714B67", required=True
+    )
+    button_text_color = fields.Char(
+        string="Button Text Color", default="#FFFFFF", required=True
+    )
 
-    button_color = fields.Char(string="Button Color", default="#714B67", required=True)
-    button_text_color = fields.Char(string="Button Text Color", default="#FFFFFF", required=True)
-
-    show_manage_databases = fields.Boolean(string="Show Manage Databases", default=True)
-    show_powered_by_odoo = fields.Boolean(string="Show Powered by Odoo", default=True)
+    show_manage_databases = fields.Boolean(
+        string="Show Manage Databases", default=True
+    )
+    show_powered_by_odoo = fields.Boolean(
+        string="Show Powered by Odoo", default=True
+    )
     custom_footer_text = fields.Char(
         string="Custom Footer Text",
         help="Custom text shown in the footer, e.g. your helpdesk number",
     )
-
     login_welcome_title = fields.Char(
         string="Login Welcome Title",
         help='Override the default login heading, e.g. "Welcome back!"',
@@ -117,70 +196,167 @@ class AuthBrandingConfig(models.Model):
     terms_label = fields.Char(string="Terms Label", default="Terms of Service")
     privacy_label = fields.Char(string="Privacy Label", default="Privacy Policy")
 
-    auth_signup_uninvited = fields.Selection(
-        [
-            ("b2b", "On Invitation (B2B)"),
-            ("b2c", "Free Sign Up (B2C)"),
-        ],
-        string="Customer Account",
-        compute="_compute_auth_settings",
-        inverse="_inverse_auth_signup_uninvited",
-        help="B2B: User must be invited. B2C: Any user can sign up.",
-    )
-
-    auth_signup_reset_password = fields.Boolean(
-        string="Password Reset",
-        compute="_compute_auth_settings",
-        inverse="_inverse_auth_signup_reset_password",
-        help='Show/Hide "Reset Password" link on the login page.',
-    )
-
     company_id = fields.Many2one(
         "res.company",
         string="Company",
         default=lambda self: self.env.company,
         required=True,
+        index=True,
+        ondelete="cascade",
     )
 
-    def _compute_auth_settings(self):
-        get_param = self.env["ir.config_parameter"].sudo().get_param
+    @api.constrains(*COLOR_FIELDS)
+    def _check_color_format(self):
         for record in self:
-            record.auth_signup_uninvited = get_param("auth_signup.invitation_scope", "b2b")
-            record.auth_signup_reset_password = get_param("auth_signup.reset_password", "False").lower() == "true"
+            invalid_fields = [
+                record._fields[field_name].string
+                for field_name in self.COLOR_FIELDS
+                if (value := record[field_name])
+                and not self.COLOR_PATTERN.fullmatch(value)
+            ]
+            if invalid_fields:
+                raise ValidationError(
+                    _(
+                        "Colors must use the #RRGGBB format. Check: %(fields)s",
+                        fields=", ".join(invalid_fields),
+                    )
+                )
 
-    def _inverse_auth_signup_uninvited(self):
+    @api.constrains("terms_url", "privacy_url")
+    def _check_url_format(self):
         for record in self:
-            self.env["ir.config_parameter"].sudo().set_param("auth_signup.invitation_scope", record.auth_signup_uninvited)
+            for field_name in ("terms_url", "privacy_url"):
+                value = record[field_name]
+                if not value:
+                    continue
+                if not self._is_safe_http_url(value):
+                    raise ValidationError(
+                        _(
+                            "%(field)s must be a valid HTTP or HTTPS URL.",
+                            field=record._fields[field_name].string,
+                        )
+                    )
 
-    def _inverse_auth_signup_reset_password(self):
+    @staticmethod
+    def _is_safe_http_url(value):
+        try:
+            parsed = urlsplit(value)
+        except (TypeError, ValueError):
+            return False
+        return bool(
+            value == value.strip()
+            and parsed.scheme.lower() in {"http", "https"}
+            and parsed.netloc
+        )
+
+    def _get_safe_external_url(self, field_name):
+        self.ensure_one()
+        if field_name not in {"terms_url", "privacy_url"}:
+            return False
+        value = self[field_name]
+        return value if value and self._is_safe_http_url(value) else False
+
+    @api.constrains("background_overlay_opacity", "glassmorphism_opacity")
+    def _check_opacity_range(self):
         for record in self:
-            self.env["ir.config_parameter"].sudo().set_param("auth_signup.reset_password", str(record.auth_signup_reset_password))
+            for field_name in (
+                "background_overlay_opacity",
+                "glassmorphism_opacity",
+            ):
+                if not 0.0 <= record[field_name] <= 1.0:
+                    raise ValidationError(
+                        _(
+                            "%(field)s must be between 0.0 and 1.0.",
+                            field=record._fields[field_name].string,
+                        )
+                    )
 
-    _sql_constraints = [
-        ("company_uniq", "unique (company_id)", "The branding configuration must be unique per company!"),
-        (
-            "background_overlay_opacity_range",
-            "CHECK(background_overlay_opacity >= 0 AND background_overlay_opacity <= 1)",
-            "Overlay opacity must be between 0 and 1.",
-        ),
-        (
-            "glassmorphism_opacity_range",
-            "CHECK(glassmorphism_opacity >= 0 AND glassmorphism_opacity <= 1)",
-            "Glassmorphism opacity must be between 0 and 1.",
-        ),
-        ("glassmorphism_blur_non_negative", "CHECK(glassmorphism_blur >= 0)", "Glassmorphism blur must be positive or zero."),
-        ("input_border_radius_non_negative", "CHECK(input_border_radius >= 0)", "Input border radius must be positive or zero."),
-        ("button_border_radius_non_negative", "CHECK(button_border_radius >= 0)", "Button border radius must be positive or zero."),
-    ]
+    @api.constrains(
+        "glassmorphism_blur",
+        "input_border_radius",
+        "button_border_radius",
+    )
+    def _check_non_negative_dimensions(self):
+        for record in self:
+            for field_name in (
+                "glassmorphism_blur",
+                "input_border_radius",
+                "button_border_radius",
+            ):
+                if record[field_name] < 0:
+                    raise ValidationError(
+                        _(
+                            "%(field)s must be positive or zero.",
+                            field=record._fields[field_name].string,
+                        )
+                    )
+
+    @api.constrains("company_id")
+    def _check_company_unique(self):
+        for record in self:
+            if self.search_count(
+                [
+                    ("company_id", "=", record.company_id.id),
+                    ("id", "!=", record.id),
+                ]
+            ):
+                raise ValidationError(
+                    _("The branding configuration must be unique per company.")
+                )
+
+    @api.model
+    def _get_or_create_config(self, company_id=False):
+        company = self.env["res.company"].browse(company_id).exists()
+        company = company[:1] or self.env.company
+        config = self.search([("company_id", "=", company.id)], limit=1)
+        if not config:
+            config = self.create({"company_id": company.id})
+        return config
+
+    @api.model
+    def _get_request_config(self, company_id=False):
+        """Return branding only for a company available to the request user."""
+        try:
+            company_id = int(company_id)
+        except (TypeError, ValueError):
+            company_id = self.env.company.id
+        if company_id not in self.env.user.company_ids.ids:
+            company_id = self.env.company.id
+        return (
+            self.sudo()
+            .with_company(company_id)
+            ._get_or_create_config(company_id=company_id)
+        )
 
     @api.model
     def get_or_create(self, company_id=False):
-        if not company_id:
-            company_id = self.env.company.id
-        config = self.search([("company_id", "=", company_id)], limit=1)
-        if not config:
-            config = self.create({"company_id": company_id})
-        return config
+        """Compatibility alias; new code should use ``_get_or_create_config``."""
+        warnings.warn(
+            "auth.branding.config.get_or_create() is deprecated; "
+            "use _get_or_create_config() instead",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        return self._get_or_create_config(company_id=company_id)
+
+    def copy_data(self, default=None):
+        raise UserError(
+            _(
+                "Branding configurations cannot be duplicated. "
+                "Create or open the configuration for the target company instead."
+            )
+        )
+
+    def action_reset_defaults(self):
+        self.ensure_one()
+        defaults = self.default_get(list(self.RESETTABLE_FIELDS))
+        self.write(
+            {
+                field_name: defaults.get(field_name, False)
+                for field_name in self.RESETTABLE_FIELDS
+            }
+        )
+        return {"type": "ir.actions.client", "tag": "reload"}
 
     def action_save(self):
         return {"type": "ir.actions.client", "tag": "reload"}

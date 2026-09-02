@@ -1,7 +1,6 @@
 /** @odoo-module **/
 
 import { registry } from "@web/core/registry";
-import { useService } from "@web/core/utils/hooks";
 import { Component, useState, useEffect } from "@odoo/owl";
 import { standardFieldProps } from "@web/views/fields/standard_field_props";
 
@@ -82,11 +81,12 @@ export class AuthBrandingPreview extends Component {
                 'button_border_radius', 'button_color', 'button_text_color',
                 'show_manage_databases', 'show_powered_by_odoo',
                 'split_alignment', 'card_background_color', 'glassmorphism', 'glassmorphism_blur', 'glassmorphism_opacity',
-                'auth_signup_uninvited', 'auth_signup_reset_password',
+                'custom_footer_text', 'login_welcome_title', 'login_welcome_subtitle',
+                'terms_url', 'privacy_url', 'terms_label', 'privacy_label',
             ];
             
             // Boolean fields need special handling — send 'true'/'false' as strings
-            const boolFields = new Set(['show_manage_databases', 'show_powered_by_odoo', 'glassmorphism', 'auth_signup_reset_password']);
+            const boolFields = new Set(['show_manage_databases', 'show_powered_by_odoo', 'glassmorphism']);
             for (const f of fieldsToWatch) {
                 let val = data[f];
                 // Extract ID from Many2one (which can be [id, name] or an object {id: 123, ...})
@@ -138,8 +138,13 @@ export class AuthBrandingPreview extends Component {
                 data.glassmorphism,
                 data.glassmorphism_blur,
                 data.glassmorphism_opacity,
-                data.auth_signup_uninvited,
-                data.auth_signup_reset_password,
+                data.custom_footer_text,
+                data.login_welcome_title,
+                data.login_welcome_subtitle,
+                data.terms_url,
+                data.privacy_url,
+                data.terms_label,
+                data.privacy_label,
             ];
         });
     }

@@ -5,14 +5,14 @@
         <xpath expr="//t[@t-set='body_classname']" position="replace">
             <t t-set="ab_preview" t-value="request.env.context.get('ab_preview_config')" />
             <t
-                t-set="ab_company_id"
-                t-value="ab_preview.get('company_id') if ab_preview else (int(request.params.get('company_id')) if request.params.get('company_id') else (res_company.id if res_company else request.env.company.id))"
-            />
-            <t
                 t-set="ab"
-                t-value="ab_preview if ab_preview else request.env['auth.branding.config'].sudo().get_or_create(company_id=ab_company_id)"
+                t-value="ab_preview if ab_preview else request.env['auth.branding.config']._get_request_config(company_id=request.params.get('company_id'))"
             />
             <t t-set="ab_is_dict" t-value="bool(ab_preview)" />
+            <t
+                t-set="ab_company_id"
+                t-value="ab.get('company_id') if ab_is_dict else ab.company_id.id"
+            />
             <t t-set="ab_template" t-value="ab.get('template') if ab_is_dict else ab.template" />
             <t t-set="ab_glassmorphism" t-value="ab.get('glassmorphism') if ab_is_dict else ab.glassmorphism" />
             <t t-set="ab_split_alignment" t-value="ab.get('split_alignment') if ab_is_dict else ab.split_alignment" />
@@ -34,8 +34,8 @@
             <!-- Custom Content Variables -->
             <t t-set="ab_welcome_title" t-value="ab.get('login_welcome_title') if ab_is_dict else ab.login_welcome_title" />
             <t t-set="ab_welcome_subtitle" t-value="ab.get('login_welcome_subtitle') if ab_is_dict else ab.login_welcome_subtitle" />
-            <t t-set="ab_terms_url" t-value="ab.get('terms_url') if ab_is_dict else ab.terms_url" />
-            <t t-set="ab_privacy_url" t-value="ab.get('privacy_url') if ab_is_dict else ab.privacy_url" />
+            <t t-set="ab_terms_url" t-value="ab.get('terms_url') if ab_is_dict else ab._get_safe_external_url('terms_url')" />
+            <t t-set="ab_privacy_url" t-value="ab.get('privacy_url') if ab_is_dict else ab._get_safe_external_url('privacy_url')" />
             <t t-set="ab_terms_label" t-value="ab.get('terms_label') if ab_is_dict else ab.terms_label" />
             <t t-set="ab_privacy_label" t-value="ab.get('privacy_label') if ab_is_dict else ab.privacy_label" />
             <t t-set="ab_custom_footer_text" t-value="ab.get('custom_footer_text') if ab_is_dict else ab.custom_footer_text" />
@@ -108,11 +108,11 @@
                     <t t-if="not disable_database_manager and ab_show_manage_databases">
                         <a t-attf-class="#{ab_show_powered_by_odoo and 'border-end pe-2 me-1' or ''}" href="/web/database/manager">Manage Databases</a>
                     </t>
-                    <a t-if="ab_show_powered_by_odoo" href="https://www.odoo.com?utm_source=db&amp;utm_medium=auth" target="_blank">Powered by <span>Odoo</span></a>
+                    <a t-if="ab_show_powered_by_odoo" href="https://www.odoo.com?utm_source=db&amp;utm_medium=auth" target="_blank" rel="noopener noreferrer">Powered by <span>Odoo</span></a>
                 </div>
                 <div t-if="ab_terms_url or ab_privacy_url" class="mt-1">
-                    <a t-if="ab_terms_url" t-att-href="ab_terms_url" target="_blank" class="text-muted me-2"><t t-out="ab_terms_label or 'Terms of Service'" /></a>
-                    <a t-if="ab_privacy_url" t-att-href="ab_privacy_url" target="_blank" class="text-muted"><t t-out="ab_privacy_label or 'Privacy Policy'" /></a>
+                    <a t-if="ab_terms_url" t-att-href="ab_terms_url" target="_blank" rel="noopener noreferrer" class="text-muted me-2"><t t-out="ab_terms_label or 'Terms of Service'" /></a>
+                    <a t-if="ab_privacy_url" t-att-href="ab_privacy_url" target="_blank" rel="noopener noreferrer" class="text-muted"><t t-out="ab_privacy_label or 'Privacy Policy'" /></a>
                 </div>
                 <p t-if="ab_custom_footer_text" class="text-muted mt-1 mb-0"><t t-out="ab_custom_footer_text" /></p>
             </div>
