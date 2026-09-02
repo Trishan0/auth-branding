@@ -36,7 +36,7 @@
             />
             <t
                 t-set="body_classname"
-                t-value="'bg-100 ab-template-' + ab_template + (' ab-glass' if ab_glassmorphism else '') + (' ab-split-right' if ab_split_alignment == 'right' else '') + (' ab-bg-animated' if ab_bg_type == 'animated_gradient' else '') + ' ab-social-' + (ab.get('social_button_style') or 'rounded') + (' ab-social-hide-labels' if ab.get('hide_social_labels') else '') + ' ab-dark-' + ab_dark_mode"
+                t-value="'ab-template-' + ab_template + (' ab-glass' if ab_glassmorphism else '') + (' ab-split-right' if ab_split_alignment == 'right' else '') + (' ab-bg-animated' if ab_bg_type == 'animated_gradient' else '') + (' ab-bg-image' if ab_bg_type == 'image' else '') + ' ab-social-' + (ab.get('social_button_style') or 'rounded') + (' ab-social-hide-labels' if ab.get('hide_social_labels') else '') + ' ab-dark-' + ab_dark_mode"
             />
         </xpath>
 

@@ -1,55 +1,36 @@
 /* Auth Branding Frontend Styles */
 
-/* Base overrides taking variables into account */
-:root {
-    --ab-primary: #714B67;
-    --ab-secondary: #FFFFFF;
-    --ab-bg-color: #f8f9fa;
-    --ab-grad-start: #714B67;
-    --ab-grad-end: #2B124C;
-    --ab-grad-dir: to bottom right;
-    --ab-overlay-opacity: 0.3;
-    --ab-font: system-ui, -apple-system, sans-serif;
-    --ab-text-color: #212529;
-    --ab-card-bg: #FFFFFF;
-    --ab-glass-blur: 10px;
-    --ab-glass-opacity: 0.2;
-    --ab-input-radius: 6px;
-    --ab-btn-radius: 6px;
-    --ab-btn-color: #714B67;
-    --ab-btn-text: #FFFFFF;
-}
-
 body[class*="ab-template-"] {
-    font-family: var(--ab-font) !important;
-    color: var(--ab-text-color) !important;
+    min-height: 100vh;
+    font-family: var(--ab-font);
+    color: var(--ab-text-color);
 }
 
 /* Base Form Styling overrides */
 body[class*="ab-template-"] .card {
     border-radius: var(--ab-input-radius) !important;
     overflow: hidden;
-    border: none !important;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.08) !important;
-    background-color: var(--ab-secondary) !important;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08) !important;
+    color: var(--ab-text-color);
 }
 
 body[class*="ab-template-"] .form-control {
-    border-radius: var(--ab-input-radius) !important;
+    border-radius: var(--ab-input-radius);
     border-color: #dee2e6;
     padding: 0.75rem 1rem;
 }
 
 body[class*="ab-template-"] .form-control:focus {
     border-color: var(--ab-primary);
-    box-shadow: 0 0 0 0.25rem rgba(var(--ab-primary-rgb, 113, 75, 103), 0.25);
+    box-shadow: 0 0 0 0.25rem rgba(var(--ab-primary-rgb), 0.25);
 }
 
 body[class*="ab-template-"] .btn-primary {
-    background-color: var(--ab-btn-color) !important;
-    border-color: var(--ab-btn-color) !important;
-    color: var(--ab-btn-text) !important;
-    border-radius: var(--ab-btn-radius) !important;
+    background-color: var(--ab-btn-color);
+    border-color: var(--ab-btn-color);
+    color: var(--ab-btn-text);
+    border-radius: var(--ab-btn-radius);
     padding: 0.6rem 1rem;
     font-weight: 500;
 }
@@ -67,17 +48,6 @@ body[class*="ab-template-"] :is(a, button, input, select, textarea):focus-visibl
     outline-offset: 2px;
     box-shadow: none;
 }
-
-/* Custom Backgrounds for Body */
-body.ab-template-centered {
-    background: var(--ab-bg-color) !important;
-    min-height: 100vh;
-}
-
-body.ab-template-fullbleed, body.ab-template-split {
-    background: var(--ab-bg-color) !important;
-}
-
 
 /* Specific Template: Centered */
 .ab-template-centered .ab-logo {
@@ -105,7 +75,6 @@ body.ab-template-split .ab-split-aside {
     align-items: center;
     padding: 3rem;
     color: var(--ab-secondary);
-    background: linear-gradient(var(--ab-grad-dir), var(--ab-grad-start), var(--ab-grad-end));
     position: relative;
 }
 
@@ -114,8 +83,7 @@ body.ab-template-split .container {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--ab-bg-color);
-    padding: 2rem !important;
+    padding: 2rem;
     max-width: none;
     margin: 0;
 }
@@ -160,39 +128,36 @@ body.ab-template-split .container .card {
 }
 
 
-/* Specific Template: Fullbleed */
-.ab-template-fullbleed .ab-wrapper {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(var(--ab-grad-dir), var(--ab-grad-start), var(--ab-grad-end));
-    position: relative;
-    padding: 2rem;
-}
-
 .ab-background-overlay {
     position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
+    inset: 0;
     background-color: #000;
     pointer-events: none;
     z-index: 0;
     display: none;
 }
 
-.ab-template-fullbleed .ab-background-overlay {
+body.ab-bg-image:not(.ab-template-split):not(.ab-template-sidebar) .ab-background-overlay {
     display: block;
 }
 
+body.ab-bg-image:not(.ab-template-split):not(.ab-template-sidebar) main,
 .ab-template-fullbleed .container {
     position: relative;
     z-index: 1;
 }
 
-.ab-template-fullbleed .card {
-    background: rgba(255, 255, 255, 0.9) !important; /* Slight glassmorphism base */
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+body.ab-bg-image .ab-split-aside::before {
+    position: absolute;
+    inset: 0;
+    content: "";
+    background: #000;
+    opacity: var(--ab-overlay-opacity);
+}
+
+.ab-split-aside .ab-branding-content {
+    position: relative;
+    z-index: 1;
 }
 
 .ab-template-fullbleed .ab-logo {
@@ -203,8 +168,8 @@ body.ab-template-split .container .card {
 /* Glassmorphism card effect */
 body[class*="ab-template-"].ab-glass .card {
     background: rgba(255, 255, 255, var(--ab-glass-opacity)) !important;
-    backdrop-filter: blur(var(--ab-glass-blur)) !important;
-    -webkit-backdrop-filter: blur(var(--ab-glass-blur)) !important;
+    backdrop-filter: blur(var(--ab-glass-blur));
+    -webkit-backdrop-filter: blur(var(--ab-glass-blur));
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
     border: 1px solid rgba(255, 255, 255, 0.2) !important;
 }
@@ -223,13 +188,13 @@ body[class*="ab-template-"]:not(.ab-glass) .card {
 body.ab-template-centered.ab-bg-animated,
 body.ab-template-minimal.ab-bg-animated,
 body.ab-template-fullbleed.ab-bg-animated {
-    background-size: 400% 400% !important;
-    animation: abGradientAnim 15s ease infinite !important;
+    background-size: 400% 400%;
+    animation: abGradientAnim 15s ease infinite;
 }
 body.ab-template-split.ab-bg-animated .ab-split-aside,
 body.ab-template-sidebar.ab-bg-animated .ab-split-aside {
-    background-size: 400% 400% !important;
-    animation: abGradientAnim 15s ease infinite !important;
+    background-size: 400% 400%;
+    animation: abGradientAnim 15s ease infinite;
 }
 
 /* Split alignment: image on right */
@@ -255,10 +220,10 @@ body.ab-template-minimal .container {
     min-height: 100vh;
 }
 
-body.ab-template-minimal .card {
+body[class*="ab-template-"].ab-template-minimal .card {
     max-width: 380px !important;
     background: transparent !important;
-    border: 0 !important;
+    border: 0;
     box-shadow: none !important;
 }
 
@@ -276,6 +241,7 @@ body.ab-template-sidebar .ab-split-aside {
     justify-content: center;
     padding: 3rem;
     color: var(--ab-secondary);
+    position: relative;
 }
 
 body.ab-template-sidebar .container {

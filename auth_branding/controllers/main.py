@@ -155,8 +155,13 @@ class AuthBrandingController(http.Controller):
     def _build_css_variables(self, config):
         values = self._normalized_css_values(config)
         font_family = AuthBrandingConfig.FONT_MAP[values["font_family"]]
+        primary_rgb = ", ".join(
+            str(int(values["primary_color"][offset : offset + 2], 16))
+            for offset in (1, 3, 5)
+        )
         return f""":root {{
     --ab-primary: {values['primary_color']};
+    --ab-primary-rgb: {primary_rgb};
     --ab-secondary: {values['secondary_color']};
     --ab-overlay-opacity: {values['background_overlay_opacity']};
     --ab-font: {font_family};
@@ -173,25 +178,25 @@ class AuthBrandingController(http.Controller):
     def _build_background_css(self, config):
         values = self._normalized_css_values(config)
         if values["background_type"] == "solid":
-            return f"background: {values['background_color']} !important;"
+            return f"background: {values['background_color']};"
         if values["background_type"] == "gradient":
             return (
                 "background: linear-gradient("
                 f"{values['gradient_direction']}, {values['gradient_start']}, "
-                f"{values['gradient_end']}) !important;"
+                f"{values['gradient_end']});"
             )
         if values["background_type"] == "animated_gradient":
             return (
                 "background: linear-gradient(-45deg, "
                 f"{values['gradient_start']}, {values['gradient_end']}, "
-                f"{values['primary_color']}) !important; "
-                "background-size: 400% 400% !important; "
-                "animation: abGradientAnim 15s ease infinite !important;"
+                f"{values['primary_color']}); "
+                "background-size: 400% 400%; "
+                "animation: abGradientAnim 15s ease infinite;"
             )
         return (
             "background: url('/auth_branding/image/background_image?company_id="
-            f"{values['company_id']}') no-repeat center center fixed !important; "
-            "background-size: cover !important;"
+            f"{values['company_id']}') no-repeat center center fixed; "
+            "background-size: cover;"
         )
 
     def _build_theme_css(self, config):

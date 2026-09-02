@@ -93,7 +93,7 @@ function updateCustomCss(value) {
     if (!style) {
         style = document.createElement("style");
         style.id = "ab-custom-css-preview";
-        document.head.appendChild(style);
+        document.body.appendChild(style);
     }
     style.textContent = css.length <= 50000 &&
         !hasUnclosedComment &&
@@ -137,24 +137,32 @@ function updateBackground(values) {
         background = `url('/auth_branding/image/background_image?company_id=${companyId}') center / cover no-repeat fixed`;
     }
 
-    const targets = document.querySelectorAll(
-        "body.ab-template-centered, body.ab-template-minimal, body.ab-template-fullbleed, " +
-            "body.ab-template-split .ab-split-aside, body.ab-template-sidebar .ab-split-aside"
-    );
-    for (const target of targets) {
-        target.style.setProperty("background", background, "important");
-        target.style.setProperty(
-            "background-size",
-            type === "animated_gradient" ? "400% 400%" : "cover",
-            "important"
-        );
-        target.style.setProperty(
-            "animation",
-            type === "animated_gradient" ? "abGradientAnim 15s ease infinite" : "none",
-            "important"
-        );
+    let liveTheme = document.getElementById("ab-live-theme-preview");
+    if (!liveTheme) {
+        liveTheme = document.createElement("style");
+        liveTheme.id = "ab-live-theme-preview";
+        document.body.appendChild(liveTheme);
     }
+    const backgroundSize = type === "animated_gradient" ? "400% 400%" : "cover";
+    const animation = type === "animated_gradient"
+        ? "abGradientAnim 15s ease infinite"
+        : "none";
+    liveTheme.textContent = `
+body.ab-template-centered,
+body.ab-template-minimal,
+body.ab-template-fullbleed {
+    background: ${background};
+    background-size: ${backgroundSize};
+    animation: ${animation};
+}
+body.ab-template-split .ab-split-aside,
+body.ab-template-sidebar .ab-split-aside {
+    background: ${background};
+    background-size: ${backgroundSize};
+    animation: ${animation};
+}`;
     document.body.classList.toggle("ab-bg-animated", type === "animated_gradient");
+    document.body.classList.toggle("ab-bg-image", type === "image");
 }
 
 function applyUpdate(values) {
@@ -162,6 +170,12 @@ function applyUpdate(values) {
     for (const [field, variable] of Object.entries(COLOR_VARIABLES)) {
         if (COLOR_PATTERN.test(values[field])) {
             root.style.setProperty(variable, values[field]);
+            if (field === "primary_color") {
+                const rgb = [1, 3, 5]
+                    .map((offset) => parseInt(values[field].slice(offset, offset + 2), 16))
+                    .join(", ");
+                root.style.setProperty("--ab-primary-rgb", rgb);
+            }
         }
     }
     for (const [field, [variable, minimum, maximum, unit]] of Object.entries(

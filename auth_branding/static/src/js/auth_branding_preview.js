@@ -53,6 +53,9 @@ export class AuthBrandingTemplatePicker extends Component {
     }
 
     selectTemplate(templateName) {
+        if (this.props.readonly) {
+            return;
+        }
         this.props.record.update({ [this.props.name]: templateName });
     }
 }

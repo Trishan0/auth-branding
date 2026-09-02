@@ -172,6 +172,12 @@
     }
 }
 
+@media (min-width: 992px) and (max-width: 1399.98px) {
+    .ab-preview-container.ab-device-desktop {
+        --ab-preview-scale: 0.4;
+    }
+}
+
 /* Preset gallery */
 .ab-preset-card {
     overflow: hidden;
@@ -274,17 +280,23 @@
     position: relative;
     width: 110px;
     cursor: pointer;
-    border: 2px solid transparent;
+    color: inherit;
+    text-align: inherit;
     border-radius: 6px;
     padding: 8px;
     background: #ffffff;
     border: 1px solid #dee2e6;
-    transition: all 0.2s;
+    transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
 }
 
 .ab-template-card:hover {
     background: #f8f9fa;
     border-color: #adb5bd;
+}
+
+.ab-template-card:focus-visible {
+    outline: 3px solid #714B67;
+    outline-offset: 2px;
 }
 
 .ab-template-card.active {
@@ -300,7 +312,7 @@
 .ab-check {
     position: absolute;
     top: -8px;
-    right: -8px;
+    inset-inline-end: -8px;
     width: 20px;
     height: 20px;
     border-radius: 50%;

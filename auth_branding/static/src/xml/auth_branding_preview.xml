@@ -20,8 +20,10 @@
     <!-- AuthBrandingTemplatePicker -->
     <t t-name="auth_branding.TemplatePicker" owl="1">
         <div class="d-flex gap-3 ab-template-picker flex-wrap">
-            <div class="ab-template-card" 
+            <button type="button" class="ab-template-card"
                  t-att-class="{ 'active': selected === 'centered' }"
+                 t-att-aria-pressed="selected === 'centered' ? 'true' : 'false'"
+                 t-att-disabled="props.readonly"
                  t-on-click="() => this.selectTemplate('centered')">
                 <div class="ab-mockup-centered">
                     <div class="ab-mockup-bg"></div>
@@ -31,10 +33,12 @@
                 <div class="ab-check" t-if="selected === 'centered'">
                     <i class="fa fa-check text-white"></i>
                 </div>
-            </div>
+            </button>
 
-            <div class="ab-template-card"
+            <button type="button" class="ab-template-card"
                  t-att-class="{ 'active': selected === 'minimal' }"
+                 t-att-aria-pressed="selected === 'minimal' ? 'true' : 'false'"
+                 t-att-disabled="props.readonly"
                  t-on-click="() => this.selectTemplate('minimal')">
                 <div class="ab-mockup-centered ab-mockup-minimal">
                     <div class="ab-mockup-bg"></div>
@@ -44,10 +48,12 @@
                 <div class="ab-check" t-if="selected === 'minimal'">
                     <i class="fa fa-check text-white"></i>
                 </div>
-            </div>
+            </button>
 
-            <div class="ab-template-card"
+            <button type="button" class="ab-template-card"
                  t-att-class="{ 'active': selected === 'sidebar' }"
+                 t-att-aria-pressed="selected === 'sidebar' ? 'true' : 'false'"
+                 t-att-disabled="props.readonly"
                  t-on-click="() => this.selectTemplate('sidebar')">
                 <div class="ab-mockup-split ab-mockup-sidebar d-flex">
                     <div class="ab-mockup-aside bg-secondary h-100"></div>
@@ -59,10 +65,12 @@
                 <div class="ab-check" t-if="selected === 'sidebar'">
                     <i class="fa fa-check text-white"></i>
                 </div>
-            </div>
+            </button>
 
-            <div class="ab-template-card" 
+            <button type="button" class="ab-template-card"
                  t-att-class="{ 'active': selected === 'split' }"
+                 t-att-aria-pressed="selected === 'split' ? 'true' : 'false'"
+                 t-att-disabled="props.readonly"
                  t-on-click="() => this.selectTemplate('split')">
                 <div class="ab-mockup-split d-flex">
                     <div class="ab-mockup-aside bg-secondary w-50 h-100"></div>
@@ -74,10 +82,12 @@
                 <div class="ab-check" t-if="selected === 'split'">
                     <i class="fa fa-check text-white"></i>
                 </div>
-            </div>
+            </button>
 
-            <div class="ab-template-card" 
+            <button type="button" class="ab-template-card"
                  t-att-class="{ 'active': selected === 'fullbleed' }"
+                 t-att-aria-pressed="selected === 'fullbleed' ? 'true' : 'false'"
+                 t-att-disabled="props.readonly"
                  t-on-click="() => this.selectTemplate('fullbleed')">
                 <div class="ab-mockup-fullbleed">
                     <div class="ab-mockup-bg bg-secondary opacity-50"></div>
@@ -87,7 +97,7 @@
                 <div class="ab-check" t-if="selected === 'fullbleed'">
                     <i class="fa fa-check text-white"></i>
                 </div>
-            </div>
+            </button>
         </div>
     </t>
 
