@@ -6,6 +6,10 @@ from odoo.tests import HttpCase, tagged
 
 @tagged("post_install", "-at_install")
 class TestAuthBrandingController(HttpCase):
+    def test_preview_requires_an_authenticated_user(self):
+        response = self.url_open("/auth_branding/preview")
+        self.assertIn("/web/login", response.url)
+
     def test_theme_css_headers_and_conditional_request(self):
         response = self.url_open("/auth_branding/theme.css")
         self.assertEqual(response.status_code, 200)
@@ -21,6 +25,7 @@ class TestAuthBrandingController(HttpCase):
             headers={"If-None-Match": response.headers["ETag"]},
         )
         self.assertEqual(cached_response.status_code, 304)
+        self.assertIn("--ab-primary-rgb:", response.text)
 
     def test_invalid_image_field_returns_not_found(self):
         response = self.url_open("/auth_branding/image/not_allowed")

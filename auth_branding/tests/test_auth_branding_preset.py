@@ -31,6 +31,14 @@ class TestAuthBrandingPreset(TransactionCase):
         with self.assertRaises(UserError):
             self.system_preset.unlink()
 
+    def test_custom_preset_can_be_deleted(self):
+        preset_id = self.env["auth.branding.preset"].create_from_config(
+            self.config.id, "Disposable Theme"
+        )
+        preset = self.env["auth.branding.preset"].browse(preset_id)
+        preset.unlink()
+        self.assertFalse(preset.exists())
+
     def test_preset_color_validation(self):
         with self.assertRaises(ValidationError), self.env.cr.savepoint():
             self.env["auth.branding.preset"].create(

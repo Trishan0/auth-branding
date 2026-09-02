@@ -51,3 +51,23 @@ class TestAuthBrandingImport(TransactionCase):
         wizard = self._wizard_for_payload({"format": "other", "schema_version": 1})
         with self.assertRaises(UserError):
             wizard.action_review()
+
+    def test_import_rejects_invalid_field_types(self):
+        payload = self.config._get_export_payload()
+        payload["settings"]["primary_color"] = {"unexpected": "object"}
+        wizard = self._wizard_for_payload(payload)
+        with self.assertRaises(UserError):
+            wizard.action_review()
+
+    def test_missing_assets_do_not_clear_existing_draft_assets(self):
+        self.config.company_logo = base64.b64encode(b"existing")
+        payload = self.config._get_export_payload()
+        payload.pop("assets")
+        payload["settings"]["tagline"] = "No asset section"
+
+        wizard = self._wizard_for_payload(payload)
+        wizard.action_review()
+        wizard.action_apply()
+
+        self.assertTrue(self.config.company_logo)
+        self.assertEqual(self.config.tagline, "No asset section")

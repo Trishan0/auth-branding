@@ -36,11 +36,13 @@ class TestAuthBrandingWizard(TransactionCase):
 
         wizard.tagline = "A guided welcome"
         wizard.template = "split"
+        version_count = len(config.version_ids)
         wizard.action_apply()
         self.assertEqual(config.tagline, "A guided welcome")
         self.assertEqual(config.template, "split")
         self.assertEqual(config.primary_color, wizard.primary_color)
         self.assertTrue(config.active_version_id)
+        self.assertEqual(len(config.version_ids), version_count + 1)
 
     def test_open_wizard_carries_current_configuration(self):
         config = self.env["auth.branding.config"]._get_or_create_config()

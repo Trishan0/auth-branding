@@ -82,6 +82,15 @@ class TestAuthBrandingConfig(TransactionCase):
         self.config.custom_css = css
         self.assertEqual(self.config.custom_css, css)
 
+    def test_export_payload_is_portable_and_excludes_technical_fields(self):
+        payload = self.config._get_export_payload()
+        self.assertEqual(payload["format"], "odoo_auth_branding")
+        self.assertEqual(payload["schema_version"], 1)
+        self.assertIn("primary_color", payload["settings"])
+        self.assertIn("company_logo", payload["assets"])
+        self.assertNotIn("company_id", payload["settings"])
+        self.assertNotIn("active_version_id", payload["settings"])
+
     def test_opacity_and_dimension_validation(self):
         with self.assertRaises(ValidationError), self.env.cr.savepoint():
             self.config.write({"background_overlay_opacity": 1.1})

@@ -1,6 +1,7 @@
 import base64
 import binascii
 import json
+import math
 
 from odoo import _, fields, models
 from odoo.exceptions import UserError
@@ -64,10 +65,36 @@ class AuthBrandingImportWizard(models.TransientModel):
             config_model.BINARY_FIELDS
         )
         settings = {
-            field_name: value
+            field_name: False if value is None else value
             for field_name, value in raw_settings.items()
             if field_name in allowed_settings
         }
+        for field_name, value in settings.items():
+            field = config_model._fields[field_name]
+            valid = True
+            if field.type == "boolean":
+                valid = isinstance(value, bool)
+            elif field.type == "integer":
+                valid = isinstance(value, int) and not isinstance(value, bool)
+            elif field.type == "float":
+                valid = (
+                    isinstance(value, (int, float))
+                    and not isinstance(value, bool)
+                    and math.isfinite(value)
+                )
+            elif field.type in {"char", "text", "selection"}:
+                valid = value is False or isinstance(value, str)
+            if valid and field.type == "selection" and value is not False:
+                valid = value in dict(field.selection)
+            if field.required and value is False:
+                valid = False
+            if not valid:
+                raise UserError(
+                    _(
+                        "Invalid value for branding field %(field)s.",
+                        field=field.string,
+                    )
+                )
         ignored_fields = sorted(set(raw_settings) - allowed_settings)
         assets = {}
         for field_name in config_model.BINARY_FIELDS:
