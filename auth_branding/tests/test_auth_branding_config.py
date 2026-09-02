@@ -63,6 +63,25 @@ class TestAuthBrandingConfig(TransactionCase):
         self.assertEqual(self.config.loading_animation_type, "spinner")
         self.assertEqual(self.config.powered_by_text, "Powered by Odoo")
 
+    def test_custom_css_blocks_active_content_and_external_resources(self):
+        for unsafe_css in (
+            'body { background: url("https://tracker.example/pixel"); }',
+            "</style><script>alert(1)</script>",
+            "@import 'https://example.com/theme.css';",
+            "div { width: expression(alert(1)); }",
+            "body { background: u/**/rl(https://tracker.example); }",
+            "body { background: u\\72l(https://tracker.example); }",
+        ):
+            with self.subTest(css=unsafe_css), self.assertRaises(
+                ValidationError
+            ), self.env.cr.savepoint():
+                self.config.custom_css = unsafe_css
+
+    def test_custom_css_accepts_local_style_overrides(self):
+        css = ".oe_login_form { max-width: 30rem; }"
+        self.config.custom_css = css
+        self.assertEqual(self.config.custom_css, css)
+
     def test_opacity_and_dimension_validation(self):
         with self.assertRaises(ValidationError), self.env.cr.savepoint():
             self.config.write({"background_overlay_opacity": 1.1})

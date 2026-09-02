@@ -99,6 +99,21 @@ class TestAuthBrandingController(HttpCase):
         self.assertIn("#112233", response.text)
         self.assertNotIn("#445566", response.text)
 
+    def test_theme_route_appends_only_published_custom_css(self):
+        config = (
+            self.env["auth.branding.config"]
+            .sudo()
+            ._get_or_create_config(self.env.company.id)
+        )
+        published_css = ".oe_login_form { max-width: 31rem; }"
+        config.custom_css = published_css
+        config.with_user(self.env.user).action_publish()
+        config.custom_css = ".oe_login_form { max-width: 42rem; }"
+
+        response = self.url_open("/auth_branding/theme.css")
+        self.assertIn(published_css, response.text)
+        self.assertNotIn("42rem", response.text)
+
     def test_preview_css_parameters_are_sanitized(self):
         self.authenticate("admin", "admin")
         payload = "#fff;}</style><script>alert(1)</script>"

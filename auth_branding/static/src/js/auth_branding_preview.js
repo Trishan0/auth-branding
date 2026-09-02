@@ -75,7 +75,9 @@ const PREVIEW_FIELDS = [
     "privacy_url", "terms_label", "privacy_label",
     "dark_mode", "show_loading_animation", "loading_animation_type",
     "powered_by_text", "powered_by_url",
+    "custom_css",
 ];
+const URL_EXCLUDED_FIELDS = new Set(["custom_css"]);
 const BOOLEAN_FIELDS = new Set([
     "show_manage_databases",
     "show_powered_by_odoo",
@@ -160,6 +162,9 @@ export class AuthBrandingPreview extends Component {
     buildPreviewUrl(data) {
         const params = new URLSearchParams({ page: this.state.page });
         for (const fieldName of PREVIEW_FIELDS) {
+            if (URL_EXCLUDED_FIELDS.has(fieldName)) {
+                continue;
+            }
             const value = this.extractValue(data[fieldName]);
             if (BOOLEAN_FIELDS.has(fieldName) && value !== undefined) {
                 params.append(fieldName, value ? "true" : "false");

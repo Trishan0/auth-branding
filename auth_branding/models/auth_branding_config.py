@@ -13,6 +13,13 @@ class AuthBrandingConfig(models.Model):
     _order = "company_id"
 
     COLOR_PATTERN = re.compile(r"^#[0-9A-Fa-f]{6}$")
+    CUSTOM_CSS_MAX_LENGTH = 50000
+    UNSAFE_CSS_PATTERN = re.compile(
+        r"(?:[<>\\]|@(?:import|charset|namespace)\b|expression\s*\(|"
+        r"url\s*\(|https?\s*:|(?:java|vb)script\s*:|data\s*:|"
+        r"-moz-binding\b|behavior\s*:)",
+        re.IGNORECASE,
+    )
     COLOR_FIELDS = (
         "card_background_color",
         "primary_color",
@@ -80,6 +87,7 @@ class AuthBrandingConfig(models.Model):
         "loading_animation_type",
         "powered_by_text",
         "powered_by_url",
+        "custom_css",
         "terms_url",
         "privacy_url",
         "terms_label",
@@ -270,6 +278,13 @@ class AuthBrandingConfig(models.Model):
     powered_by_url = fields.Char(
         string="Powered-by URL", default="https://www.odoo.com"
     )
+    custom_css = fields.Text(
+        string="Custom CSS",
+        help=(
+            "Optional CSS overrides for advanced users. External resources, imports, "
+            "scripts, and legacy executable CSS are blocked."
+        ),
+    )
     terms_url = fields.Char(string="Terms of Service URL")
     privacy_url = fields.Char(string="Privacy Policy URL")
     terms_label = fields.Char(string="Terms Label", default="Terms of Service")
@@ -363,6 +378,32 @@ class AuthBrandingConfig(models.Model):
         value = self[field_name]
         return value if value and self._is_safe_http_url(value) else False
 
+    @classmethod
+    def _sanitize_custom_css(cls, value):
+        if not value:
+            return ""
+        value = str(value)
+        css_without_comments = re.sub(r"/\*.*?\*/", "", value, flags=re.DOTALL)
+        if (
+            len(value) > cls.CUSTOM_CSS_MAX_LENGTH
+            or value.count("/*") != value.count("*/")
+            or cls.UNSAFE_CSS_PATTERN.search(css_without_comments)
+            or any(ord(character) < 32 and character not in "\n\r\t" for character in value)
+        ):
+            return ""
+        return value
+
+    @api.constrains("custom_css")
+    def _check_custom_css(self):
+        for record in self:
+            if record.custom_css and not self._sanitize_custom_css(record.custom_css):
+                raise ValidationError(
+                    _(
+                        "Custom CSS contains an unsafe or unsupported construct. "
+                        "Remove HTML tags, external URLs, imports, scripts, or executable CSS."
+                    )
+                )
+
     def _get_snapshot_values(self):
         self.ensure_one()
         return {
@@ -415,6 +456,7 @@ class AuthBrandingConfig(models.Model):
                 "powered_by_url": values.get("powered_by_url")
                 if self._is_safe_http_url(values.get("powered_by_url") or "")
                 else False,
+                "custom_css": self._sanitize_custom_css(values.get("custom_css")),
                 "is_preview": False,
             }
         )

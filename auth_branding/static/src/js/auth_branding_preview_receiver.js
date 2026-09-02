@@ -27,6 +27,7 @@ const NUMBER_VARIABLES = {
 };
 let loaderHideTimeout;
 let lastLoaderSignature;
+const UNSAFE_CSS_PATTERN = /[<>\\]|@(?:import|charset|namespace)\b|expression\s*\(|url\s*\(|https?\s*:|(?:java|vb)script\s*:|data\s*:|-moz-binding\b|behavior\s*:/i;
 
 function safeNumber(value, minimum, maximum) {
     const parsed = Number(value);
@@ -81,6 +82,22 @@ function updateLoaderPreview(visible) {
             }
         }, 650);
     }
+}
+
+function updateCustomCss(value) {
+    const css = typeof value === "string" ? value : "";
+    const cssWithoutComments = css.replace(/\/\*[\s\S]*?\*\//g, "");
+    const hasUnclosedComment = (css.match(/\/\*/g) || []).length !==
+        (css.match(/\*\//g) || []).length;
+    let style = document.getElementById("ab-custom-css-preview");
+    if (!style) {
+        style = document.createElement("style");
+        style.id = "ab-custom-css-preview";
+        document.head.appendChild(style);
+    }
+    style.textContent = css.length <= 50000 &&
+        !hasUnclosedComment &&
+        !UNSAFE_CSS_PATTERN.test(cssWithoutComments) ? css : "";
 }
 
 function updateBackground(values) {
@@ -252,6 +269,9 @@ function applyUpdate(values) {
             lastLoaderSignature = loaderSignature;
             updateLoaderPreview(values.show_loading_animation);
         }
+    }
+    if (values.custom_css !== undefined) {
+        updateCustomCss(values.custom_css);
     }
 }
 

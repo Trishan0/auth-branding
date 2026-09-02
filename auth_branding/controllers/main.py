@@ -196,6 +196,10 @@ class AuthBrandingController(http.Controller):
     def _build_theme_css(self, config):
         variables = self._build_css_variables(config)
         background = self._build_background_css(config)
+        custom_css = AuthBrandingConfig._sanitize_custom_css(
+            self._value(config, "custom_css", "")
+        )
+        custom_css_block = f"\n/* Custom CSS */\n{custom_css}" if custom_css else ""
         return f"""@keyframes abGradientAnim {{
     0% {{ background-position: 0% 50%; }}
     50% {{ background-position: 100% 50%; }}
@@ -210,6 +214,7 @@ body.ab-template-split .ab-split-aside,
 body.ab-template-sidebar .ab-split-aside {{
     {background}
 }}
+{custom_css_block}
 """
 
     @staticmethod
@@ -348,6 +353,7 @@ body.ab-template-sidebar .ab-split-aside {{
             "powered_by_url": self._safe_url(
                 kwargs.get("powered_by_url", config.powered_by_url or "")
             ),
+            "custom_css": AuthBrandingConfig._sanitize_custom_css(config.custom_css),
             "terms_url": self._safe_url(
                 kwargs.get("terms_url", config.terms_url or "")
             ),

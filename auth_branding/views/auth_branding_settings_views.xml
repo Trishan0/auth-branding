@@ -168,6 +168,12 @@
                                         <field name="social_button_style" />
                                         <field name="hide_social_labels" widget="boolean_toggle" />
                                     </group>
+                                    <group string="Custom CSS (Power Users)" colspan="2">
+                                        <div class="alert alert-info border-0 py-2" colspan="2">
+                                            Overrides are applied after the generated theme. External URLs, imports, and executable CSS are blocked.
+                                        </div>
+                                        <field name="custom_css" widget="ace" options="{'mode': 'css'}" nolabel="1" colspan="2" placeholder="body.ab-template-centered { /* your override */ }" />
+                                    </group>
                                 </page>
                             </notebook>
                         </div>
