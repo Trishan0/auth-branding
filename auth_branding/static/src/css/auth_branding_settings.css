@@ -38,6 +38,36 @@
     margin-bottom: 20px;
 }
 
+/* Compact live design checks */
+.ab-design-health {
+    padding: 10px 12px;
+    border: 1px solid var(--border-color, #dee2e6);
+    border-inline-start-width: 4px;
+    border-radius: 8px;
+    background: var(--o-view-background-color, #fff);
+}
+
+.ab-design-health.is-passing {
+    border-inline-start-color: #198754;
+}
+
+.ab-design-health.has-warnings {
+    border-inline-start-color: #ffc107;
+}
+
+.ab-design-health summary {
+    cursor: pointer;
+    list-style: none;
+}
+
+.ab-design-health summary::-webkit-details-marker {
+    display: none;
+}
+
+.ab-design-health-list > div + div {
+    border-top: 1px solid var(--border-color, #dee2e6);
+}
+
 /* Sticky Preview Panel */
 .o_auth_branding_workspace {
     align-items: flex-start;

@@ -92,14 +92,14 @@
                     <t t-if="ab_has_logo">
                         <img
                             t-attf-src="/auth_branding/image/company_logo?company_id={{ab_company_id}}{{ '&amp;dbname='+db if db else '' }}"
-                            alt="Logo"
+                            alt="Company logo"
                             class="ab-logo"
                         />
                     </t>
                     <t t-else="">
                         <img
                             t-attf-src="/web/binary/company_logo{{ '?dbname='+db if db else '' }}"
-                            alt="Logo"
+                            alt="Company logo"
                             class="ab-logo"
                         />
                     </t>
@@ -118,14 +118,14 @@
                 <t t-if="ab_has_logo">
                     <img
                         t-attf-src="/auth_branding/image/company_logo?company_id={{ab_company_id}}{{ '&amp;dbname='+db if db else '' }}"
-                        alt="Logo"
+                        alt="Company logo"
                         class="ab-logo"
                     />
                 </t>
                 <t t-else="">
                     <img
                         t-attf-src="/web/binary/company_logo{{ '?dbname='+db if db else '' }}"
-                        alt="Logo"
+                        alt="Company logo"
                         class="ab-logo"
                     />
                 </t>

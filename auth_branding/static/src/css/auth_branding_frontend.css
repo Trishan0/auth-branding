@@ -62,6 +62,12 @@ body[class*="ab-template-"] a:not(.btn) {
     color: var(--ab-primary);
 }
 
+body[class*="ab-template-"] :is(a, button, input, select, textarea):focus-visible {
+    outline: 3px solid var(--ab-primary) !important;
+    outline-offset: 2px;
+    box-shadow: none;
+}
+
 /* Custom Backgrounds for Body */
 body.ab-template-centered {
     background: var(--ab-bg-color) !important;
@@ -142,7 +148,7 @@ body.ab-template-split .container .card {
 /* Responsive Split */
 @media (max-width: 768px) {
     body.ab-template-split main {
-        flex-direction: column;
+        flex-direction: column !important;
     }
     body.ab-template-split .ab-split-aside {
         flex: 0 0 auto;
@@ -231,6 +237,16 @@ body.ab-template-split.ab-split-right main {
     flex-direction: row-reverse;
 }
 
+[dir="rtl"] body.ab-template-split:not(.ab-split-right) main,
+[dir="rtl"] body.ab-template-sidebar:not(.ab-split-right) main {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] body.ab-template-split.ab-split-right main,
+[dir="rtl"] body.ab-template-sidebar.ab-split-right main {
+    flex-direction: row;
+}
+
 /* Minimal layout */
 body.ab-template-minimal .container {
     display: flex;
@@ -284,7 +300,7 @@ body.ab-template-sidebar.ab-split-right main {
 
 @media (max-width: 768px) {
     body.ab-template-sidebar main {
-        flex-direction: column;
+        flex-direction: column !important;
     }
 
     body.ab-template-sidebar .ab-split-aside {

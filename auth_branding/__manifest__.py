@@ -29,8 +29,10 @@ backgrounds, logos, typography, and a live backend preview.
         "web.assets_backend": [
             "auth_branding/static/src/js/auth_branding_preview.js",
             "auth_branding/static/src/js/auth_branding_preset_gallery.js",
+            "auth_branding/static/src/js/auth_branding_accessibility.js",
             "auth_branding/static/src/xml/auth_branding_preview.xml",
             "auth_branding/static/src/xml/auth_branding_preset_gallery.xml",
+            "auth_branding/static/src/xml/auth_branding_accessibility.xml",
             "auth_branding/static/src/css/auth_branding_settings.css",
         ],
         "web.assets_frontend": [

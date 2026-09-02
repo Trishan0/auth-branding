@@ -45,6 +45,7 @@
                     </div>
                     <div class="row g-4 o_auth_branding_workspace">
                         <div class="col-xl-5 col-lg-6 o_auth_branding_editor">
+                            <widget name="auth_branding_accessibility" />
                             <notebook class="o_auth_branding_notebook">
                                 <page string="Presets" name="presets">
                                     <div class="mb-3">

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="auth_branding.AccessibilityChecks" owl="1">
+        <details class="ab-design-health mb-3" t-att-class="passedCount === checks.length ? 'is-passing' : 'has-warnings'">
+            <summary class="d-flex align-items-center gap-2" aria-live="polite">
+                <i t-att-class="passedCount === checks.length ? 'fa fa-check-circle text-success' : 'fa fa-exclamation-triangle text-warning'" />
+                <strong>Design health</strong>
+                <span class="small text-muted"><t t-out="passedCount"/>/<t t-out="checks.length"/> contrast checks passed</span>
+                <span class="ms-auto small text-muted">Show details</span>
+            </summary>
+            <div class="ab-design-health-list mt-2">
+                <div class="d-flex align-items-start gap-2 py-2" t-foreach="checks" t-as="check" t-key="check.key">
+                    <i t-att-class="check.pass ? 'fa fa-check-circle text-success mt-1' : 'fa fa-exclamation-circle text-danger mt-1'" />
+                    <div class="flex-grow-1">
+                        <div class="d-flex align-items-center gap-2">
+                            <span><t t-out="check.label"/></span>
+                            <span class="badge" t-att-class="check.pass ? 'text-bg-success' : 'text-bg-danger'"><t t-out="formatRatio(check.ratio)"/></span>
+                        </div>
+                        <div class="small text-muted"><t t-out="check.hint"/></div>
+                    </div>
+                </div>
+            </div>
+        </details>
+    </t>
+</templates>
