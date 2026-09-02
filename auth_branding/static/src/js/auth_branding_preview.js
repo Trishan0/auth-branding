@@ -63,6 +63,7 @@ export class AuthBrandingPreview extends Component {
     setup() {
         this.state = useState({
             page: "login",
+            device: "desktop",
             iframeSrc: "",
         });
         
@@ -151,6 +152,10 @@ export class AuthBrandingPreview extends Component {
 
     setPage(page) {
         this.state.page = page;
+    }
+
+    setDevice(device) {
+        this.state.device = device;
     }
 }
 

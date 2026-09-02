@@ -1,47 +1,145 @@
 /* Styling for settings UI only */
 
-.ab-preview-container {
-    width: calc(1280px * 0.6);
-    height: calc(800px * 0.6);
-    overflow: hidden;
-    position: relative;
-    border-radius: 8px;
-    margin-bottom: 20px;
-}
-
 /* Form Layout Improvements */
 .o_auth_branding_form .o_form_sheet {
     max-width: 100% !important;
     margin: 0 !important;
+    padding: 24px 28px !important;
 }
-.o_auth_branding_form{
-    padding-left:10px;
+
+.o_auth_branding_form {
+    padding-inline-start: 10px;
 }
+
 .o_auth_branding_form .o_form_sheet_bg {
     max-width: 100% !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
+    padding-inline: 0 !important;
+}
+
+.o_auth_branding_header {
+    border-bottom: 1px solid var(--border-color, #dee2e6);
+    padding-bottom: 16px;
+}
+
+.o_auth_branding_notebook .nav-tabs {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    background: var(--o-view-background-color, #fff);
+}
+
+.o_auth_branding_notebook .tab-pane {
+    padding-block: 16px 8px;
+}
+
+.o_auth_branding_notebook .o_group {
+    margin-bottom: 20px;
 }
 
 /* Sticky Preview Panel */
-.o_auth_branding_form .row {
+.o_auth_branding_workspace {
     align-items: flex-start;
 }
 
-.o_auth_branding_form .col-md-7 {
+.o_auth_branding_preview_column {
     position: sticky;
-    top: 20px;
+    top: 12px;
     align-self: flex-start;
 }
 
+.ab-preview-widget {
+    min-width: 0;
+    padding-inline-start: 20px;
+    border-inline-start: 1px solid var(--border-color, #dee2e6);
+}
+
+.ab-preview-toolbar .btn-group .btn {
+    min-width: 38px;
+}
+
+.ab-preview-status .fa-circle {
+    font-size: 8px;
+}
+
+.ab-preview-shell {
+    display: flex;
+    justify-content: center;
+    min-height: 300px;
+    padding: 18px;
+    overflow: auto;
+    background:
+        linear-gradient(45deg, #f4f5f6 25%, transparent 25%),
+        linear-gradient(-45deg, #f4f5f6 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #f4f5f6 75%),
+        linear-gradient(-45deg, transparent 75%, #f4f5f6 75%);
+    background-color: #e9ecef;
+    background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+    background-size: 16px 16px;
+}
+
+.ab-preview-container {
+    --ab-preview-scale: 0.52;
+    --ab-preview-width: 1280px;
+    --ab-preview-height: 800px;
+    width: calc(var(--ab-preview-width) * var(--ab-preview-scale));
+    height: calc(var(--ab-preview-height) * var(--ab-preview-scale));
+    flex: 0 0 auto;
+    overflow: hidden;
+    position: relative;
+    background: #fff;
+    transition: width 180ms ease, height 180ms ease;
+}
+
+.ab-preview-container.ab-device-tablet {
+    --ab-preview-scale: 0.55;
+    --ab-preview-width: 768px;
+    --ab-preview-height: 1024px;
+}
+
+.ab-preview-container.ab-device-mobile {
+    --ab-preview-scale: 0.62;
+    --ab-preview-width: 390px;
+    --ab-preview-height: 844px;
+}
+
 .ab-preview-iframe {
-    width: 1280px;
-    height: 800px;
-    transform: scale(0.6);
+    width: var(--ab-preview-width);
+    height: var(--ab-preview-height);
+    transform: scale(var(--ab-preview-scale));
     transform-origin: top left;
     border: none;
     background: #fff;
-    pointer-events: none; /* Disable interaction in preview */
+    pointer-events: none;
+}
+
+.ab-preview-loading {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6c757d;
+    background: #fff;
+}
+
+@media (max-width: 991.98px) {
+    .o_auth_branding_preview_column {
+        position: static;
+    }
+
+    .ab-preview-widget {
+        padding-inline-start: 0;
+        border-inline-start: 0;
+        border-top: 1px solid var(--border-color, #dee2e6);
+        padding-top: 20px;
+    }
+
+    .ab-preview-container.ab-device-desktop {
+        --ab-preview-scale: 0.44;
+    }
 }
 
 /* Template Picker Styling */
