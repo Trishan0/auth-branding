@@ -18,8 +18,24 @@
             <t t-set="ab_split_alignment" t-value="ab.get('split_alignment') if ab_is_dict else ab.split_alignment" />
             <t t-set="ab_bg_type" t-value="ab.get('background_type') if ab_is_dict else ab.background_type" />
             <t
+                t-set="ab_page"
+                t-value="ab.get('page') if ab_preview else ('signup' if request.httprequest.path.startswith('/web/signup') else ('reset' if request.httprequest.path.startswith('/web/reset_password') else 'login'))"
+            />
+            <t
+                t-set="ab_page_title_template"
+                t-value="ab.get('page_title_signup') if ab_page == 'signup' else (ab.get('page_title_reset') if ab_page == 'reset' else ab.get('page_title'))"
+            />
+            <t
+                t-set="title"
+                t-value="(ab_page_title_template or 'Odoo').replace('{company}', res_company.display_name if res_company else request.env.company.display_name)"
+            />
+            <t
+                t-set="x_icon"
+                t-value="('/auth_branding/image/favicon?company_id=%s' % ab_company_id) if ab.get('favicon') else '/web/static/img/favicon.ico'"
+            />
+            <t
                 t-set="body_classname"
-                t-value="'bg-100 ab-template-' + ab_template + (' ab-glass' if ab_glassmorphism else '') + (' ab-split-right' if ab_split_alignment == 'right' else '') + (' ab-bg-animated' if ab_bg_type == 'animated_gradient' else '')"
+                t-value="'bg-100 ab-template-' + ab_template + (' ab-glass' if ab_glassmorphism else '') + (' ab-split-right' if ab_split_alignment == 'right' else '') + (' ab-bg-animated' if ab_bg_type == 'animated_gradient' else '') + ' ab-social-' + (ab.get('social_button_style') or 'rounded') + (' ab-social-hide-labels' if ab.get('hide_social_labels') else '')"
             />
         </xpath>
 
@@ -32,8 +48,8 @@
             <t t-set="ab_show_powered_by_odoo" t-value="ab.get('show_powered_by_odoo') if ab_is_dict else ab.show_powered_by_odoo" />
 
             <!-- Custom Content Variables -->
-            <t t-set="ab_welcome_title" t-value="ab.get('login_welcome_title') if ab_is_dict else ab.login_welcome_title" />
-            <t t-set="ab_welcome_subtitle" t-value="ab.get('login_welcome_subtitle') if ab_is_dict else ab.login_welcome_subtitle" />
+            <t t-set="ab_welcome_title" t-value="ab.get('signup_welcome_title') if ab_page == 'signup' else (ab.get('reset_welcome_title') if ab_page == 'reset' else ab.get('login_welcome_title'))" />
+            <t t-set="ab_welcome_subtitle" t-value="ab.get('signup_welcome_subtitle') if ab_page == 'signup' else (ab.get('reset_welcome_subtitle') if ab_page == 'reset' else ab.get('login_welcome_subtitle'))" />
             <t t-set="ab_terms_url" t-value="ab.get('terms_url')" />
             <t t-set="ab_privacy_url" t-value="ab.get('privacy_url')" />
             <t t-set="ab_terms_label" t-value="ab.get('terms_label') if ab_is_dict else ab.terms_label" />

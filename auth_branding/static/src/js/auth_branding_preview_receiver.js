@@ -151,6 +151,21 @@ function applyUpdate(values) {
         "ab-split-right",
         values.split_alignment === "right"
     );
+    const socialStyles = ["rounded", "pill", "square", "icon"];
+    if (socialStyles.includes(values.social_button_style)) {
+        for (const style of socialStyles) {
+            document.body.classList.toggle(
+                `ab-social-${style}`,
+                values.social_button_style === style
+            );
+        }
+    }
+    if (typeof values.hide_social_labels === "boolean") {
+        document.body.classList.toggle(
+            "ab-social-hide-labels",
+            values.hide_social_labels
+        );
+    }
     updateBackground(values);
 
     for (const field of [

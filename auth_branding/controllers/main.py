@@ -226,6 +226,8 @@ body.ab-template-split .ab-split-aside {{
         }
         config_values = {
             "company_id": config.company_id.id,
+            "company_logo": bool(config.company_logo),
+            "favicon": bool(config.favicon),
             "template": self._safe_selection(
                 kwargs.get("template", config.template),
                 self._TEMPLATES,
@@ -295,6 +297,33 @@ body.ab-template-split .ab-split-aside {{
             "login_welcome_subtitle": kwargs.get(
                 "login_welcome_subtitle", config.login_welcome_subtitle or ""
             )[:500],
+            "signup_welcome_title": kwargs.get(
+                "signup_welcome_title", config.signup_welcome_title or ""
+            )[:500],
+            "signup_welcome_subtitle": kwargs.get(
+                "signup_welcome_subtitle", config.signup_welcome_subtitle or ""
+            )[:500],
+            "reset_welcome_title": kwargs.get(
+                "reset_welcome_title", config.reset_welcome_title or ""
+            )[:500],
+            "reset_welcome_subtitle": kwargs.get(
+                "reset_welcome_subtitle", config.reset_welcome_subtitle or ""
+            )[:500],
+            "page_title": kwargs.get("page_title", config.page_title or "")[:200],
+            "page_title_signup": kwargs.get(
+                "page_title_signup", config.page_title_signup or ""
+            )[:200],
+            "page_title_reset": kwargs.get(
+                "page_title_reset", config.page_title_reset or ""
+            )[:200],
+            "social_button_style": self._safe_selection(
+                kwargs.get("social_button_style", config.social_button_style),
+                {"rounded", "pill", "square", "icon"},
+                "rounded",
+            ),
+            "hide_social_labels": self._boolean_parameter(
+                kwargs, "hide_social_labels", config.hide_social_labels
+            ),
             "terms_url": self._safe_url(
                 kwargs.get("terms_url", config.terms_url or "")
             ),
@@ -355,6 +384,18 @@ body.ab-template-split .ab-split-aside {{
     def preview(self, page="login", **kwargs):
         config = self._get_config(kwargs.get("company_id"))
         ab_config = self._build_preview_config(config, kwargs)
+        page = page if page in self._ALLOWED_PAGES else "login"
+        ab_config["page"] = page
+        if page == "signup":
+            ab_config["login_welcome_title"] = ab_config["signup_welcome_title"]
+            ab_config["login_welcome_subtitle"] = ab_config[
+                "signup_welcome_subtitle"
+            ]
+        elif page == "reset":
+            ab_config["login_welcome_title"] = ab_config["reset_welcome_title"]
+            ab_config["login_welcome_subtitle"] = ab_config[
+                "reset_welcome_subtitle"
+            ]
         request.update_context(ab_preview_config=ab_config)
 
         qcontext = {

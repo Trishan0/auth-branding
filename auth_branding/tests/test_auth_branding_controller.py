@@ -25,6 +25,31 @@ class TestAuthBrandingController(HttpCase):
         response = self.url_open("/auth_branding/image/not_allowed")
         self.assertEqual(response.status_code, 404)
 
+    def test_login_page_uses_published_title_favicon_and_social_style(self):
+        config = (
+            self.env["auth.branding.config"]
+            .sudo()
+            ._get_or_create_config(self.env.company.id)
+        )
+        config.write(
+            {
+                "page_title": "Welcome to {company}",
+                "favicon": b"aGVsbG8=",
+                "social_button_style": "pill",
+                "hide_social_labels": True,
+            }
+        )
+        config.with_user(self.env.user).action_publish()
+
+        response = self.url_open("/web/login")
+        self.assertIn(
+            f"<title>Welcome to {self.env.company.display_name}</title>",
+            response.text,
+        )
+        self.assertIn("/auth_branding/image/favicon", response.text)
+        self.assertIn("ab-social-pill", response.text)
+        self.assertIn("ab-social-hide-labels", response.text)
+
     def test_public_route_cannot_select_an_unrelated_company(self):
         other_company = self.env["res.company"].create(
             {"name": "Unrelated Branding Company"}

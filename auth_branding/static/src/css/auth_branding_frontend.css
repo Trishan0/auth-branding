@@ -233,3 +233,59 @@ body.ab-template-split.ab-split-right main {
 .o_database_list .list-group-item {
     background: transparent !important;
 }
+
+/* OAuth provider buttons */
+body[class*="ab-template-"] .o_login_auth .list-group {
+    gap: 0.5rem;
+}
+
+body[class*="ab-template-"] .o_login_auth .list-group-item {
+    border: 1px solid color-mix(in srgb, var(--ab-text-color) 18%, transparent);
+    color: var(--ab-text-color);
+    background: color-mix(in srgb, var(--ab-card-bg) 92%, transparent);
+    transition: transform 150ms ease, border-color 150ms ease, background-color 150ms ease;
+}
+
+body[class*="ab-template-"] .o_login_auth .list-group-item:hover {
+    border-color: var(--ab-primary);
+    background: color-mix(in srgb, var(--ab-primary) 8%, var(--ab-card-bg));
+    transform: translateY(-1px);
+}
+
+body.ab-social-rounded .o_login_auth .list-group-item {
+    border-radius: 0.65rem;
+}
+
+body.ab-social-pill .o_login_auth .list-group-item {
+    border-radius: 999px;
+}
+
+body.ab-social-square .o_login_auth .list-group-item {
+    border-radius: 0;
+}
+
+body.ab-social-icon .o_login_auth .list-group,
+body.ab-social-hide-labels .o_login_auth .list-group {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+body.ab-social-icon .o_login_auth .list-group-item,
+body.ab-social-hide-labels .o_login_auth .list-group-item {
+    width: 44px;
+    height: 44px;
+    justify-content: center;
+    padding: 0;
+    border-radius: 50%;
+}
+
+body.ab-social-icon .o_login_auth .list-group-item span,
+body.ab-social-hide-labels .o_login_auth .list-group-item span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+}

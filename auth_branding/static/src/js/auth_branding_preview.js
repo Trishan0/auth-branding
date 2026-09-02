@@ -69,12 +69,16 @@ const PREVIEW_FIELDS = [
     "show_manage_databases", "show_powered_by_odoo", "split_alignment",
     "card_background_color", "glassmorphism", "glassmorphism_blur",
     "glassmorphism_opacity", "custom_footer_text", "login_welcome_title",
-    "login_welcome_subtitle", "terms_url", "privacy_url", "terms_label", "privacy_label",
+    "login_welcome_subtitle", "signup_welcome_title", "signup_welcome_subtitle",
+    "reset_welcome_title", "reset_welcome_subtitle", "page_title", "page_title_signup",
+    "page_title_reset", "social_button_style", "hide_social_labels", "terms_url",
+    "privacy_url", "terms_label", "privacy_label",
 ];
 const BOOLEAN_FIELDS = new Set([
     "show_manage_databases",
     "show_powered_by_odoo",
     "glassmorphism",
+    "hide_social_labels",
 ]);
 
 
@@ -134,12 +138,20 @@ export class AuthBrandingPreview extends Component {
 
     getPreviewValues() {
         const data = this.props.record.data;
-        return Object.fromEntries(
+        const values = Object.fromEntries(
             PREVIEW_FIELDS.map((fieldName) => [
                 fieldName,
                 this.extractValue(data[fieldName]),
             ])
         );
+        if (this.state.page === "signup") {
+            values.login_welcome_title = values.signup_welcome_title;
+            values.login_welcome_subtitle = values.signup_welcome_subtitle;
+        } else if (this.state.page === "reset") {
+            values.login_welcome_title = values.reset_welcome_title;
+            values.login_welcome_subtitle = values.reset_welcome_subtitle;
+        }
+        return values;
     }
 
     buildPreviewUrl(data) {

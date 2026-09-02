@@ -123,9 +123,20 @@
                                 </page>
 
                                 <page string="Content" name="content">
-                                    <group string="Welcome Message">
+                                    <group string="Login Page">
+                                        <field name="page_title" placeholder="Sign in to {company}" />
                                         <field name="login_welcome_title" placeholder="e.g. Welcome back!" />
                                         <field name="login_welcome_subtitle" placeholder="e.g. Sign in to continue." />
+                                    </group>
+                                    <group string="Signup Page">
+                                        <field name="page_title_signup" placeholder="Create an account | {company}" />
+                                        <field name="signup_welcome_title" />
+                                        <field name="signup_welcome_subtitle" />
+                                    </group>
+                                    <group string="Password Reset Page">
+                                        <field name="page_title_reset" placeholder="Reset password | {company}" />
+                                        <field name="reset_welcome_title" />
+                                        <field name="reset_welcome_subtitle" />
                                     </group>
                                     <group string="Footer">
                                         <field name="custom_footer_text" placeholder="e.g. Support: +1 800 000 0000" />
@@ -143,6 +154,10 @@
                                     <group string="Odoo Links">
                                         <field name="show_manage_databases" widget="boolean_toggle" />
                                         <field name="show_powered_by_odoo" widget="boolean_toggle" />
+                                    </group>
+                                    <group string="Social Login Buttons">
+                                        <field name="social_button_style" />
+                                        <field name="hide_social_labels" widget="boolean_toggle" />
                                     </group>
                                 </page>
                             </notebook>

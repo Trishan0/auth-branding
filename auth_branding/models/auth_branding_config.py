@@ -66,6 +66,15 @@ class AuthBrandingConfig(models.Model):
         "custom_footer_text",
         "login_welcome_title",
         "login_welcome_subtitle",
+        "signup_welcome_title",
+        "signup_welcome_subtitle",
+        "reset_welcome_title",
+        "reset_welcome_subtitle",
+        "page_title",
+        "page_title_signup",
+        "page_title_reset",
+        "social_button_style",
+        "hide_social_labels",
         "terms_url",
         "privacy_url",
         "terms_label",
@@ -193,6 +202,40 @@ class AuthBrandingConfig(models.Model):
         string="Login Welcome Subtitle",
         help='A short subtitle below the title, e.g. "Sign in to continue."',
     )
+    signup_welcome_title = fields.Char(
+        string="Signup Welcome Title", default="Create your account"
+    )
+    signup_welcome_subtitle = fields.Char(
+        string="Signup Welcome Subtitle", default="Join us in a few simple steps."
+    )
+    reset_welcome_title = fields.Char(
+        string="Password Reset Title", default="Reset your password"
+    )
+    reset_welcome_subtitle = fields.Char(
+        string="Password Reset Subtitle",
+        default="We will help you get back into your account.",
+    )
+    page_title = fields.Char(
+        string="Login Page Title", default="Sign in to {company}"
+    )
+    page_title_signup = fields.Char(
+        string="Signup Page Title", default="Create an account | {company}"
+    )
+    page_title_reset = fields.Char(
+        string="Password Reset Page Title", default="Reset password | {company}"
+    )
+    social_button_style = fields.Selection(
+        [
+            ("rounded", "Rounded"),
+            ("pill", "Pill"),
+            ("square", "Square"),
+            ("icon", "Icon Focused"),
+        ],
+        string="Social Login Style",
+        default="rounded",
+        required=True,
+    )
+    hide_social_labels = fields.Boolean(string="Hide Social Login Labels")
     terms_url = fields.Char(string="Terms of Service URL")
     privacy_url = fields.Char(string="Privacy Policy URL")
     terms_label = fields.Char(string="Terms Label", default="Terms of Service")
