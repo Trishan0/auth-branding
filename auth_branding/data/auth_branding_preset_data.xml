@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="preset_corporate_blue" model="auth.branding.preset">
+        <field name="name">Corporate Blue</field>
+        <field name="description">Professional blue with a crisp, trustworthy finish.</field>
+        <field name="sequence">10</field>
+        <field name="is_system" eval="True" />
+        <field name="company_id" eval="False" />
+        <field name="template">split</field>
+        <field name="primary_color">#2563EB</field>
+        <field name="gradient_start">#1D4ED8</field>
+        <field name="gradient_end">#0F172A</field>
+        <field name="background_type">gradient</field>
+        <field name="button_color">#2563EB</field>
+        <field name="font_family">Inter</field>
+    </record>
+
+    <record id="preset_sunset_warm" model="auth.branding.preset">
+        <field name="name">Sunset Warm</field>
+        <field name="description">Friendly orange and rose tones for an inviting welcome.</field>
+        <field name="sequence">20</field>
+        <field name="is_system" eval="True" />
+        <field name="company_id" eval="False" />
+        <field name="template">fullbleed</field>
+        <field name="primary_color">#E11D48</field>
+        <field name="gradient_start">#F97316</field>
+        <field name="gradient_end">#DB2777</field>
+        <field name="background_type">gradient</field>
+        <field name="button_color">#E11D48</field>
+        <field name="button_border_radius">12</field>
+    </record>
+
+    <record id="preset_ocean_breeze" model="auth.branding.preset">
+        <field name="name">Ocean Breeze</field>
+        <field name="description">Fresh teal and cyan colors with a balanced split layout.</field>
+        <field name="sequence">30</field>
+        <field name="is_system" eval="True" />
+        <field name="company_id" eval="False" />
+        <field name="template">split</field>
+        <field name="split_alignment">right</field>
+        <field name="primary_color">#0891B2</field>
+        <field name="gradient_start">#0F766E</field>
+        <field name="gradient_end">#06B6D4</field>
+        <field name="background_type">gradient</field>
+        <field name="button_color">#0891B2</field>
+        <field name="button_border_radius">10</field>
+    </record>
+
+    <record id="preset_dark_elegance" model="auth.branding.preset">
+        <field name="name">Dark Elegance</field>
+        <field name="description">Dark glass styling with restrained gold accents.</field>
+        <field name="sequence">40</field>
+        <field name="is_system" eval="True" />
+        <field name="company_id" eval="False" />
+        <field name="template">fullbleed</field>
+        <field name="primary_color">#D4AF37</field>
+        <field name="secondary_color">#F8FAFC</field>
+        <field name="gradient_start">#020617</field>
+        <field name="gradient_end">#1E293B</field>
+        <field name="background_type">gradient</field>
+        <field name="card_background_color">#111827</field>
+        <field name="text_color">#F8FAFC</field>
+        <field name="button_color">#D4AF37</field>
+        <field name="button_text_color">#111827</field>
+        <field name="glassmorphism" eval="True" />
+        <field name="glassmorphism_opacity">0.72</field>
+        <field name="glassmorphism_blur">18</field>
+    </record>
+
+    <record id="preset_minimal_white" model="auth.branding.preset">
+        <field name="name">Minimal White</field>
+        <field name="description">Quiet, spacious and neutral for a distraction-free sign in.</field>
+        <field name="sequence">50</field>
+        <field name="is_system" eval="True" />
+        <field name="company_id" eval="False" />
+        <field name="template">centered</field>
+        <field name="primary_color">#111827</field>
+        <field name="background_type">solid</field>
+        <field name="background_color">#F8FAFC</field>
+        <field name="button_color">#111827</field>
+        <field name="input_border_radius">4</field>
+        <field name="button_border_radius">4</field>
+        <field name="font_family">system-ui</field>
+    </record>
+
+    <record id="preset_nature_green" model="auth.branding.preset">
+        <field name="name">Nature Green</field>
+        <field name="description">Grounded forest colors for sustainable and wellness brands.</field>
+        <field name="sequence">60</field>
+        <field name="is_system" eval="True" />
+        <field name="company_id" eval="False" />
+        <field name="template">split</field>
+        <field name="primary_color">#15803D</field>
+        <field name="gradient_start">#14532D</field>
+        <field name="gradient_end">#4D7C0F</field>
+        <field name="background_type">gradient</field>
+        <field name="button_color">#15803D</field>
+        <field name="button_border_radius">10</field>
+        <field name="font_family">Lato</field>
+    </record>
+
+    <record id="preset_berry_purple" model="auth.branding.preset">
+        <field name="name">Berry Purple</field>
+        <field name="description">A polished evolution of the familiar Odoo purple palette.</field>
+        <field name="sequence">70</field>
+        <field name="is_system" eval="True" />
+        <field name="company_id" eval="False" />
+        <field name="template">centered</field>
+        <field name="primary_color">#714B67</field>
+        <field name="gradient_start">#714B67</field>
+        <field name="gradient_end">#3B1F36</field>
+        <field name="background_type">animated_gradient</field>
+        <field name="button_color">#714B67</field>
+        <field name="button_border_radius">8</field>
+    </record>
+
+    <record id="preset_slate_modern" model="auth.branding.preset">
+        <field name="name">Slate Modern</field>
+        <field name="description">Cool slate surfaces with a clear modern blue accent.</field>
+        <field name="sequence">80</field>
+        <field name="is_system" eval="True" />
+        <field name="company_id" eval="False" />
+        <field name="template">fullbleed</field>
+        <field name="primary_color">#38BDF8</field>
+        <field name="secondary_color">#F8FAFC</field>
+        <field name="gradient_start">#0F172A</field>
+        <field name="gradient_end">#334155</field>
+        <field name="background_type">gradient</field>
+        <field name="card_background_color">#F8FAFC</field>
+        <field name="button_color">#0284C7</field>
+        <field name="button_border_radius">8</field>
+        <field name="font_family">Poppins</field>
+    </record>
+</odoo>

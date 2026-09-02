@@ -18,6 +18,7 @@ backgrounds, logos, typography, and a live backend preview.
     "data": [
         "security/auth_branding_security.xml",
         "security/ir.model.access.csv",
+        "data/auth_branding_preset_data.xml",
         "views/auth_branding_settings_views.xml",
         "views/res_config_settings_views.xml",
         "views/auth_branding_templates.xml",
@@ -25,7 +26,9 @@ backgrounds, logos, typography, and a live backend preview.
     "assets": {
         "web.assets_backend": [
             "auth_branding/static/src/js/auth_branding_preview.js",
+            "auth_branding/static/src/js/auth_branding_preset_gallery.js",
             "auth_branding/static/src/xml/auth_branding_preview.xml",
+            "auth_branding/static/src/xml/auth_branding_preset_gallery.xml",
             "auth_branding/static/src/css/auth_branding_settings.css",
         ],
         "web.assets_frontend": [

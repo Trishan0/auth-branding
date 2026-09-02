@@ -28,6 +28,16 @@
                     <div class="row g-4 o_auth_branding_workspace">
                         <div class="col-xl-5 col-lg-6 o_auth_branding_editor">
                             <notebook class="o_auth_branding_notebook">
+                                <page string="Presets" name="presets">
+                                    <div class="mb-3">
+                                        <h4 class="mb-1">Choose a starting point</h4>
+                                        <p class="text-muted mb-0">
+                                            Applying a theme updates the preview first. Save only when you are happy with it.
+                                        </p>
+                                    </div>
+                                    <widget name="auth_branding_preset_gallery" />
+                                </page>
+
                                 <page string="Brand" name="brand">
                                     <div class="alert alert-info border-0 py-2" role="status">
                                         Start with your identity. Changes appear in the preview without saving.

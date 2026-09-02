@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="auth_branding.PresetGallery" owl="1">
+        <div class="ab-preset-gallery">
+            <div class="ab-preset-loading py-5 text-center text-muted" t-if="state.loading">
+                <i class="fa fa-spin fa-spinner me-2"/>Loading themes…
+            </div>
+            <div class="row g-3" t-else="">
+                <div class="col-12 col-sm-6" t-foreach="state.presets" t-as="preset" t-key="preset.id">
+                    <button
+                        type="button"
+                        class="ab-preset-card w-100 text-start"
+                        t-att-class="{ 'is-selected': state.selectedId === preset.id }"
+                        t-on-click="() => this.applyPreset(preset)"
+                        t-att-disabled="state.applyingId !== null"
+                    >
+                        <div class="ab-preset-art" t-att-style="this.getBackgroundStyle(preset)">
+                            <div class="ab-preset-mini-card" t-att-style="`background: ${preset.card_background_color}`">
+                                <span class="ab-preset-mini-logo" t-att-style="`background: ${preset.primary_color}`"/>
+                                <span class="ab-preset-mini-line"/>
+                                <span class="ab-preset-mini-line is-short"/>
+                                <span class="ab-preset-mini-button" t-att-style="`background: ${preset.button_color}; border-radius: ${preset.button_border_radius}px`"/>
+                            </div>
+                        </div>
+                        <div class="p-3">
+                            <div class="d-flex align-items-center gap-2">
+                                <strong class="flex-grow-1"><t t-out="preset.name"/></strong>
+                                <span class="badge text-bg-light" t-if="preset.is_system">Built in</span>
+                                <i class="fa fa-check-circle text-success" t-if="state.selectedId === preset.id"/>
+                                <i class="fa fa-spin fa-spinner" t-if="state.applyingId === preset.id"/>
+                            </div>
+                            <p class="small text-muted mb-0 mt-1"><t t-out="preset.description"/></p>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>
