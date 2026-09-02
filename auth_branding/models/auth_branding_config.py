@@ -14,6 +14,8 @@ class AuthBrandingConfig(models.Model):
 
     COLOR_PATTERN = re.compile(r"^#[0-9A-Fa-f]{6}$")
     CUSTOM_CSS_MAX_LENGTH = 50000
+    EXPORT_FORMAT = "odoo_auth_branding"
+    EXPORT_SCHEMA_VERSION = 1
     UNSAFE_CSS_PATTERN = re.compile(
         r"(?:[<>\\]|@(?:import|charset|namespace)\b|expression\s*\(|"
         r"url\s*\(|https?\s*:|(?:java|vb)script\s*:|data\s*:|"
@@ -592,6 +594,47 @@ class AuthBrandingConfig(models.Model):
             "auth_branding.action_auth_branding_wizard"
         )
         action["context"] = {**self.env.context, **defaults}
+        return action
+
+    def _get_export_payload(self):
+        self.ensure_one()
+
+        def export_binary(value):
+            if not value:
+                return False
+            if isinstance(value, bytes):
+                return value.decode("ascii")
+            return str(value)
+
+        return {
+            "format": self.EXPORT_FORMAT,
+            "schema_version": self.EXPORT_SCHEMA_VERSION,
+            "exported_at": fields.Datetime.to_string(fields.Datetime.now()),
+            "company": self.company_id.display_name,
+            "settings": self._get_snapshot_values(),
+            "assets": {
+                field_name: export_binary(self[field_name])
+                for field_name in self.BINARY_FIELDS
+            },
+        }
+
+    def action_export_branding(self):
+        self.ensure_one()
+        return {
+            "type": "ir.actions.act_url",
+            "url": f"/auth_branding/export/{self.id}",
+            "target": "self",
+        }
+
+    def action_open_import_wizard(self):
+        self.ensure_one()
+        action = self.env["ir.actions.actions"]._for_xml_id(
+            "auth_branding.action_auth_branding_import_wizard"
+        )
+        action["context"] = {
+            **self.env.context,
+            "default_config_id": self.id,
+        }
         return action
 
     def _create_published_version(self):

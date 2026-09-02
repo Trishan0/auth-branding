@@ -1,4 +1,5 @@
 import hashlib
+import json
 import math
 import re
 from datetime import timezone
@@ -493,3 +494,33 @@ body.ab-template-sidebar .ab-split-aside {{
         for header, value in headers:
             response.headers[header] = value
         return response
+
+    @http.route(
+        "/auth_branding/export/<int:config_id>",
+        type="http",
+        auth="user",
+        sitemap=False,
+    )
+    def export_branding(self, config_id):
+        config = request.env["auth.branding.config"].browse(config_id).exists()
+        if not config:
+            return request.not_found()
+        config.check_access("read")
+        payload = json.dumps(
+            config._get_export_payload(), indent=2, sort_keys=True
+        ).encode("utf-8")
+        company_slug = re.sub(
+            r"[^a-z0-9]+", "-", config.company_id.display_name.lower()
+        ).strip("-") or "company"
+        return request.make_response(
+            payload,
+            headers=[
+                ("Content-Type", "application/json; charset=utf-8"),
+                (
+                    "Content-Disposition",
+                    f'attachment; filename="auth-branding-{company_slug}.json"',
+                ),
+                ("Cache-Control", "private, no-store"),
+                ("X-Content-Type-Options", "nosniff"),
+            ],
+        )

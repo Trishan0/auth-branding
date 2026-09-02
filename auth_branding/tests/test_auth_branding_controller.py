@@ -1,3 +1,4 @@
+import json
 from urllib.parse import quote
 
 from odoo.tests import HttpCase, tagged
@@ -122,3 +123,14 @@ class TestAuthBrandingController(HttpCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertNotIn("<script>alert(1)</script>", response.text)
+
+    def test_branding_export_download(self):
+        self.authenticate("admin", "admin")
+        config = self.env["auth.branding.config"]._get_or_create_config()
+        response = self.url_open(f"/auth_branding/export/{config.id}")
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(
+            response.headers["Content-Type"].startswith("application/json")
+        )
+        self.assertIn("attachment;", response.headers["Content-Disposition"])
+        self.assertEqual(json.loads(response.content)["format"], "odoo_auth_branding")
