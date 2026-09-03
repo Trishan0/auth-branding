@@ -43,6 +43,9 @@ preview, accessible styling, draft publishing, rollback, and portable brand pack
             "auth_branding/static/src/js/auth_branding_frontend.js",
             "auth_branding/static/src/js/auth_branding_preview_receiver.js",
         ],
+        "web.assets_unit_tests": [
+            "auth_branding/static/tests/**/*.test.js",
+        ],
     },
     "images": [
         "static/description/banner.png",
