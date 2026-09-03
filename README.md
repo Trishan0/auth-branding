@@ -210,20 +210,6 @@ Restart Odoo after the upgrade and refresh browser assets.
 
 Custom CSS is intended for local selectors and declarations. Always inspect it in Draft mode before publishing.
 
-## 🔧 Technical overview
-
-| Item | Details |
-| --- | --- |
-| Odoo version | 19.0 |
-| Module version | 19.0.3.0.0 |
-| Dependencies | `web`, `auth_signup`, `base_setup` |
-| License | LGPL-3 |
-| Backend | Odoo ORM models, HTTP controllers, record rules, transient wizards, scheduled action |
-| Frontend | Owl components, Odoo registries/services, QWeb templates, responsive CSS |
-| Tests | Python transaction/HTTP tests and Odoo 19 HOOT JavaScript tests |
-| Status | Beta—validate in a staging database before production rollout |
-
-Pillow is used for logo palette extraction and is included in standard Odoo environments.
 
 ## 🧪 Development and verification
 
