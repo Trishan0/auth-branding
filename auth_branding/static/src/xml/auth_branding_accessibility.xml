@@ -15,6 +15,12 @@
                         <div class="d-flex align-items-center gap-2">
                             <span><t t-out="check.label"/></span>
                             <span class="badge" t-att-class="check.pass ? 'text-bg-success' : 'text-bg-danger'"><t t-out="formatRatio(check.ratio)"/></span>
+                            <button
+                                t-if="!check.pass"
+                                type="button"
+                                class="btn btn-sm btn-outline-primary ms-auto ab-contrast-fix"
+                                t-on-click="() => this.fixCheck(check)"
+                            >Fix contrast</button>
                         </div>
                         <div class="small text-muted"><t t-out="check.hint"/></div>
                     </div>

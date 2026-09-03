@@ -283,6 +283,10 @@ body.ab-dark-on {
     --ab-secondary: #f8fafc;
 }
 
+body.ab-dark-on a:not(.btn) {
+    color: #93c5fd;
+}
+
 body.ab-dark-on .form-control {
     color: #f8fafc;
     border-color: #475569;
@@ -299,6 +303,10 @@ body.ab-dark-on .text-muted {
         --ab-text-color: #e5e7eb;
         --ab-card-bg: #111827;
         --ab-secondary: #f8fafc;
+    }
+
+    body.ab-dark-auto a:not(.btn) {
+        color: #93c5fd;
     }
 
     body.ab-dark-auto .form-control {

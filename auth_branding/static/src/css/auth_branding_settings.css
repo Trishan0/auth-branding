@@ -68,6 +68,10 @@
     border-top: 1px solid var(--border-color, #dee2e6);
 }
 
+.ab-contrast-fix {
+    white-space: nowrap;
+}
+
 /* Sticky Preview Panel */
 .o_auth_branding_workspace {
     align-items: flex-start;
