@@ -6,8 +6,11 @@ from odoo import _, fields, models
 class AuthBrandingScheduleWizard(models.TransientModel):
     _name = "auth.branding.schedule.wizard"
     _description = "Schedule Authentication Branding Publish"
+    _check_company_auto = True
 
-    config_id = fields.Many2one("auth.branding.config", required=True)
+    config_id = fields.Many2one(
+        "auth.branding.config", required=True, check_company=True
+    )
     company_id = fields.Many2one(
         "res.company", related="config_id.company_id", readonly=True
     )

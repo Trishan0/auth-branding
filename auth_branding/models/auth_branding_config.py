@@ -11,6 +11,7 @@ class AuthBrandingConfig(models.Model):
     _description = "Authentication Branding Configuration"
     _rec_name = "company_id"
     _order = "company_id"
+    _check_company_auto = True
 
     COLOR_PATTERN = re.compile(r"^#[0-9A-Fa-f]{6}$")
     CUSTOM_CSS_MAX_LENGTH = 50000
@@ -366,6 +367,7 @@ class AuthBrandingConfig(models.Model):
         copy=False,
         readonly=True,
         ondelete="set null",
+        check_company=True,
     )
     version_ids = fields.One2many(
         "auth.branding.version", "config_id", string="Published Versions", readonly=True

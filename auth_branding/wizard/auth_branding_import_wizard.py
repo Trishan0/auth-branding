@@ -10,6 +10,7 @@ from odoo.exceptions import UserError
 class AuthBrandingImportWizard(models.TransientModel):
     _name = "auth.branding.import.wizard"
     _description = "Import Authentication Branding"
+    _check_company_auto = True
 
     MAX_FILE_SIZE = 16 * 1024 * 1024
     MAX_ASSET_SIZE = 8 * 1024 * 1024
@@ -19,7 +20,9 @@ class AuthBrandingImportWizard(models.TransientModel):
         default="upload",
         required=True,
     )
-    config_id = fields.Many2one("auth.branding.config", required=True)
+    config_id = fields.Many2one(
+        "auth.branding.config", required=True, check_company=True
+    )
     company_id = fields.Many2one(
         "res.company", related="config_id.company_id", readonly=True
     )

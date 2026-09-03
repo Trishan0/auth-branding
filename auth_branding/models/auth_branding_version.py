@@ -6,10 +6,15 @@ class AuthBrandingVersion(models.Model):
     _name = "auth.branding.version"
     _description = "Authentication Branding Published Version"
     _order = "published_at desc, id desc"
+    _check_company_auto = True
 
     name = fields.Char(required=True, readonly=True)
     config_id = fields.Many2one(
-        "auth.branding.config", required=True, ondelete="cascade", index=True
+        "auth.branding.config",
+        required=True,
+        ondelete="cascade",
+        index=True,
+        check_company=True,
     )
     company_id = fields.Many2one(
         related="config_id.company_id", store=True, index=True

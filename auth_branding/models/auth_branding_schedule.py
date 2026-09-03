@@ -6,6 +6,7 @@ class AuthBrandingSchedule(models.Model):
     _name = "auth.branding.schedule"
     _description = "Authentication Branding Scheduled Publish"
     _order = "scheduled_at desc, id desc"
+    _check_company_auto = True
     _IMMUTABLE_FIELDS = {
         "name",
         "config_id",
@@ -20,7 +21,11 @@ class AuthBrandingSchedule(models.Model):
 
     name = fields.Char(required=True, readonly=True)
     config_id = fields.Many2one(
-        "auth.branding.config", required=True, ondelete="cascade", index=True
+        "auth.branding.config",
+        required=True,
+        ondelete="cascade",
+        index=True,
+        check_company=True,
     )
     company_id = fields.Many2one(
         related="config_id.company_id", store=True, index=True
@@ -48,7 +53,10 @@ class AuthBrandingSchedule(models.Model):
     )
     executed_at = fields.Datetime(readonly=True)
     version_id = fields.Many2one(
-        "auth.branding.version", readonly=True, ondelete="set null"
+        "auth.branding.version",
+        readonly=True,
+        ondelete="set null",
+        check_company=True,
     )
     error_message = fields.Text(readonly=True)
 

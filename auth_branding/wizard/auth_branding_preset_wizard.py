@@ -4,8 +4,11 @@ from odoo import _, fields, models
 class AuthBrandingPresetWizard(models.TransientModel):
     _name = "auth.branding.preset.wizard"
     _description = "Save Authentication Branding Preset"
+    _check_company_auto = True
 
-    config_id = fields.Many2one("auth.branding.config", required=True)
+    config_id = fields.Many2one(
+        "auth.branding.config", required=True, check_company=True
+    )
     company_id = fields.Many2one(
         "res.company", related="config_id.company_id", readonly=True
     )

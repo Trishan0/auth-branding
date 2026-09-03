@@ -6,6 +6,7 @@ from ..models.auth_branding_color_utils import extract_logo_palette
 class AuthBrandingWizard(models.TransientModel):
     _name = "auth.branding.wizard"
     _description = "Authentication Branding Quick Setup"
+    _check_company_auto = True
 
     state = fields.Selection(
         [
@@ -16,7 +17,9 @@ class AuthBrandingWizard(models.TransientModel):
         default="identity",
         required=True,
     )
-    config_id = fields.Many2one("auth.branding.config", required=True)
+    config_id = fields.Many2one(
+        "auth.branding.config", required=True, check_company=True
+    )
     company_id = fields.Many2one(
         "res.company", related="config_id.company_id", readonly=True
     )
@@ -25,6 +28,7 @@ class AuthBrandingWizard(models.TransientModel):
     preset_id = fields.Many2one(
         "auth.branding.preset",
         string="Starting Theme",
+        check_company=True,
         domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]",
     )
     suggested_primary_color = fields.Char(readonly=True)

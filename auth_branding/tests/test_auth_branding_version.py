@@ -1,3 +1,4 @@
+from odoo.exceptions import UserError
 from odoo.tests.common import TransactionCase
 
 
@@ -45,3 +46,17 @@ class TestAuthBrandingVersion(TransactionCase):
         self.assertEqual(
             self.config._get_frontend_values()["primary_color"], "#112233"
         )
+
+    def test_published_version_must_match_configuration_company(self):
+        other_company = self.env["res.company"].create({"name": "Other Brand"})
+        self.env.user.write({"company_ids": [(4, other_company.id)]})
+        other_config = self.env["auth.branding.config"].with_context(
+            allowed_company_ids=[
+                self.env.company.id,
+                self.company.id,
+                other_company.id,
+            ]
+        ).create({"company_id": other_company.id})
+
+        with self.assertRaises(UserError), self.env.cr.savepoint():
+            self.config.active_version_id = other_config.active_version_id
