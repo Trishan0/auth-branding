@@ -63,6 +63,9 @@
                                 </page>
 
                                 <page string="Brand" name="brand">
+                                    <div class="d-flex justify-content-end mb-2">
+                                        <button name="action_reset_section" string="Reset Brand" type="object" icon="fa-undo" class="btn-link" context="{'auth_branding_reset_section': 'brand'}" confirm="Reset only the Brand settings to their defaults?" />
+                                    </div>
                                     <div class="alert alert-info border-0 py-2" role="status">
                                         Start with your identity. Changes appear in the preview without saving.
                                     </div>
@@ -80,6 +83,9 @@
                                 </page>
 
                                 <page string="Layout" name="layout">
+                                    <div class="d-flex justify-content-end mb-2">
+                                        <button name="action_reset_section" string="Reset Layout" type="object" icon="fa-undo" class="btn-link" context="{'auth_branding_reset_section': 'layout'}" confirm="Reset only the Layout settings to their defaults?" />
+                                    </div>
                                     <group string="Page Structure">
                                         <field name="template" widget="auth_branding_template_picker" nolabel="1" colspan="2" />
                                         <field name="split_alignment" invisible="template not in ('split', 'sidebar')" />
@@ -100,6 +106,9 @@
                                 </page>
 
                                 <page string="Background" name="background">
+                                    <div class="d-flex justify-content-end mb-2">
+                                        <button name="action_reset_section" string="Reset Background" type="object" icon="fa-undo" class="btn-link" context="{'auth_branding_reset_section': 'background'}" confirm="Reset only the Background settings to their defaults?" />
+                                    </div>
                                     <group string="Background Style">
                                         <field name="background_type" widget="radio" options="{'horizontal': true}" />
                                         <field
@@ -134,6 +143,9 @@
                                 </page>
 
                                 <page string="Content" name="content">
+                                    <div class="d-flex justify-content-end mb-2">
+                                        <button name="action_reset_section" string="Reset Content" type="object" icon="fa-undo" class="btn-link" context="{'auth_branding_reset_section': 'content'}" confirm="Reset only the Content settings to their defaults?" />
+                                    </div>
                                     <group string="Login Page">
                                         <field name="page_title" placeholder="Sign in to {company}" />
                                         <field name="login_welcome_title" placeholder="e.g. Welcome back!" />
@@ -159,6 +171,9 @@
                                 </page>
 
                                 <page string="Advanced" name="advanced">
+                                    <div class="d-flex justify-content-end mb-2">
+                                        <button name="action_reset_section" string="Reset Advanced" type="object" icon="fa-undo" class="btn-link" context="{'auth_branding_reset_section': 'advanced'}" confirm="Reset only the Advanced settings to their defaults?" />
+                                    </div>
                                     <div class="alert alert-warning border-0 py-2" role="status">
                                         These options change links shown on every authentication page.
                                     </div>

@@ -112,6 +112,32 @@ class TestAuthBrandingConfig(TransactionCase):
         self.assertTrue(self.config.show_powered_by_odoo)
         self.assertEqual(action["tag"], "reload")
 
+    def test_reset_section_preserves_other_sections(self):
+        self.config.write(
+            {
+                "primary_color": "#123456",
+                "tagline": "Custom brand",
+                "template": "fullbleed",
+                "custom_footer_text": "Keep this content",
+            }
+        )
+        action = self.config.with_context(
+            auth_branding_reset_section="brand"
+        ).action_reset_section()
+
+        self.assertEqual(self.config.primary_color, "#714B67")
+        self.assertFalse(self.config.tagline)
+        self.assertEqual(self.config.template, "fullbleed")
+        self.assertEqual(self.config.custom_footer_text, "Keep this content")
+        self.assertEqual(action["tag"], "display_notification")
+        self.assertEqual(action["params"]["next"]["tag"], "reload")
+
+    def test_reset_section_rejects_unknown_context(self):
+        with self.assertRaises(UserError):
+            self.config.with_context(
+                auth_branding_reset_section="unknown"
+            ).action_reset_section()
+
     def test_duplicate_action_is_blocked(self):
         with self.assertRaises(UserError):
             self.config.copy_data()

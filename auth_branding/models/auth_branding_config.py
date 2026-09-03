@@ -97,6 +97,66 @@ class AuthBrandingConfig(models.Model):
     )
     BINARY_FIELDS = ("company_logo", "favicon", "background_image")
     VERSIONED_FIELDS = RESETTABLE_FIELDS
+    RESET_SECTIONS = {
+        "brand": (
+            "company_logo",
+            "favicon",
+            "tagline",
+            "primary_color",
+            "secondary_color",
+            "font_family",
+            "text_color",
+        ),
+        "layout": (
+            "template",
+            "split_alignment",
+            "card_background_color",
+            "glassmorphism",
+            "glassmorphism_blur",
+            "glassmorphism_opacity",
+            "input_border_radius",
+            "button_border_radius",
+            "button_color",
+            "button_text_color",
+            "dark_mode",
+        ),
+        "background": (
+            "background_type",
+            "background_color",
+            "gradient_start",
+            "gradient_end",
+            "gradient_direction",
+            "background_image",
+            "background_overlay_opacity",
+        ),
+        "content": (
+            "custom_footer_text",
+            "login_welcome_title",
+            "login_welcome_subtitle",
+            "signup_welcome_title",
+            "signup_welcome_subtitle",
+            "reset_welcome_title",
+            "reset_welcome_subtitle",
+            "page_title",
+            "page_title_signup",
+            "page_title_reset",
+            "terms_url",
+            "privacy_url",
+            "terms_label",
+            "privacy_label",
+        ),
+        "advanced": (
+            "show_manage_databases",
+            "show_powered_by_odoo",
+            "social_button_style",
+            "hide_social_labels",
+            "show_loading_animation",
+            "loading_animation_type",
+            "powered_by_text",
+            "powered_by_url",
+            "custom_css",
+        ),
+    }
 
     template = fields.Selection(
         [
@@ -574,6 +634,33 @@ class AuthBrandingConfig(models.Model):
             }
         )
         return {"type": "ir.actions.client", "tag": "reload"}
+
+    def action_reset_section(self):
+        self.ensure_one()
+        section = self.env.context.get("auth_branding_reset_section")
+        field_names = self.RESET_SECTIONS.get(section)
+        if not field_names:
+            raise UserError(_("Select a valid branding section to reset."))
+        defaults = self.default_get(list(field_names))
+        self.write(
+            {
+                field_name: defaults.get(field_name, False)
+                for field_name in field_names
+            }
+        )
+        return {
+            "type": "ir.actions.client",
+            "tag": "display_notification",
+            "params": {
+                "title": _("Section reset"),
+                "message": _(
+                    "The %(section)s settings were restored to their defaults.",
+                    section=section.title(),
+                ),
+                "type": "success",
+                "next": {"type": "ir.actions.client", "tag": "reload"},
+            },
+        }
 
     def action_open_setup_wizard(self):
         self.ensure_one()
