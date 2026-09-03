@@ -1,5 +1,10 @@
+import logging
+
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
+
+
+_logger = logging.getLogger(__name__)
 
 
 class AuthBrandingSchedule(models.Model):
@@ -154,6 +159,10 @@ class AuthBrandingSchedule(models.Model):
                 with self.env.cr.savepoint():
                     schedule._execute_publish(executed_at)
             except Exception as error:  # cron must continue with the next company
+                _logger.exception(
+                    "Scheduled authentication branding publish %s failed",
+                    schedule.id,
+                )
                 schedule.sudo().write(
                     {
                         "state": "failed",

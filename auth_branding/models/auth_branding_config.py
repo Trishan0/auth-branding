@@ -776,9 +776,10 @@ class AuthBrandingConfig(models.Model):
             if settings_snapshot is None
             else settings_snapshot
         )
-        assets = assets or {
-            field_name: self[field_name] for field_name in self.BINARY_FIELDS
-        }
+        if assets is None:
+            assets = {
+                field_name: self[field_name] for field_name in self.BINARY_FIELDS
+            }
         return self.env["auth.branding.version"].sudo().create(
             {
                 "name": _(
