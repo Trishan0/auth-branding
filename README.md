@@ -1,121 +1,324 @@
-# Auth Branding for Odoo 19
+<p align="center">
+  <img src="auth_branding/static/description/banner.png" alt="Auth Branding for Odoo — transform the default authentication experience into a branded login, signup, and password-reset journey" width="100%" />
+</p>
 
-[![Odoo 19](https://img.shields.io/badge/Odoo-19.0-714B67.svg)](https://www.odoo.com/)
-[![License: LGPL-3](https://img.shields.io/badge/License-LGPL--3-blue.svg)](LICENSE)
+<h1 align="center">Auth Branding for Odoo 19</h1>
 
-Auth Branding provides a visual Brand Studio for Odoo login, signup, and password-reset pages. Marketing or operations users can create a polished authentication experience without editing templates, while administrators retain safe draft publishing, rollback, import/export, and custom CSS controls.
+<p align="center">
+  <strong>Turn every sign-in into a polished, trusted brand experience.</strong><br />
+  Design, preview, govern, and publish Odoo authentication pages—without editing templates.
+</p>
 
-## Highlights
+<p align="center">
+  <a href="https://www.odoo.com/documentation/19.0/"><img src="https://img.shields.io/badge/Odoo-19.0-714B67?style=for-the-badge&amp;logo=odoo&amp;logoColor=white" alt="Odoo 19" /></a>
+  <img src="https://img.shields.io/badge/Module-19.0.3.0.0-5B5BD6?style=for-the-badge" alt="Module version 19.0.3.0.0" />
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-LGPL--3-2563EB?style=for-the-badge" alt="LGPL-3 license" /></a>
+  <img src="https://img.shields.io/badge/Status-Beta-F59E0B?style=for-the-badge" alt="Beta status" />
+</p>
 
-- Five responsive layouts: Centered, Split, Full Bleed, Minimal, and Sidebar.
-- Tabbed editor with a sticky desktop, tablet, and mobile preview.
-- Draft-versus-published comparison, plus direct links to the real authentication pages.
-- Instant preview updates for colors, content, links, dark mode, loading style, and CSS.
-- Eight built-in themes plus company-specific custom themes.
-- Three-step quick setup with automatic logo color suggestions.
-- Logo, favicon, background image, typography, gradients, glass effects, and border controls.
-- Separate login, signup, and password-reset titles and welcome messages.
-- Styled social sign-in buttons, legal links, footer text, and customizable powered-by branding.
-- Light, dark, or device-controlled appearance and reduced-motion support.
-- Live WCAG contrast feedback with one-click fixes, visible keyboard focus, responsive behavior, and RTL support.
-- Draft, publish, discard, version history, and rollback workflows.
-- Immutable scheduled releases with cancellation, execution status, and an audit link to the published version.
-- Per-section reset controls that preserve work in every other editor tab.
-- Portable JSON packages with review-before-import and embedded image assets.
-- Sanitized custom CSS for advanced local overrides.
-- Multi-company record isolation and a dedicated Branding Manager group.
-- Cache-aware public CSS and image routes with ETag and security headers.
+<p align="center">
+  <a href="#-why-auth-branding">Why Auth Branding</a> ·
+  <a href="#-product-tour">Product Tour</a> ·
+  <a href="#-features">Features</a> ·
+  <a href="#-installation">Installation</a> ·
+  <a href="#-configuration">Configuration</a> ·
+  <a href="#-security-and-governance">Security</a>
+</p>
 
-## Installation
+---
 
-1. Copy `auth_branding` into an Odoo 19 custom add-ons directory.
-2. Restart Odoo and update the Apps list.
-3. Install **Auth Branding** from Apps.
+## ✨ Why Auth Branding?
 
-The module depends on `web`, `auth_signup`, and `base_setup`. Pillow is used for logo palette extraction and is already part of a standard Odoo installation.
+The login page is often the first—and most frequently repeated—touchpoint between users and an Odoo environment. Auth Branding replaces the generic experience with an interface that feels intentional, recognizable, and consistent with the rest of your business.
 
-## Configuration
+| For your users | For your brand team | For administrators |
+| --- | --- | --- |
+| A familiar, responsive sign-in experience | Visual editing with reusable themes | Drafts stay isolated from production |
+| Consistent login, signup, and reset pages | Logo-aware color suggestions | Publish now, schedule, or roll back |
+| Accessible colors and visible focus states | No QWeb or CSS knowledge required | Company isolation and audit history |
 
-1. Open **Settings → General Settings**.
-2. Find **Authentication Branding**.
-3. Choose **Quick Setup** for a guided start, or **Open Brand Studio** for full control.
-4. Select a theme and edit the compact Brand, Layout, Background, Content, and Advanced tabs.
-5. Use the Draft/Published, page, and device controls above the sticky preview to verify every auth screen and compare it with what users currently see.
-6. Resolve contrast warnings in **Design health** manually or choose **Fix contrast** for an accessible neutral color.
-7. Use a tab's scoped reset when one area needs a fresh start; the other tabs remain unchanged.
-8. Save a draft, choose **Publish** for an immediate release, or **Schedule** to capture the current draft for a future release.
+> **Built for real operations:** experiment safely in a draft, compare it with the published experience, validate desktop/tablet/mobile layouts, and release only when it is ready.
 
-Only a published version is served on public authentication pages. **Discard Draft** restores the active published version, and **Version History** can restore and republish an older release while retaining the audit trail.
+## 🖥️ Product tour
 
-## Scheduled releases
+### A visual studio with the result beside you
 
-**Schedule** captures the current settings, logo, favicon, and background as an immutable snapshot. Later draft editing does not alter that scheduled release. Odoo checks for due snapshots every five minutes; successful jobs create a normal published version, so rollback and audit behavior stay consistent.
+Edit identity, layout, colors, backgrounds, content, and advanced presentation settings while the authentication page updates in the responsive preview.
 
-Use **Schedules** to inspect pending, published, cancelled, or failed jobs. A pending release can be cancelled safely. Failed jobs retain a concise error for administrators and do not stop other companies' scheduled releases from running.
+<p align="center">
+  <img src="auth_branding/static/description/Screenshot-02.png" alt="Auth Branding visual editor with split-screen live preview" width="100%" />
+</p>
 
-## Reusable themes
+<p align="center"><em>Build the page on the left and inspect the user experience on the right.</em></p>
 
-The Presets tab contains CSS-rendered previews of the built-in themes. Applying one changes only the current draft. Choose **Save Current Theme** to store the visual settings as a company-specific preset; custom presets can be deleted from the gallery, while built-in presets are protected.
+<table>
+  <tr>
+    <td width="50%">
+      <img src="auth_branding/static/description/Screenshot-01.png" alt="Authentication Branding entry in Odoo settings" />
+      <p align="center"><strong>Native Odoo entry point</strong><br />Open Brand Studio directly from Settings.</p>
+    </td>
+    <td width="50%">
+      <img src="auth_branding/static/description/Screenshot-03.png" alt="Authentication content and footer editing with live preview" />
+      <p align="center"><strong>Content and policy controls</strong><br />Keep every authentication screen consistent.</p>
+    </td>
+  </tr>
+</table>
 
-Presets intentionally capture visual styling rather than company identity or page copy. Background images and safe custom CSS are included in custom visual themes.
+## 🚀 From idea to production
 
-## Import and export
-
-Choose **Export** to download the current saved draft as a versioned JSON package. The package includes supported settings plus embedded logo, favicon, and background assets.
-
-Choose **Import**, upload an Auth Branding JSON file, and review its source, setting count, asset count, and ignored future fields. Applying an import creates draft changes only; inspect the preview and publish separately. Files and individual assets have size limits, and field types, schema versions, and base64 data are validated.
-
-## Custom CSS safety
-
-The Advanced tab includes an escape hatch for experienced administrators. Custom CSS is versioned and appended after generated theme rules. To keep authentication pages safe, the module rejects:
-
-- HTML tags and control characters;
-- `@import`, `@charset`, and `@namespace` rules;
-- `url()`, external protocols, and data URLs;
-- JavaScript/VBScript, `expression()`, `behavior`, and legacy bindings;
-- CSS escapes, unclosed comments, and payloads over 50 KB.
-
-Use local selectors and declarations only. Bootstrap utility classes may require a more specific selector or `!important` for the small number of properties Odoo itself marks important.
-
-## Access and multi-company behavior
-
-System administrators inherit the **Authentication Branding Manager** group. Configuration, preset, and version records are isolated to allowed companies. Public users receive read-only access required to render the current company's published authentication theme; public routes cannot select an unrelated company configuration.
-
-## Development and verification
-
-Run the Odoo test suite from an Odoo 19 source checkout:
-
-```bash
-./odoo-bin --test-enable --stop-after-init -d auth_branding_test -i auth_branding
+```mermaid
+flowchart LR
+    A[Choose a preset<br/>or Quick Setup] --> B[Edit the draft]
+    B --> C[Preview login,<br/>signup and reset]
+    C --> D{Release}
+    D -->|Now| E[Publish]
+    D -->|Later| F[Schedule snapshot]
+    E --> G[Version history]
+    F --> G
+    G -->|Restore| B
 ```
 
-For an upgrade test against an existing database:
+The public authentication pages read only from the active published version. A draft can be changed, imported, reset, or discarded without altering what users currently see.
+
+## 🎨 Features
+
+### Brand Studio
+
+- Five responsive layouts: **Centered**, **Split Screen**, **Full Bleed**, **Minimal**, and **Sidebar**.
+- Sticky preview with **desktop, tablet, and mobile** viewport controls.
+- Instant switching between **Login, Sign Up, and Reset Password** pages.
+- **Draft versus Published** comparison from the same preview toolbar.
+- Compact Brand, Layout, Background, Content, and Advanced tabs.
+- Per-section reset controls—restore one area without losing work elsewhere.
+- Direct links to the preview and the real authentication page.
+
+### Identity and visual design
+
+- Company logo, favicon, tagline, page titles, and welcome messages.
+- Primary, secondary, text, card, background, and button color controls.
+- Solid, gradient, animated-gradient, and image backgrounds.
+- Split alignment, glassmorphism, blur, opacity, and border-radius controls.
+- Curated typography choices with system-font fallback.
+- Light, dark, or device-controlled appearance.
+- Coherent dark surfaces across every layout, including Split and Sidebar.
+
+### Presets and guided setup
+
+Start from eight professionally configured themes:
+
+`Corporate Blue` · `Sunset Warm` · `Ocean Breeze` · `Dark Elegance` · `Minimal White` · `Nature Green` · `Berry Purple` · `Slate Modern`
+
+- Three-step **Quick Setup** for identity, style, and review.
+- Automatic primary and secondary color suggestions from an uploaded logo.
+- Save the current visual design as a reusable company theme.
+- Built-in themes are protected; custom themes remain manageable.
+
+### Content and authentication details
+
+- Independent titles and welcome copy for login, signup, and password reset.
+- Custom footer messaging, Terms of Service, and Privacy Policy links.
+- Configurable powered-by text and destination.
+- Styled social/OAuth provider buttons with rounded, pill, square, or icon-focused variants.
+- Optional database-manager link and social-label visibility.
+- Branded spinner, progress-bar, or logo-pulse loading experience.
+
+### Accessibility and responsive UX
+
+- Live WCAG contrast checks for body text, links, and button labels.
+- **One-click contrast fixes** with immediate preview feedback.
+- Clear keyboard focus indicators.
+- Reduced-motion support for users who request it.
+- Responsive layouts and right-to-left presentation support.
+- Accessible dark-mode links, inputs, placeholders, autofill, and password controls.
+
+### Release management
+
+- Explicit **Save Draft**, **Publish**, and **Discard Draft** actions.
+- Immutable published versions with author and timestamp history.
+- Restore an older version and republish it without destroying the audit trail.
+- Schedule the current draft snapshot for a future release.
+- Cancel pending schedules and inspect published, cancelled, or failed jobs.
+- Scheduled settings and image assets cannot drift when later drafts are edited.
+
+### Portability and advanced customization
+
+- Export settings and embedded assets as a versioned JSON brand package.
+- Review source, settings, assets, and ignored future fields before importing.
+- Imports always become drafts and never publish automatically.
+- Sanitized custom CSS for experienced administrators.
+- Cache-aware theme and image delivery with ETag and security headers.
+
+## 📦 Installation
+
+### Option 1: Clone the repository
 
 ```bash
-./odoo-bin --test-enable --stop-after-init -d your_database -u auth_branding
+cd /path/to/custom-addons
+git clone https://github.com/Trishan0/auth-branding.git
 ```
 
-Frontend contrast-helper tests use Odoo 19's HOOT runner and are available from `/web/tests`; filter for `auth_branding_accessibility` when working interactively.
+The repository contains the installable module at `auth-branding/auth_branding`. Add the repository directory to `addons_path`, then restart Odoo:
 
-Manual browser checks should cover login, signup, and reset pages in every layout; mobile and RTL display; automatic dark mode; image caching; draft isolation; rollback; and OAuth providers installed in the target database.
+```ini
+addons_path = /path/to/odoo/addons,/path/to/custom-addons/auth-branding
+```
 
-## Changelog
+### Option 2: Copy the module
+
+Copy the inner `auth_branding/` directory into an existing custom add-ons directory.
+
+### Install in Odoo
+
+1. Restart the Odoo service.
+2. Enable developer mode.
+3. Open **Apps → Update Apps List**.
+4. Remove the default Apps filter if necessary.
+5. Search for **Auth Branding** and select **Install**.
+
+### Upgrade an existing installation
+
+```bash
+./odoo-bin -d your_database -u auth_branding --stop-after-init
+```
+
+Restart Odoo after the upgrade and refresh browser assets.
+
+## ⚙️ Configuration
+
+1. Open **Settings → General Settings → Authentication Branding**.
+2. Select **Quick Setup** for a guided start or **Open Brand Studio** for full control.
+3. Apply a preset or upload the company identity assets.
+4. Refine the design in the focused editor tabs.
+5. Check Login, Sign Up, and Reset Password at all three preview sizes.
+6. Resolve any warnings in **Design health**.
+7. Compare **Draft** with **Published**.
+8. Publish immediately or capture the draft with **Schedule**.
+
+> **Multi-company tip:** switch to the company you want to brand before opening Brand Studio. Each company receives its own configuration, presets, schedules, and published history.
+
+## 🛡️ Security and governance
+
+| Control | Behavior |
+| --- | --- |
+| Production isolation | Public pages render the active published snapshot—not the working draft. |
+| Permissions | System administrators inherit the dedicated **Authentication Branding Manager** group. |
+| Multi-company | Record rules and company-consistency checks isolate configurations, presets, versions, and schedules. |
+| Scheduled releases | Settings and binary assets are captured as an immutable snapshot. |
+| External links | Terms, privacy, and powered-by destinations accept HTTP/HTTPS URLs only. |
+| Custom CSS | HTML, scripts, imports, external resources, data URLs, executable CSS, and oversized payloads are rejected. |
+| Public assets | Allowlisted fields, conditional caching, content-type protection, and same-origin controls reduce exposure. |
+
+Custom CSS is intended for local selectors and declarations. Always inspect it in Draft mode before publishing.
+
+## 🔧 Technical overview
+
+| Item | Details |
+| --- | --- |
+| Odoo version | 19.0 |
+| Module version | 19.0.3.0.0 |
+| Dependencies | `web`, `auth_signup`, `base_setup` |
+| License | LGPL-3 |
+| Backend | Odoo ORM models, HTTP controllers, record rules, transient wizards, scheduled action |
+| Frontend | Owl components, Odoo registries/services, QWeb templates, responsive CSS |
+| Tests | Python transaction/HTTP tests and Odoo 19 HOOT JavaScript tests |
+| Status | Beta—validate in a staging database before production rollout |
+
+Pillow is used for logo palette extraction and is included in standard Odoo environments.
+
+## 🧪 Development and verification
+
+Install the module with tests in an Odoo 19 source checkout:
+
+```bash
+./odoo-bin \
+  --test-enable \
+  --stop-after-init \
+  -d auth_branding_test \
+  -i auth_branding
+```
+
+Test an upgrade against an existing database:
+
+```bash
+./odoo-bin \
+  --test-enable \
+  --stop-after-init \
+  -d your_database \
+  -u auth_branding
+```
+
+Frontend tests are registered in `web.assets_unit_tests`. Open `/web/tests` in an Odoo 19 development instance and filter for `auth_branding_accessibility`.
+
+Recommended browser verification:
+
+- Login, signup, and password-reset pages.
+- All five layouts at desktop, tablet, and mobile sizes.
+- Light, automatic, and dark modes—including browser autofill.
+- Left/right Split and Sidebar alignment.
+- Draft isolation, scheduled release, rollback, and asset caching.
+- OAuth providers installed in the target database.
+- Right-to-left and reduced-motion environments.
+
+## ❓ Frequently asked questions
+
+<details>
+<summary><strong>Will editing a draft change the live login page?</strong></summary>
+<br />
+No. Public authentication routes use the active published version. Draft changes become visible to users only after an immediate or scheduled publish.
+</details>
+
+<details>
+<summary><strong>Can every company have different branding?</strong></summary>
+<br />
+Yes. Configuration, custom presets, schedules, and version history are company-aware and protected by Odoo record rules.
+</details>
+
+<details>
+<summary><strong>What happens if I edit after scheduling a release?</strong></summary>
+<br />
+Nothing changes in the scheduled release. The module captures an immutable snapshot—including logo, favicon, and background image—when the schedule is created.
+</details>
+
+<details>
+<summary><strong>Does it work with social login providers?</strong></summary>
+<br />
+Yes. Auth Branding styles the providers supplied by Odoo's authentication flow. Provider setup and credentials remain managed by the relevant Odoo modules.
+</details>
+
+<details>
+<summary><strong>Can I move a design between databases?</strong></summary>
+<br />
+Yes. Export a versioned JSON package, import it into the destination database as a draft, review it, and publish separately.
+</details>
+
+## 🗺️ Release highlights
 
 ### 19.0.3.0.0
 
-- Added side-by-side workflow controls for current drafts and the active published snapshot.
-- Added one-click accessibility color corrections and accessible dark-mode links.
-- Added scoped resets for Brand, Layout, Background, Content, and Advanced settings.
-- Added immutable scheduled publishing with cancellation, audit history, failure reporting, and automated execution.
-- Added HOOT coverage for contrast helpers and stricter Odoo 19 multi-company consistency.
+- Draft/published comparison and direct live-page access.
+- One-click accessibility color correction.
+- Per-section reset controls.
+- Immutable scheduled publishing with cancellation and failure reporting.
+- Consistent dark-theme surfaces across every layout.
+- Odoo 19 HOOT coverage and stronger multi-company consistency.
 
 ### 19.0.2.0.0
 
-- Rebuilt configuration as a tabbed Brand Studio with a responsive sticky preview.
-- Added presets, guided setup, logo color extraction, five layouts, dark mode, social styles, metadata, and loading states.
-- Added drafts, explicit publishing, version rollback, portable packages, safe CSS, and accessibility feedback.
-- Hardened multi-company access, input validation, public routes, caching, and automated coverage.
+- Introduced Brand Studio, presets, Quick Setup, five layouts, responsive preview, dark mode, metadata, and loading states.
+- Added draft publishing, rollback, portable brand packages, safe CSS, and accessibility feedback.
 
-## License and author
+## 🤝 Support and contribution
 
-Licensed under [LGPL-3](LICENSE). Maintained by [Trishan Fernando](https://trishanfernando.com).
+- Report a defect or request a feature through [GitHub Issues](https://github.com/Trishan0/auth-branding/issues).
+- Include the Odoo version, module version, browser, reproduction steps, and relevant server logs.
+- Keep contributions focused and include regression coverage for behavior changes.
+
+## 📄 License and author
+
+Auth Branding is licensed under the [GNU Lesser General Public License v3.0](LICENSE).
+
+Created and maintained by [Trishan Fernando](https://trishanfernando.com).
+
+<p align="center">
+  <strong>Make the first screen your users see feel like it belongs to your business.</strong>
+</p>
