@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 19.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-03 03:30+0000\n"
+"POT-Creation-Date: 2026-09-03 08:30+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -677,4 +677,140 @@ msgstr ""
 
 #. module: auth_branding
 msgid "Theme deleted"
+msgstr ""
+
+#. module: auth_branding
+msgid "A scheduled branding snapshot cannot be edited."
+msgstr ""
+
+#. module: auth_branding
+msgid "A snapshot of the current draft is captured now. You can keep editing afterward without changing this scheduled release."
+msgstr ""
+
+#. module: auth_branding
+msgid "Branding scheduled"
+msgstr ""
+
+#. module: auth_branding
+msgid "Cancel Schedule"
+msgstr ""
+
+#. module: auth_branding
+msgid "Cancel this scheduled publish?"
+msgstr ""
+
+#. module: auth_branding
+msgid "Captured Assets"
+msgstr ""
+
+#. module: auth_branding
+msgid "Contrast color updated. Review it in the preview."
+msgstr ""
+
+#. module: auth_branding
+msgid "Draft preview"
+msgstr ""
+
+#. module: auth_branding
+msgid "Fix contrast"
+msgstr ""
+
+#. module: auth_branding
+msgid "Only a pending publish can be cancelled."
+msgstr ""
+
+#. module: auth_branding
+msgid "Pending"
+msgstr ""
+
+#. module: auth_branding
+msgid "Publish At"
+msgstr ""
+
+#. module: auth_branding
+msgid "Published snapshot"
+msgstr ""
+
+#. module: auth_branding
+msgid "Release Note"
+msgstr ""
+
+#. module: auth_branding
+msgid "Reset Advanced"
+msgstr ""
+
+#. module: auth_branding
+msgid "Reset Background"
+msgstr ""
+
+#. module: auth_branding
+msgid "Reset Brand"
+msgstr ""
+
+#. module: auth_branding
+msgid "Reset Content"
+msgstr ""
+
+#. module: auth_branding
+msgid "Reset Layout"
+msgstr ""
+
+#. module: auth_branding
+msgid "Schedule"
+msgstr ""
+
+#. module: auth_branding
+msgid "Schedule Branding Publish"
+msgstr ""
+
+#. module: auth_branding
+msgid "Schedule Publish"
+msgstr ""
+
+#. module: auth_branding
+msgid "Scheduled Branding Publish"
+msgstr ""
+
+#. module: auth_branding
+msgid "Scheduled Branding Publishes"
+msgstr ""
+
+#. module: auth_branding
+msgid "Scheduled publish cancelled"
+msgstr ""
+
+#. module: auth_branding
+msgid "Scheduled Publishes"
+msgstr ""
+
+#. module: auth_branding
+msgid "Schedules"
+msgstr ""
+
+#. module: auth_branding
+msgid "Section reset"
+msgstr ""
+
+#. module: auth_branding
+msgid "Select a valid branding configuration."
+msgstr ""
+
+#. module: auth_branding
+msgid "Select a valid branding section to reset."
+msgstr ""
+
+#. module: auth_branding
+msgid "The %(section)s settings were restored to their defaults."
+msgstr ""
+
+#. module: auth_branding
+msgid "The captured branding snapshot will not be published."
+msgstr ""
+
+#. module: auth_branding
+msgid "The publish time must be in the future."
+msgstr ""
+
+#. module: auth_branding
+msgid "This draft snapshot will publish automatically at %(date)s."
 msgstr ""

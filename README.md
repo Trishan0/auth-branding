@@ -9,6 +9,7 @@ Auth Branding provides a visual Brand Studio for Odoo login, signup, and passwor
 
 - Five responsive layouts: Centered, Split, Full Bleed, Minimal, and Sidebar.
 - Tabbed editor with a sticky desktop, tablet, and mobile preview.
+- Draft-versus-published comparison, plus direct links to the real authentication pages.
 - Instant preview updates for colors, content, links, dark mode, loading style, and CSS.
 - Eight built-in themes plus company-specific custom themes.
 - Three-step quick setup with automatic logo color suggestions.
@@ -16,8 +17,10 @@ Auth Branding provides a visual Brand Studio for Odoo login, signup, and passwor
 - Separate login, signup, and password-reset titles and welcome messages.
 - Styled social sign-in buttons, legal links, footer text, and customizable powered-by branding.
 - Light, dark, or device-controlled appearance and reduced-motion support.
-- Live WCAG contrast feedback, visible keyboard focus, responsive behavior, and RTL support.
+- Live WCAG contrast feedback with one-click fixes, visible keyboard focus, responsive behavior, and RTL support.
 - Draft, publish, discard, version history, and rollback workflows.
+- Immutable scheduled releases with cancellation, execution status, and an audit link to the published version.
+- Per-section reset controls that preserve work in every other editor tab.
 - Portable JSON packages with review-before-import and embedded image assets.
 - Sanitized custom CSS for advanced local overrides.
 - Multi-company record isolation and a dedicated Branding Manager group.
@@ -37,11 +40,18 @@ The module depends on `web`, `auth_signup`, and `base_setup`. Pillow is used for
 2. Find **Authentication Branding**.
 3. Choose **Quick Setup** for a guided start, or **Open Brand Studio** for full control.
 4. Select a theme and edit the compact Brand, Layout, Background, Content, and Advanced tabs.
-5. Use the page and device controls above the sticky preview to verify every auth screen.
-6. Resolve any contrast warnings shown in the collapsible **Design health** panel.
-7. Save a draft as needed, then choose **Publish** when it is ready for users.
+5. Use the Draft/Published, page, and device controls above the sticky preview to verify every auth screen and compare it with what users currently see.
+6. Resolve contrast warnings in **Design health** manually or choose **Fix contrast** for an accessible neutral color.
+7. Use a tab's scoped reset when one area needs a fresh start; the other tabs remain unchanged.
+8. Save a draft, choose **Publish** for an immediate release, or **Schedule** to capture the current draft for a future release.
 
 Only a published version is served on public authentication pages. **Discard Draft** restores the active published version, and **Version History** can restore and republish an older release while retaining the audit trail.
+
+## Scheduled releases
+
+**Schedule** captures the current settings, logo, favicon, and background as an immutable snapshot. Later draft editing does not alter that scheduled release. Odoo checks for due snapshots every five minutes; successful jobs create a normal published version, so rollback and audit behavior stay consistent.
+
+Use **Schedules** to inspect pending, published, cancelled, or failed jobs. A pending release can be cancelled safely. Failed jobs retain a concise error for administrators and do not stop other companies' scheduled releases from running.
 
 ## Reusable themes
 
@@ -85,9 +95,19 @@ For an upgrade test against an existing database:
 ./odoo-bin --test-enable --stop-after-init -d your_database -u auth_branding
 ```
 
+Frontend contrast-helper tests use Odoo 19's HOOT runner and are available from `/web/tests`; filter for `auth_branding_accessibility` when working interactively.
+
 Manual browser checks should cover login, signup, and reset pages in every layout; mobile and RTL display; automatic dark mode; image caching; draft isolation; rollback; and OAuth providers installed in the target database.
 
 ## Changelog
+
+### 19.0.3.0.0
+
+- Added side-by-side workflow controls for current drafts and the active published snapshot.
+- Added one-click accessibility color corrections and accessible dark-mode links.
+- Added scoped resets for Brand, Layout, Background, Content, and Advanced settings.
+- Added immutable scheduled publishing with cancellation, audit history, failure reporting, and automated execution.
+- Added HOOT coverage for contrast helpers and stricter Odoo 19 multi-company consistency.
 
 ### 19.0.2.0.0
 
