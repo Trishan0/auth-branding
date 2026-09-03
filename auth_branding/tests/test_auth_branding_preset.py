@@ -15,6 +15,16 @@ class TestAuthBrandingPreset(TransactionCase):
         self.assertEqual(self.config.primary_color, "#2563EB")
         self.assertEqual(self.config.background_type, "gradient")
 
+    def test_dark_elegance_remains_coherently_dark_in_split_layouts(self):
+        preset = self.env.ref("auth_branding.preset_dark_elegance")
+        preset.apply_preset(self.config.id)
+        self.config.template = "sidebar"
+
+        self.assertEqual(self.config.dark_mode, "on")
+        self.assertTrue(self.config.glassmorphism)
+        self.assertEqual(self.config.card_background_color, "#111827")
+        self.assertEqual(self.config.text_color, "#F8FAFC")
+
     def test_create_custom_preset_from_config(self):
         self.config.primary_color = "#123456"
         preset_id = self.env["auth.branding.preset"].create_from_config(

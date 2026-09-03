@@ -167,7 +167,7 @@ body.ab-bg-image .ab-split-aside::before {
 
 /* Glassmorphism card effect */
 body[class*="ab-template-"].ab-glass .card {
-    background: rgba(255, 255, 255, var(--ab-glass-opacity)) !important;
+    background: rgba(var(--ab-card-rgb, 255, 255, 255), var(--ab-glass-opacity)) !important;
     backdrop-filter: blur(var(--ab-glass-blur));
     -webkit-backdrop-filter: blur(var(--ab-glass-blur));
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
@@ -278,9 +278,14 @@ body.ab-template-sidebar.ab-split-right main {
 /* Dark mode */
 body.ab-dark-on {
     color-scheme: dark;
+    --bs-body-color: #e5e7eb;
+    --bs-body-bg: #020617;
+    --bs-border-color: #334155;
     --ab-text-color: #e5e7eb;
     --ab-card-bg: #111827;
+    --ab-card-rgb: 17, 24, 39;
     --ab-secondary: #f8fafc;
+    background-color: #020617;
 }
 
 body.ab-dark-on a:not(.btn) {
@@ -293,6 +298,24 @@ body.ab-dark-on .form-control {
     background-color: #1e293b;
 }
 
+body.ab-dark-on .form-control::placeholder {
+    color: #94a3b8;
+    opacity: 1;
+}
+
+body.ab-dark-on .form-control:-webkit-autofill {
+    -webkit-text-fill-color: #f8fafc;
+    -webkit-box-shadow: 0 0 0 1000px #1e293b inset;
+    caret-color: #f8fafc;
+}
+
+body.ab-dark-on .input-group-text,
+body.ab-dark-on .input-group .btn {
+    color: #e5e7eb;
+    border-color: #475569;
+    background-color: #1e293b;
+}
+
 body.ab-dark-on .text-muted {
     color: #94a3b8 !important;
 }
@@ -300,9 +323,14 @@ body.ab-dark-on .text-muted {
 @media (prefers-color-scheme: dark) {
     body.ab-dark-auto {
         color-scheme: dark;
+        --bs-body-color: #e5e7eb;
+        --bs-body-bg: #020617;
+        --bs-border-color: #334155;
         --ab-text-color: #e5e7eb;
         --ab-card-bg: #111827;
+        --ab-card-rgb: 17, 24, 39;
         --ab-secondary: #f8fafc;
+        background-color: #020617;
     }
 
     body.ab-dark-auto a:not(.btn) {
@@ -311,6 +339,24 @@ body.ab-dark-on .text-muted {
 
     body.ab-dark-auto .form-control {
         color: #f8fafc;
+        border-color: #475569;
+        background-color: #1e293b;
+    }
+
+    body.ab-dark-auto .form-control::placeholder {
+        color: #94a3b8;
+        opacity: 1;
+    }
+
+    body.ab-dark-auto .form-control:-webkit-autofill {
+        -webkit-text-fill-color: #f8fafc;
+        -webkit-box-shadow: 0 0 0 1000px #1e293b inset;
+        caret-color: #f8fafc;
+    }
+
+    body.ab-dark-auto .input-group-text,
+    body.ab-dark-auto .input-group .btn {
+        color: #e5e7eb;
         border-color: #475569;
         background-color: #1e293b;
     }

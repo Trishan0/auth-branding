@@ -186,6 +186,11 @@ function applyUpdate(values) {
                     .map((offset) => parseInt(values[field].slice(offset, offset + 2), 16))
                     .join(", ");
                 root.style.setProperty("--ab-primary-rgb", rgb);
+            } else if (field === "card_background_color") {
+                const rgb = [1, 3, 5]
+                    .map((offset) => parseInt(values[field].slice(offset, offset + 2), 16))
+                    .join(", ");
+                root.style.setProperty("--ab-card-rgb", rgb);
             }
         }
     }

@@ -15,6 +15,7 @@ from ..models.auth_branding_config import AuthBrandingConfig
 
 
 class AuthBrandingController(http.Controller):
+    _ASSET_CACHE_VERSION = "3"
     _ALLOWED_IMAGE_FIELDS = {"company_logo", "favicon", "background_image"}
     _ALLOWED_PAGES = {
         "login": "web.login",
@@ -163,6 +164,10 @@ class AuthBrandingController(http.Controller):
             str(int(values["primary_color"][offset : offset + 2], 16))
             for offset in (1, 3, 5)
         )
+        card_rgb = ", ".join(
+            str(int(values["card_background_color"][offset : offset + 2], 16))
+            for offset in (1, 3, 5)
+        )
         return f""":root {{
     --ab-primary: {values['primary_color']};
     --ab-primary-rgb: {primary_rgb};
@@ -171,6 +176,7 @@ class AuthBrandingController(http.Controller):
     --ab-font: {font_family};
     --ab-text-color: {values['text_color']};
     --ab-card-bg: {values['card_background_color']};
+    --ab-card-rgb: {card_rgb};
     --ab-glass-blur: {values['glassmorphism_blur']}px;
     --ab-glass-opacity: {values['glassmorphism_opacity']};
     --ab-input-radius: {values['input_border_radius']}px;
@@ -408,13 +414,16 @@ body.ab-template-sidebar .ab-split-aside {{
         )
         return config_values
 
-    @staticmethod
-    def _cache_headers(config, variant):
+    @classmethod
+    def _cache_headers(cls, config, variant):
         modified = config.write_date or config.create_date or fields.Datetime.now()
         if modified.tzinfo is None:
             modified = modified.replace(tzinfo=timezone.utc)
         modified = modified.replace(microsecond=0)
-        identity = f"{config._name}:{config.id}:{config.write_date}:{variant}".encode()
+        identity = (
+            f"{cls._ASSET_CACHE_VERSION}:{config._name}:{config.id}:"
+            f"{config.write_date}:{variant}"
+        ).encode()
         etag = hashlib.sha256(identity).hexdigest()
         return etag, modified, [
             ("ETag", f'"{etag}"'),

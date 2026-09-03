@@ -26,6 +26,7 @@ class TestAuthBrandingController(HttpCase):
         )
         self.assertEqual(cached_response.status_code, 304)
         self.assertIn("--ab-primary-rgb:", response.text)
+        self.assertIn("--ab-card-rgb: 255, 255, 255", response.text)
 
     def test_invalid_image_field_returns_not_found(self):
         response = self.url_open("/auth_branding/image/not_allowed")
@@ -45,6 +46,8 @@ class TestAuthBrandingController(HttpCase):
                 "hide_social_labels": True,
                 "template": "sidebar",
                 "dark_mode": "on",
+                "card_background_color": "#111827",
+                "glassmorphism": True,
                 "loading_animation_type": "progress",
                 "powered_by_text": "Secured by Branding Test",
                 "powered_by_url": "https://example.com/security",
@@ -62,9 +65,13 @@ class TestAuthBrandingController(HttpCase):
         self.assertIn("ab-social-hide-labels", response.text)
         self.assertIn("ab-template-sidebar", response.text)
         self.assertIn("ab-dark-on", response.text)
+        self.assertIn("ab-glass", response.text)
         self.assertIn("ab-loading-progress", response.text)
         self.assertIn("Secured by Branding Test", response.text)
         self.assertIn("https://example.com/security", response.text)
+
+        theme = self.url_open("/auth_branding/theme.css")
+        self.assertIn("--ab-card-rgb: 17, 24, 39", theme.text)
 
     def test_public_route_cannot_select_an_unrelated_company(self):
         other_company = self.env["res.company"].create(
