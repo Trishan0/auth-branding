@@ -1,0 +1,816 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#   * auth_branding
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-03 08:30+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. module: auth_branding
+msgid "%(field)s must be a valid HTTP or HTTPS URL."
+msgstr ""
+
+#. module: auth_branding
+msgid "%(field)s must be between 0.0 and 1.0."
+msgstr ""
+
+#. module: auth_branding
+msgid "%(field)s must be positive or zero."
+msgstr ""
+
+#. module: auth_branding
+msgid "0.0 to 1.0, darkens image for text readability"
+msgstr ""
+
+#. module: auth_branding
+msgid "A short subtitle below the title, e.g. \"Sign in to continue.\""
+msgstr ""
+
+#. module: auth_branding
+msgid "Animated Gradient"
+msgstr ""
+
+#. module: auth_branding
+msgid "Authentication Branding"
+msgstr ""
+
+#. module: auth_branding
+msgid "Authentication Branding Configuration"
+msgstr ""
+
+#. module: auth_branding
+msgid "Authentication Branding Manager"
+msgstr ""
+
+#. module: auth_branding
+msgid "Authentication branding: company isolation"
+msgstr ""
+
+#. module: auth_branding
+msgid "Background Color"
+msgstr ""
+
+#. module: auth_branding
+msgid "Background Image"
+msgstr ""
+
+#. module: auth_branding
+msgid "Background Type"
+msgstr ""
+
+#. module: auth_branding
+msgid "Blur Factor (px)"
+msgstr ""
+
+#. module: auth_branding
+msgid "Branding"
+msgstr ""
+
+#. module: auth_branding
+msgid "Branding configurations cannot be duplicated. Create or open the configuration for the target company instead."
+msgstr ""
+
+#. module: auth_branding
+msgid "Branding for"
+msgstr ""
+
+#. module: auth_branding
+msgid "Button Border Radius (px)"
+msgstr ""
+
+#. module: auth_branding
+msgid "Button Color"
+msgstr ""
+
+#. module: auth_branding
+msgid "Button Text Color"
+msgstr ""
+
+#. module: auth_branding
+msgid "Card & Effects"
+msgstr ""
+
+#. module: auth_branding
+msgid "Card Background Color"
+msgstr ""
+
+#. module: auth_branding
+msgid "Card Opacity (0.0 - 1.0)"
+msgstr ""
+
+#. module: auth_branding
+msgid "Centered Card"
+msgstr ""
+
+#. module: auth_branding
+msgid "Colors"
+msgstr ""
+
+#. module: auth_branding
+msgid "Colors must use the #RRGGBB format. Check: %(fields)s"
+msgstr ""
+
+#. module: auth_branding
+msgid "Company"
+msgstr ""
+
+#. module: auth_branding
+msgid "Company Logo"
+msgstr ""
+
+#. module: auth_branding
+msgid "Configure Auth Branding"
+msgstr ""
+
+#. module: auth_branding
+msgid "Custom Content"
+msgstr ""
+
+#. module: auth_branding
+msgid "Custom Footer Text"
+msgstr ""
+
+#. module: auth_branding
+msgid "Custom text shown in the footer, e.g. your helpdesk number"
+msgstr ""
+
+#. module: auth_branding
+msgid "Customize your login, signup and password reset pages"
+msgstr ""
+
+#. module: auth_branding
+msgid "e.g. Sign in to continue."
+msgstr ""
+
+#. module: auth_branding
+msgid "e.g. Support: +1 800 000 0000"
+msgstr ""
+
+#. module: auth_branding
+msgid "e.g. Welcome back!"
+msgstr ""
+
+#. module: auth_branding
+msgid "Enable Glassmorphism"
+msgstr ""
+
+#. module: auth_branding
+msgid "Favicon"
+msgstr ""
+
+#. module: auth_branding
+msgid "Font Family"
+msgstr ""
+
+#. module: auth_branding
+msgid "Footer Elements"
+msgstr ""
+
+#. module: auth_branding
+msgid "Full Bleed Background"
+msgstr ""
+
+#. module: auth_branding
+msgid "Georgia"
+msgstr ""
+
+#. module: auth_branding
+msgid "Gradient"
+msgstr ""
+
+#. module: auth_branding
+msgid "Gradient Direction"
+msgstr ""
+
+#. module: auth_branding
+msgid "Gradient End"
+msgstr ""
+
+#. module: auth_branding
+msgid "Gradient Start"
+msgstr ""
+
+#. module: auth_branding
+msgid "https://yoursite.com/privacy"
+msgstr ""
+
+#. module: auth_branding
+msgid "https://yoursite.com/terms"
+msgstr ""
+
+#. module: auth_branding
+msgid "Image"
+msgstr ""
+
+#. module: auth_branding
+msgid "Image on Left"
+msgstr ""
+
+#. module: auth_branding
+msgid "Image on Right"
+msgstr ""
+
+#. module: auth_branding
+msgid "Input Border Radius (px)"
+msgstr ""
+
+#. module: auth_branding
+msgid "Inter"
+msgstr ""
+
+#. module: auth_branding
+msgid "Lato"
+msgstr ""
+
+#. module: auth_branding
+msgid "Layout & Structure"
+msgstr ""
+
+#. module: auth_branding
+msgid "Login Welcome Subtitle"
+msgstr ""
+
+#. module: auth_branding
+msgid "Login Welcome Title"
+msgstr ""
+
+#. module: auth_branding
+msgid "Make the login card semi-transparent and blurred"
+msgstr ""
+
+#. module: auth_branding
+msgid "Manage Databases"
+msgstr ""
+
+#. module: auth_branding
+msgid "Odoo"
+msgstr ""
+
+#. module: auth_branding
+msgid "Open Sans"
+msgstr ""
+
+#. module: auth_branding
+msgid "Optional text shown below logo, e.g. \"Welcome back.\""
+msgstr ""
+
+#. module: auth_branding
+msgid "Overlay Opacity"
+msgstr ""
+
+#. module: auth_branding
+msgid "Override the default login heading, e.g. \"Welcome back!\""
+msgstr ""
+
+#. module: auth_branding
+msgid "Poppins"
+msgstr ""
+
+#. module: auth_branding
+msgid "Powered by"
+msgstr ""
+
+#. module: auth_branding
+msgid "Primary Color"
+msgstr ""
+
+#. module: auth_branding
+msgid "Privacy Label"
+msgstr ""
+
+#. module: auth_branding
+msgid "Privacy Policy URL"
+msgstr ""
+
+#. module: auth_branding
+msgid "Reset all branding options for this company to their defaults?"
+msgstr ""
+
+#. module: auth_branding
+msgid "Reset to Defaults"
+msgstr ""
+
+#. module: auth_branding
+msgid "Roboto"
+msgstr ""
+
+#. module: auth_branding
+msgid "Save"
+msgstr ""
+
+#. module: auth_branding
+msgid "Secondary Color"
+msgstr ""
+
+#. module: auth_branding
+msgid "Show Manage Databases"
+msgstr ""
+
+#. module: auth_branding
+msgid "Show Powered by Odoo"
+msgstr ""
+
+#. module: auth_branding
+msgid "Side for the image in Split Screen template"
+msgstr ""
+
+#. module: auth_branding
+msgid "Solid Color"
+msgstr ""
+
+#. module: auth_branding
+msgid "Split Alignment"
+msgstr ""
+
+#. module: auth_branding
+msgid "Split Screen"
+msgstr ""
+
+#. module: auth_branding
+msgid "System Default"
+msgstr ""
+
+#. module: auth_branding
+msgid "Tagline"
+msgstr ""
+
+#. module: auth_branding
+msgid "Template"
+msgstr ""
+
+#. module: auth_branding
+msgid "Terms & Privacy Links"
+msgstr ""
+
+#. module: auth_branding
+msgid "Terms Label"
+msgstr ""
+
+#. module: auth_branding
+msgid "Terms of Service URL"
+msgstr ""
+
+#. module: auth_branding
+msgid "Text Color"
+msgstr ""
+
+#. module: auth_branding
+msgid "The branding configuration must be unique per company."
+msgstr ""
+
+#. module: auth_branding
+msgid "to bottom"
+msgstr ""
+
+#. module: auth_branding
+msgid "to bottom left"
+msgstr ""
+
+#. module: auth_branding
+msgid "to bottom right"
+msgstr ""
+
+#. module: auth_branding
+msgid "to right"
+msgstr ""
+
+#. module: auth_branding
+msgid "Typography & Elements"
+msgstr ""
+
+#. module: auth_branding
+msgid "Users who can configure authentication page branding."
+msgstr ""
+
+#. module: auth_branding
+msgid "Always Dark"
+msgstr ""
+
+#. module: auth_branding
+msgid "Always Light"
+msgstr ""
+
+#. module: auth_branding
+msgid "Apply as Draft"
+msgstr ""
+
+#. module: auth_branding
+msgid "Branding imported as draft"
+msgstr ""
+
+#. module: auth_branding
+msgid "Branding published"
+msgstr ""
+
+#. module: auth_branding
+msgid "Custom CSS"
+msgstr ""
+
+#. module: auth_branding
+msgid "Custom CSS contains an unsafe or unsupported construct. Remove HTML tags, external URLs, imports, scripts, or executable CSS."
+msgstr ""
+
+#. module: auth_branding
+msgid "Dark Mode"
+msgstr ""
+
+#. module: auth_branding
+msgid "Discard Draft"
+msgstr ""
+
+#. module: auth_branding
+msgid "Draft saved"
+msgstr ""
+
+#. module: auth_branding
+msgid "Export"
+msgstr ""
+
+#. module: auth_branding
+msgid "Follow Device"
+msgstr ""
+
+#. module: auth_branding
+msgid "Import"
+msgstr ""
+
+#. module: auth_branding
+msgid "Import Authentication Branding"
+msgstr ""
+
+#. module: auth_branding
+msgid "Invalid value for branding field %(field)s."
+msgstr ""
+
+#. module: auth_branding
+msgid "Loading Style"
+msgstr ""
+
+#. module: auth_branding
+msgid "Logo Pulse"
+msgstr ""
+
+#. module: auth_branding
+msgid "Minimal"
+msgstr ""
+
+#. module: auth_branding
+msgid "Powered-by Text"
+msgstr ""
+
+#. module: auth_branding
+msgid "Powered-by URL"
+msgstr ""
+
+#. module: auth_branding
+msgid "Progress Bar"
+msgstr ""
+
+#. module: auth_branding
+msgid "Publish"
+msgstr ""
+
+#. module: auth_branding
+msgid "Quick Setup"
+msgstr ""
+
+#. module: auth_branding
+msgid "Review Import"
+msgstr ""
+
+#. module: auth_branding
+msgid "Review the import before applying it."
+msgstr ""
+
+#. module: auth_branding
+msgid "Review the preview, then publish when you are ready."
+msgstr ""
+
+#. module: auth_branding
+msgid "Save Current Theme"
+msgstr ""
+
+#. module: auth_branding
+msgid "Save Draft"
+msgstr ""
+
+#. module: auth_branding
+msgid "Show Loading Animation"
+msgstr ""
+
+#. module: auth_branding
+msgid "Sidebar"
+msgstr ""
+
+#. module: auth_branding
+msgid "Spinner"
+msgstr ""
+
+#. module: auth_branding
+msgid "The branding import file cannot exceed 16 MB."
+msgstr ""
+
+#. module: auth_branding
+msgid "The current visual settings are now reusable."
+msgstr ""
+
+#. module: auth_branding
+msgid "The new authentication experience is now live."
+msgstr ""
+
+#. module: auth_branding
+msgid "The uploaded file is not valid base64 data."
+msgstr ""
+
+#. module: auth_branding
+msgid "Theme saved"
+msgstr ""
+
+#. module: auth_branding
+msgid "This file is not an Auth Branding export."
+msgstr ""
+
+#. module: auth_branding
+msgid "Unsupported branding schema version: %(version)s."
+msgstr ""
+
+#. module: auth_branding
+msgid "Upload a valid UTF-8 JSON branding export."
+msgstr ""
+
+#. module: auth_branding
+msgid "Version History"
+msgstr ""
+
+#. module: auth_branding
+msgid "Asset %(field)s cannot exceed 8 MB."
+msgstr ""
+
+#. module: auth_branding
+msgid "Asset %(field)s is not valid base64 data."
+msgstr ""
+
+#. module: auth_branding
+msgid "Asset %(field)s must be base64 text."
+msgstr ""
+
+#. module: auth_branding
+msgid "Background"
+msgstr ""
+
+#. module: auth_branding
+msgid "Brand"
+msgstr ""
+
+#. module: auth_branding
+msgid "Built in"
+msgstr ""
+
+#. module: auth_branding
+msgid "Button label contrast"
+msgstr ""
+
+#. module: auth_branding
+msgid "Content"
+msgstr ""
+
+#. module: auth_branding
+msgid "Custom"
+msgstr ""
+
+#. module: auth_branding
+msgid "Delete custom theme"
+msgstr ""
+
+#. module: auth_branding
+msgid "Design health"
+msgstr ""
+
+#. module: auth_branding
+msgid "Embedded assets ready to import: %(count)s"
+msgstr ""
+
+#. module: auth_branding
+msgid "Ignored unsupported fields: %(fields)s"
+msgstr ""
+
+#. module: auth_branding
+msgid "Link color contrast"
+msgstr ""
+
+#. module: auth_branding
+msgid "Presets"
+msgstr ""
+
+#. module: auth_branding
+msgid "Settings ready to import: %(count)s"
+msgstr ""
+
+#. module: auth_branding
+msgid "Show details"
+msgstr ""
+
+#. module: auth_branding
+msgid "Source company: %(company)s"
+msgstr ""
+
+#. module: auth_branding
+msgid "Body text contrast"
+msgstr ""
+
+#. module: auth_branding
+msgid "Unknown"
+msgstr ""
+
+#. module: auth_branding
+msgid "The branding export must contain a JSON object."
+msgstr ""
+
+#. module: auth_branding
+msgid "Branding settings and assets must be JSON objects."
+msgstr ""
+
+#. module: auth_branding
+msgid "%s applied to the preview."
+msgstr ""
+
+#. module: auth_branding
+msgid "%s deleted."
+msgstr ""
+
+#. module: auth_branding
+msgid "%s will be permanently removed. Your current draft is not changed."
+msgstr ""
+
+#. module: auth_branding
+msgid "Button text and button color should reach 4.5:1."
+msgstr ""
+
+#. module: auth_branding
+msgid "Delete Theme"
+msgstr ""
+
+#. module: auth_branding
+msgid "Delete custom theme?"
+msgstr ""
+
+#. module: auth_branding
+msgid "Primary-color links should reach 4.5:1 on the card."
+msgstr ""
+
+#. module: auth_branding
+msgid "Text and card background should reach 4.5:1."
+msgstr ""
+
+#. module: auth_branding
+msgid "Theme applied"
+msgstr ""
+
+#. module: auth_branding
+msgid "Theme deleted"
+msgstr ""
+
+#. module: auth_branding
+msgid "A scheduled branding snapshot cannot be edited."
+msgstr ""
+
+#. module: auth_branding
+msgid "A snapshot of the current draft is captured now. You can keep editing afterward without changing this scheduled release."
+msgstr ""
+
+#. module: auth_branding
+msgid "Branding scheduled"
+msgstr ""
+
+#. module: auth_branding
+msgid "Cancel Schedule"
+msgstr ""
+
+#. module: auth_branding
+msgid "Cancel this scheduled publish?"
+msgstr ""
+
+#. module: auth_branding
+msgid "Captured Assets"
+msgstr ""
+
+#. module: auth_branding
+msgid "Contrast color updated. Review it in the preview."
+msgstr ""
+
+#. module: auth_branding
+msgid "Draft preview"
+msgstr ""
+
+#. module: auth_branding
+msgid "Fix contrast"
+msgstr ""
+
+#. module: auth_branding
+msgid "Only a pending publish can be cancelled."
+msgstr ""
+
+#. module: auth_branding
+msgid "Pending"
+msgstr ""
+
+#. module: auth_branding
+msgid "Publish At"
+msgstr ""
+
+#. module: auth_branding
+msgid "Published snapshot"
+msgstr ""
+
+#. module: auth_branding
+msgid "Release Note"
+msgstr ""
+
+#. module: auth_branding
+msgid "Reset Advanced"
+msgstr ""
+
+#. module: auth_branding
+msgid "Reset Background"
+msgstr ""
+
+#. module: auth_branding
+msgid "Reset Brand"
+msgstr ""
+
+#. module: auth_branding
+msgid "Reset Content"
+msgstr ""
+
+#. module: auth_branding
+msgid "Reset Layout"
+msgstr ""
+
+#. module: auth_branding
+msgid "Schedule"
+msgstr ""
+
+#. module: auth_branding
+msgid "Schedule Branding Publish"
+msgstr ""
+
+#. module: auth_branding
+msgid "Schedule Publish"
+msgstr ""
+
+#. module: auth_branding
+msgid "Scheduled Branding Publish"
+msgstr ""
+
+#. module: auth_branding
+msgid "Scheduled Branding Publishes"
+msgstr ""
+
+#. module: auth_branding
+msgid "Scheduled publish cancelled"
+msgstr ""
+
+#. module: auth_branding
+msgid "Scheduled Publishes"
+msgstr ""
+
+#. module: auth_branding
+msgid "Schedules"
+msgstr ""
+
+#. module: auth_branding
+msgid "Section reset"
+msgstr ""
+
+#. module: auth_branding
+msgid "Select a valid branding configuration."
+msgstr ""
+
+#. module: auth_branding
+msgid "Select a valid branding section to reset."
+msgstr ""
+
+#. module: auth_branding
+msgid "The %(section)s settings were restored to their defaults."
+msgstr ""
+
+#. module: auth_branding
+msgid "The captured branding snapshot will not be published."
+msgstr ""
+
+#. module: auth_branding
+msgid "The publish time must be in the future."
+msgstr ""
+
+#. module: auth_branding
+msgid "This draft snapshot will publish automatically at %(date)s."
+msgstr ""
