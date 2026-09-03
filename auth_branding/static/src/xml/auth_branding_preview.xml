@@ -105,6 +105,10 @@
     <t t-name="auth_branding.PreviewWidget" owl="1">
         <div class="ab-preview-widget d-flex flex-column h-100">
             <div class="ab-preview-toolbar d-flex align-items-center gap-2 flex-wrap mb-3">
+                <div class="btn-group" role="group" aria-label="Preview source">
+                    <button type="button" class="btn btn-sm" t-att-class="state.mode === 'draft' ? 'btn-secondary' : 'btn-outline-secondary'" t-on-click="() => this.setMode('draft')" title="Preview the current editor values">Draft</button>
+                    <button type="button" class="btn btn-sm" t-att-class="state.mode === 'published' ? 'btn-secondary' : 'btn-outline-secondary'" t-on-click="() => this.setMode('published')" title="Preview what users currently see">Published</button>
+                </div>
                 <div class="btn-group" role="group" aria-label="Authentication page">
                     <button type="button" class="btn btn-sm" t-att-class="state.page === 'login' ? 'btn-primary' : 'btn-outline-secondary'" t-on-click="() => this.setPage('login')">Login</button>
                     <button type="button" class="btn btn-sm" t-att-class="state.page === 'signup' ? 'btn-primary' : 'btn-outline-secondary'" t-on-click="() => this.setPage('signup')">Sign Up</button>
@@ -124,10 +128,14 @@
                 <a class="btn btn-sm btn-outline-secondary" t-att-href="state.iframeSrc || '#'" target="_blank" rel="noopener noreferrer" title="Open preview in a new tab" aria-label="Open preview in a new tab">
                     <i class="fa fa-external-link"/>
                 </a>
+                <a class="btn btn-sm btn-outline-secondary" t-att-href="livePageUrl" target="_blank" rel="noopener noreferrer" title="Open the live authentication page" aria-label="Open the live authentication page">
+                    <i class="fa fa-globe"/>
+                </a>
             </div>
 
             <div class="ab-preview-status d-flex align-items-center mb-2 small text-muted">
-                <span t-if="state.ready"><i class="fa fa-circle text-success me-1"/>Live preview</span>
+                <span t-if="state.ready &amp;&amp; state.mode === 'draft'"><i class="fa fa-pencil text-primary me-1"/>Draft preview</span>
+                <span t-elif="state.ready"><i class="fa fa-check-circle text-success me-1"/>Published snapshot</span>
                 <span t-else=""><i class="fa fa-spin fa-spinner me-1"/>Refreshing preview</span>
                 <span class="ms-auto text-capitalize"><t t-out="state.device"/></span>
             </div>

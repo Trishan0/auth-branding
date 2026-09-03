@@ -99,6 +99,7 @@ export class AuthBrandingPreview extends Component {
         this.state = useState({
             page: "login",
             device: "desktop",
+            mode: "draft",
             iframeSrc: "",
             ready: false,
         });
@@ -117,6 +118,7 @@ export class AuthBrandingPreview extends Component {
             const data = this.props.record.data;
             return [
                 this.state.page,
+                this.state.mode,
                 this.extractValue(data.company_id),
                 data.template,
             ];
@@ -163,7 +165,17 @@ export class AuthBrandingPreview extends Component {
     }
 
     buildPreviewUrl(data) {
-        const params = new URLSearchParams({ page: this.state.page });
+        const params = new URLSearchParams({
+            page: this.state.page,
+            mode: this.state.mode,
+        });
+        if (this.state.mode === "published") {
+            const companyId = this.extractValue(data.company_id);
+            if (companyId) {
+                params.append("company_id", companyId);
+            }
+            return `/auth_branding/preview?${params.toString()}`;
+        }
         for (const fieldName of PREVIEW_FIELDS) {
             if (URL_EXCLUDED_FIELDS.has(fieldName)) {
                 continue;
@@ -179,6 +191,9 @@ export class AuthBrandingPreview extends Component {
     }
 
     sendPreviewUpdate() {
+        if (this.state.mode !== "draft") {
+            return;
+        }
         const frameWindow = this.previewFrame.el?.contentWindow;
         if (!frameWindow) {
             return;
@@ -198,8 +213,20 @@ export class AuthBrandingPreview extends Component {
         this.state.page = page;
     }
 
+    setMode(mode) {
+        this.state.mode = mode;
+    }
+
     setDevice(device) {
         this.state.device = device;
+    }
+
+    get livePageUrl() {
+        return {
+            login: "/web/login",
+            signup: "/web/signup",
+            reset: "/web/reset_password",
+        }[this.state.page];
     }
 }
 

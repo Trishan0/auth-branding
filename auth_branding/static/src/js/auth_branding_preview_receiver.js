@@ -139,7 +139,13 @@ function updateBackground(values) {
     } else if (type === "animated_gradient") {
         background = `linear-gradient(-45deg, ${start}, ${end}, ${primary})`;
     } else {
-        background = `url('/auth_branding/image/background_image?company_id=${companyId}') center / cover no-repeat fixed`;
+        const previewMode = document.querySelector(
+            "[data-auth-branding-preview]"
+        )?.dataset.previewMode;
+        const imageRoute = previewMode === "draft"
+            ? "/auth_branding/preview/image/"
+            : "/auth_branding/image/";
+        background = `url('${imageRoute}background_image?company_id=${companyId}') center / cover no-repeat fixed`;
     }
 
     let liveTheme = document.getElementById("ab-live-theme-preview");

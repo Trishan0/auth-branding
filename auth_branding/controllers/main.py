@@ -78,6 +78,10 @@ class AuthBrandingController(http.Controller):
         return value if value in allowed else default
 
     @staticmethod
+    def _safe_text(value, maximum):
+        return str(value)[:maximum] if value else ""
+
+    @staticmethod
     def _safe_url(value, default=""):
         if not value:
             return ""
@@ -193,8 +197,13 @@ class AuthBrandingController(http.Controller):
                 "background-size: 400% 400%; "
                 "animation: abGradientAnim 15s ease infinite;"
             )
+        image_route = (
+            "/auth_branding/preview/image/"
+            if self._value(config, "preview_mode") == "draft"
+            else "/auth_branding/image/"
+        )
         return (
-            "background: url('/auth_branding/image/background_image?company_id="
+            f"background: url('{image_route}background_image?company_id="
             f"{values['company_id']}') no-repeat center center fixed; "
             "background-size: cover;"
         )
@@ -227,7 +236,8 @@ body.ab-template-sidebar .ab-split-aside {{
     def _boolean_parameter(kwargs, field_name, default):
         if field_name not in kwargs:
             return default
-        return kwargs[field_name] == "true"
+        value = kwargs[field_name]
+        return value if isinstance(value, bool) else value == "true"
 
     def _build_preview_config(self, config, kwargs):
         color_values = {
@@ -238,8 +248,8 @@ body.ab-template-sidebar .ab-split-aside {{
         }
         config_values = {
             "company_id": config.company_id.id,
-            "company_logo": bool(config.company_logo),
-            "favicon": bool(config.favicon),
+            "company_logo": bool(kwargs.get("company_logo", config.company_logo)),
+            "favicon": bool(kwargs.get("favicon", config.favicon)),
             "template": self._safe_selection(
                 kwargs.get("template", config.template),
                 self._TEMPLATES,
@@ -299,35 +309,42 @@ body.ab-template-sidebar .ab-split-aside {{
             "show_powered_by_odoo": self._boolean_parameter(
                 kwargs, "show_powered_by_odoo", config.show_powered_by_odoo
             ),
-            "tagline": kwargs.get("tagline", config.tagline or "")[:500],
-            "custom_footer_text": kwargs.get(
-                "custom_footer_text", config.custom_footer_text or ""
-            )[:500],
-            "login_welcome_title": kwargs.get(
-                "login_welcome_title", config.login_welcome_title or ""
-            )[:500],
-            "login_welcome_subtitle": kwargs.get(
-                "login_welcome_subtitle", config.login_welcome_subtitle or ""
-            )[:500],
-            "signup_welcome_title": kwargs.get(
-                "signup_welcome_title", config.signup_welcome_title or ""
-            )[:500],
-            "signup_welcome_subtitle": kwargs.get(
-                "signup_welcome_subtitle", config.signup_welcome_subtitle or ""
-            )[:500],
-            "reset_welcome_title": kwargs.get(
-                "reset_welcome_title", config.reset_welcome_title or ""
-            )[:500],
-            "reset_welcome_subtitle": kwargs.get(
-                "reset_welcome_subtitle", config.reset_welcome_subtitle or ""
-            )[:500],
-            "page_title": kwargs.get("page_title", config.page_title or "")[:200],
-            "page_title_signup": kwargs.get(
-                "page_title_signup", config.page_title_signup or ""
-            )[:200],
-            "page_title_reset": kwargs.get(
-                "page_title_reset", config.page_title_reset or ""
-            )[:200],
+            "tagline": self._safe_text(
+                kwargs.get("tagline", config.tagline), 500
+            ),
+            "custom_footer_text": self._safe_text(
+                kwargs.get("custom_footer_text", config.custom_footer_text), 500
+            ),
+            "login_welcome_title": self._safe_text(
+                kwargs.get("login_welcome_title", config.login_welcome_title), 500
+            ),
+            "login_welcome_subtitle": self._safe_text(
+                kwargs.get("login_welcome_subtitle", config.login_welcome_subtitle),
+                500,
+            ),
+            "signup_welcome_title": self._safe_text(
+                kwargs.get("signup_welcome_title", config.signup_welcome_title), 500
+            ),
+            "signup_welcome_subtitle": self._safe_text(
+                kwargs.get("signup_welcome_subtitle", config.signup_welcome_subtitle),
+                500,
+            ),
+            "reset_welcome_title": self._safe_text(
+                kwargs.get("reset_welcome_title", config.reset_welcome_title), 500
+            ),
+            "reset_welcome_subtitle": self._safe_text(
+                kwargs.get("reset_welcome_subtitle", config.reset_welcome_subtitle),
+                500,
+            ),
+            "page_title": self._safe_text(
+                kwargs.get("page_title", config.page_title), 200
+            ),
+            "page_title_signup": self._safe_text(
+                kwargs.get("page_title_signup", config.page_title_signup), 200
+            ),
+            "page_title_reset": self._safe_text(
+                kwargs.get("page_title_reset", config.page_title_reset), 200
+            ),
             "social_button_style": self._safe_selection(
                 kwargs.get("social_button_style", config.social_button_style),
                 {"rounded", "pill", "square", "icon"},
@@ -353,26 +370,29 @@ body.ab-template-sidebar .ab-split-aside {{
                 {"spinner", "progress", "pulse"},
                 "spinner",
             ),
-            "powered_by_text": kwargs.get(
-                "powered_by_text", config.powered_by_text or ""
-            )[:200],
+            "powered_by_text": self._safe_text(
+                kwargs.get("powered_by_text", config.powered_by_text), 200
+            ),
             "powered_by_url": self._safe_url(
                 kwargs.get("powered_by_url", config.powered_by_url or "")
             ),
-            "custom_css": AuthBrandingConfig._sanitize_custom_css(config.custom_css),
+            "custom_css": AuthBrandingConfig._sanitize_custom_css(
+                kwargs.get("custom_css", config.custom_css)
+            ),
             "terms_url": self._safe_url(
                 kwargs.get("terms_url", config.terms_url or "")
             ),
             "privacy_url": self._safe_url(
                 kwargs.get("privacy_url", config.privacy_url or "")
             ),
-            "terms_label": kwargs.get(
-                "terms_label", config.terms_label or "Terms of Service"
-            )[:200],
-            "privacy_label": kwargs.get(
-                "privacy_label", config.privacy_label or "Privacy Policy"
-            )[:200],
+            "terms_label": self._safe_text(
+                kwargs.get("terms_label", config.terms_label), 200
+            ) or "Terms of Service",
+            "privacy_label": self._safe_text(
+                kwargs.get("privacy_label", config.privacy_label), 200
+            ) or "Privacy Policy",
             "is_preview": True,
+            "preview_mode": kwargs.get("preview_mode", "draft"),
         }
         config_values.update(color_values)
 
@@ -419,7 +439,13 @@ body.ab-template-sidebar .ab-split-aside {{
     )
     def preview(self, page="login", **kwargs):
         config = self._get_config(kwargs.get("company_id"))
-        ab_config = self._build_preview_config(config, kwargs)
+        preview_mode = "published" if kwargs.get("mode") == "published" else "draft"
+        if preview_mode == "published":
+            preview_values = config._get_frontend_values()
+        else:
+            preview_values = kwargs
+        preview_values["preview_mode"] = preview_mode
+        ab_config = self._build_preview_config(config, preview_values)
         page = page if page in self._ALLOWED_PAGES else "login"
         ab_config["page"] = page
         if page == "signup":
@@ -447,6 +473,26 @@ body.ab-template-sidebar .ab-split-aside {{
         template = self._ALLOWED_PAGES.get(page, self._ALLOWED_PAGES["login"])
         response = request.render(template, qcontext)
         response.headers["Content-Security-Policy"] = "frame-ancestors 'self'"
+        return response
+
+    @http.route(
+        "/auth_branding/preview/image/<string:field>",
+        type="http",
+        auth="user",
+        sitemap=False,
+    )
+    def get_preview_image(self, field, **kwargs):
+        if field not in self._ALLOWED_IMAGE_FIELDS:
+            return request.not_found()
+        config = self._get_config(kwargs.get("company_id"))
+        if not config[field]:
+            return request.not_found()
+        response = request.env["ir.binary"]._get_stream_from(
+            config, field
+        ).get_response()
+        response.headers["Cache-Control"] = "private, no-store"
+        response.headers["Content-Security-Policy"] = "default-src 'none'; sandbox"
+        response.headers["Cross-Origin-Resource-Policy"] = "same-origin"
         return response
 
     @http.route(

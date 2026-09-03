@@ -129,6 +129,48 @@ class TestAuthBrandingController(HttpCase):
         self.assertEqual(response.status_code, 200)
         self.assertNotIn("<script>alert(1)</script>", response.text)
 
+    def test_preview_can_compare_draft_and_published_branding(self):
+        config = (
+            self.env["auth.branding.config"]
+            .sudo()
+            ._get_or_create_config(self.env.company.id)
+        )
+        config.write(
+            {
+                "primary_color": "#112233",
+                "login_welcome_title": "Published welcome",
+            }
+        )
+        config.with_user(self.env.user).action_publish()
+        config.write(
+            {
+                "primary_color": "#445566",
+                "login_welcome_title": "Draft welcome",
+            }
+        )
+        self.authenticate("admin", "admin")
+
+        published = self.url_open("/auth_branding/preview?mode=published")
+        self.assertEqual(published.status_code, 200)
+        self.assertIn("#112233", published.text)
+        self.assertIn("Published welcome", published.text)
+        self.assertNotIn("#445566", published.text)
+        self.assertNotIn("Draft welcome", published.text)
+
+        draft = self.url_open("/auth_branding/preview?mode=draft")
+        self.assertEqual(draft.status_code, 200)
+        self.assertIn("#445566", draft.text)
+        self.assertIn("Draft welcome", draft.text)
+        self.assertNotIn("Published welcome", draft.text)
+
+    def test_preview_image_requires_login_and_rejects_unknown_fields(self):
+        response = self.url_open("/auth_branding/preview/image/company_logo")
+        self.assertIn("/web/login", response.url)
+
+        self.authenticate("admin", "admin")
+        response = self.url_open("/auth_branding/preview/image/not_allowed")
+        self.assertEqual(response.status_code, 404)
+
     def test_branding_export_download(self):
         self.authenticate("admin", "admin")
         config = self.env["auth.branding.config"]._get_or_create_config()
