@@ -6,93 +6,205 @@
         <field name="arch" type="xml">
             <form string="Authentication Branding" class="o_auth_branding_form">
                 <header>
-                    <button name="action_save" string="Save" type="object" class="oe_highlight" />
+                    <button name="action_save" string="Save Draft" type="object" />
+                    <button name="action_publish" string="Publish" type="object" class="oe_highlight" />
+                    <button name="action_open_schedule_wizard" string="Schedule" type="object" icon="fa-clock-o" />
+                    <button name="action_open_schedules" string="Schedules" type="object" icon="fa-calendar" invisible="not has_schedules" />
+                    <button name="action_discard_draft" string="Discard Draft" type="object" invisible="not active_version_id or not has_unpublished_changes" confirm="Discard the current draft and restore the published version?" />
+                    <button name="action_open_setup_wizard" string="Quick Setup" type="object" icon="fa-magic" />
+                    <button name="action_open_version_history" string="Version History" type="object" icon="fa-history" invisible="not version_ids" />
+                    <button name="action_export_branding" string="Export" type="object" icon="fa-download" />
+                    <button name="action_open_import_wizard" string="Import" type="object" icon="fa-upload" />
+                    <button
+                        name="action_reset_defaults"
+                        string="Reset to Defaults"
+                        type="object"
+                        confirm="Reset all branding options for this company to their defaults?"
+                    />
                     <field name="company_id" invisible="1" />
+                    <field name="active_version_id" invisible="1" />
+                    <field name="version_ids" invisible="1" />
+                    <field name="schedule_ids" invisible="1" />
+                    <field name="has_schedules" invisible="1" />
+                    <field name="has_unpublished_changes" invisible="1" />
                 </header>
                 <sheet>
-                    <div class="o_auth_branding_header d-flex align-items-center mb-4">
+                    <div class="o_auth_branding_header d-flex align-items-center mb-3">
                         <div class="flex-grow-1">
-                            <h3>Branding for <field name="company_id" readonly="1" options="{'no_open': True}" /></h3>
+                            <h2 class="mb-1">Authentication Brand Studio</h2>
+                            <p class="text-muted mb-0">
+                                Editing the sign-in experience for
+                                <field name="company_id" readonly="1" options="{'no_open': True}" class="d-inline-block" />
+                            </p>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-5">
-                            <group string="Layout &amp; Structure">
-                                <field name="template" widget="auth_branding_template_picker" />
-                                <field name="split_alignment" invisible="template != 'split'" />
-                            </group>
-                            <group string="Card &amp; Effects">
-                                <field name="card_background_color" widget="auth_branding_color" />
-                                <field name="glassmorphism" widget="boolean_toggle" />
-                                <field name="glassmorphism_blur" invisible="glassmorphism == False" />
-                                <field name="glassmorphism_opacity" invisible="glassmorphism == False" />
-                            </group>
-                            <group string="Branding">
-                                <field name="company_logo" widget="image" options="{'size': [0, 90]}" />
-                                <field name="favicon" widget="image" options="{'size': [0, 90]}" />
-                                <field name="tagline" />
-                            </group>
-                            <group string="Colors">
-                                <field name="primary_color" widget="auth_branding_color" />
-                                <field name="secondary_color" widget="auth_branding_color" />
-                                <field name="background_type" />
-                                <field
-                                    name="background_color"
-                                    widget="auth_branding_color"
-                                    invisible="background_type != 'solid'"
-                                />
-                                <field
-                                    name="gradient_start"
-                                    widget="auth_branding_color"
-                                    invisible="background_type != 'gradient'"
-                                />
-                                <field
-                                    name="gradient_end"
-                                    widget="auth_branding_color"
-                                    invisible="background_type != 'gradient'"
-                                />
-                                <field
-                                    name="gradient_direction"
-                                    invisible="background_type != 'gradient'"
-                                />
-                                <field
-                                    name="background_image"
-                                    widget="image"
-                                    invisible="background_type != 'image'"
-                                />
-                                <field name="background_overlay_opacity"
-                                    invisible="background_type != 'image'"
-                                />
-                            </group>
-                            <group string="Typography &amp; Elements">
-                                <field name="font_family" />
-                                <field name="text_color" widget="auth_branding_color" />
-                                <field name="input_border_radius" />
-                                <field name="button_border_radius" />
-                                <field name="button_color" widget="auth_branding_color" />
-                                <field name="button_text_color" widget="auth_branding_color" />
-                            </group>
-                            <group string="Footer Elements">
-                                <field name="show_manage_databases" widget="boolean_toggle" />
-                                <field name="show_powered_by_odoo" widget="boolean_toggle" />
-                                <field name="custom_footer_text" placeholder="e.g. Support: +1 800 000 0000" />
-                            </group>
-                            <group string="Custom Content">
-                                <field name="login_welcome_title" placeholder="e.g. Welcome back!" />
-                                <field name="login_welcome_subtitle" placeholder="e.g. Sign in to continue." />
-                            </group>
-                            <group string="Terms &amp; Privacy Links">
-                                <field name="terms_url" placeholder="https://yoursite.com/terms" />
-                                <field name="terms_label" />
-                                <field name="privacy_url" placeholder="https://yoursite.com/privacy" />
-                                <field name="privacy_label" />
-                            </group>
-                            <group string="Security &amp; Auth">
-                                <field name="auth_signup_uninvited" widget="radio" options="{'horizontal': true}" />
-                                <field name="auth_signup_reset_password" widget="boolean_toggle" />
-                            </group>
+                    <div class="alert alert-warning d-flex align-items-center py-2" invisible="not has_unpublished_changes">
+                        <i class="fa fa-pencil me-2" />
+                        <span>This is a draft. Publish when you are ready to update the live authentication pages.</span>
+                    </div>
+                    <div class="alert alert-success d-flex align-items-center py-2" invisible="has_unpublished_changes or not active_version_id">
+                        <i class="fa fa-check-circle me-2" />
+                        <span>Published and up to date.</span>
+                        <field name="published_at" class="ms-auto" readonly="1" />
+                    </div>
+                    <div class="row g-4 o_auth_branding_workspace">
+                        <div class="col-xl-5 col-lg-6 o_auth_branding_editor">
+                            <widget name="auth_branding_accessibility" />
+                            <notebook class="o_auth_branding_notebook">
+                                <page string="Presets" name="presets">
+                                    <div class="mb-3">
+                                        <div class="d-flex align-items-start gap-2">
+                                            <div class="flex-grow-1">
+                                                <h4 class="mb-1">Choose a starting point</h4>
+                                                <p class="text-muted mb-0">
+                                                    Applying a theme updates the preview first. Save only when you are happy with it.
+                                                </p>
+                                            </div>
+                                            <button name="action_open_save_preset_wizard" string="Save Current Theme" type="object" class="btn-secondary" icon="fa-bookmark" />
+                                        </div>
+                                    </div>
+                                    <widget name="auth_branding_preset_gallery" />
+                                </page>
+
+                                <page string="Brand" name="brand">
+                                    <div class="d-flex justify-content-end mb-2">
+                                        <button name="action_reset_section" string="Reset Brand" type="object" icon="fa-undo" class="btn-link" context="{'auth_branding_reset_section': 'brand'}" confirm="Reset only the Brand settings to their defaults?" />
+                                    </div>
+                                    <div class="alert alert-info border-0 py-2" role="status">
+                                        Start with your identity. Changes appear in the preview without saving.
+                                    </div>
+                                    <group string="Logo &amp; Identity">
+                                        <field name="company_logo" widget="image" options="{'size': [0, 110]}" />
+                                        <field name="favicon" widget="image" options="{'size': [0, 72]}" />
+                                        <field name="tagline" placeholder="e.g. Welcome back" />
+                                    </group>
+                                    <group string="Brand Palette">
+                                        <field name="primary_color" widget="auth_branding_color" />
+                                        <field name="secondary_color" widget="auth_branding_color" />
+                                        <field name="font_family" />
+                                        <field name="text_color" widget="auth_branding_color" />
+                                    </group>
+                                </page>
+
+                                <page string="Layout" name="layout">
+                                    <div class="d-flex justify-content-end mb-2">
+                                        <button name="action_reset_section" string="Reset Layout" type="object" icon="fa-undo" class="btn-link" context="{'auth_branding_reset_section': 'layout'}" confirm="Reset only the Layout settings to their defaults?" />
+                                    </div>
+                                    <group string="Page Structure">
+                                        <field name="template" widget="auth_branding_template_picker" nolabel="1" colspan="2" />
+                                        <field name="split_alignment" invisible="template not in ('split', 'sidebar')" />
+                                    </group>
+                                    <group string="Card Style">
+                                        <field name="card_background_color" widget="auth_branding_color" />
+                                        <field name="glassmorphism" widget="boolean_toggle" />
+                                        <field name="glassmorphism_blur" invisible="not glassmorphism" />
+                                        <field name="glassmorphism_opacity" invisible="not glassmorphism" />
+                                        <field name="input_border_radius" />
+                                        <field name="button_border_radius" />
+                                        <field name="button_color" widget="auth_branding_color" />
+                                        <field name="button_text_color" widget="auth_branding_color" />
+                                    </group>
+                                    <group string="Display Mode">
+                                        <field name="dark_mode" />
+                                    </group>
+                                </page>
+
+                                <page string="Background" name="background">
+                                    <div class="d-flex justify-content-end mb-2">
+                                        <button name="action_reset_section" string="Reset Background" type="object" icon="fa-undo" class="btn-link" context="{'auth_branding_reset_section': 'background'}" confirm="Reset only the Background settings to their defaults?" />
+                                    </div>
+                                    <group string="Background Style">
+                                        <field name="background_type" widget="radio" options="{'horizontal': true}" />
+                                        <field
+                                            name="background_color"
+                                            widget="auth_branding_color"
+                                            invisible="background_type != 'solid'"
+                                        />
+                                        <field
+                                            name="gradient_start"
+                                            widget="auth_branding_color"
+                                            invisible="background_type not in ('gradient', 'animated_gradient')"
+                                        />
+                                        <field
+                                            name="gradient_end"
+                                            widget="auth_branding_color"
+                                            invisible="background_type not in ('gradient', 'animated_gradient')"
+                                        />
+                                        <field
+                                            name="gradient_direction"
+                                            invisible="background_type != 'gradient'"
+                                        />
+                                        <field
+                                            name="background_image"
+                                            widget="image"
+                                            invisible="background_type != 'image'"
+                                        />
+                                        <field
+                                            name="background_overlay_opacity"
+                                            invisible="background_type != 'image'"
+                                        />
+                                    </group>
+                                </page>
+
+                                <page string="Content" name="content">
+                                    <div class="d-flex justify-content-end mb-2">
+                                        <button name="action_reset_section" string="Reset Content" type="object" icon="fa-undo" class="btn-link" context="{'auth_branding_reset_section': 'content'}" confirm="Reset only the Content settings to their defaults?" />
+                                    </div>
+                                    <group string="Login Page">
+                                        <field name="page_title" placeholder="Sign in to {company}" />
+                                        <field name="login_welcome_title" placeholder="e.g. Welcome back!" />
+                                        <field name="login_welcome_subtitle" placeholder="e.g. Sign in to continue." />
+                                    </group>
+                                    <group string="Signup Page">
+                                        <field name="page_title_signup" placeholder="Create an account | {company}" />
+                                        <field name="signup_welcome_title" />
+                                        <field name="signup_welcome_subtitle" />
+                                    </group>
+                                    <group string="Password Reset Page">
+                                        <field name="page_title_reset" placeholder="Reset password | {company}" />
+                                        <field name="reset_welcome_title" />
+                                        <field name="reset_welcome_subtitle" />
+                                    </group>
+                                    <group string="Footer">
+                                        <field name="custom_footer_text" placeholder="e.g. Support: +1 800 000 0000" />
+                                        <field name="terms_url" placeholder="https://yoursite.com/terms" />
+                                        <field name="terms_label" />
+                                        <field name="privacy_url" placeholder="https://yoursite.com/privacy" />
+                                        <field name="privacy_label" />
+                                    </group>
+                                </page>
+
+                                <page string="Advanced" name="advanced">
+                                    <div class="d-flex justify-content-end mb-2">
+                                        <button name="action_reset_section" string="Reset Advanced" type="object" icon="fa-undo" class="btn-link" context="{'auth_branding_reset_section': 'advanced'}" confirm="Reset only the Advanced settings to their defaults?" />
+                                    </div>
+                                    <div class="alert alert-warning border-0 py-2" role="status">
+                                        These options change links shown on every authentication page.
+                                    </div>
+                                    <group string="Odoo Links">
+                                        <field name="show_manage_databases" widget="boolean_toggle" />
+                                        <field name="show_powered_by_odoo" widget="boolean_toggle" />
+                                        <field name="powered_by_text" invisible="not show_powered_by_odoo" />
+                                        <field name="powered_by_url" invisible="not show_powered_by_odoo" placeholder="https://www.odoo.com" />
+                                    </group>
+                                    <group string="Loading Experience">
+                                        <field name="show_loading_animation" widget="boolean_toggle" />
+                                        <field name="loading_animation_type" invisible="not show_loading_animation" />
+                                    </group>
+                                    <group string="Social Login Buttons">
+                                        <field name="social_button_style" />
+                                        <field name="hide_social_labels" widget="boolean_toggle" />
+                                    </group>
+                                    <group string="Custom CSS (Power Users)" colspan="2">
+                                        <div class="alert alert-info border-0 py-2" colspan="2">
+                                            Overrides are applied after the generated theme. External URLs, imports, and executable CSS are blocked.
+                                        </div>
+                                        <field name="custom_css" widget="ace" options="{'mode': 'css'}" nolabel="1" colspan="2" placeholder="body.ab-template-centered { /* your override */ }" />
+                                    </group>
+                                </page>
+                            </notebook>
                         </div>
-                        <div class="col-md-7">
+                        <div class="col-xl-7 col-lg-6 o_auth_branding_preview_column">
                             <widget name="auth_branding_preview" />
                         </div>
                     </div>
@@ -107,7 +219,7 @@
         <field name="model_id" ref="model_auth_branding_config" />
         <field name="state">code</field>
         <field name="code">
-config = env['auth.branding.config'].get_or_create()
+config = env['auth.branding.config']._get_or_create_config()
 action = {
     'type': 'ir.actions.act_window',
     'name': 'Authentication Branding',

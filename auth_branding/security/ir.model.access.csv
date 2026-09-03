@@ -1,3 +1,12 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_auth_branding_config_system,auth.branding.config.system,model_auth_branding_config,base.group_system,1,1,1,1
+access_auth_branding_config_manager,auth.branding.config.manager,model_auth_branding_config,auth_branding.group_auth_branding_manager,1,1,1,1
 access_auth_branding_config_user,auth.branding.config.user,model_auth_branding_config,base.group_user,1,0,0,0
+access_auth_branding_config_public,auth.branding.config.public,model_auth_branding_config,base.group_public,1,0,0,0
+access_auth_branding_preset_manager,auth.branding.preset.manager,model_auth_branding_preset,auth_branding.group_auth_branding_manager,1,1,1,1
+access_auth_branding_preset_user,auth.branding.preset.user,model_auth_branding_preset,base.group_user,1,0,0,0
+access_auth_branding_wizard_manager,auth.branding.wizard.manager,model_auth_branding_wizard,auth_branding.group_auth_branding_manager,1,1,1,1
+access_auth_branding_version_manager,auth.branding.version.manager,model_auth_branding_version,auth_branding.group_auth_branding_manager,1,0,0,0
+access_auth_branding_schedule_manager,auth.branding.schedule.manager,model_auth_branding_schedule,auth_branding.group_auth_branding_manager,1,1,1,0
+access_auth_branding_import_wizard_manager,auth.branding.import.wizard.manager,model_auth_branding_import_wizard,auth_branding.group_auth_branding_manager,1,1,1,1
+access_auth_branding_preset_wizard_manager,auth.branding.preset.wizard.manager,model_auth_branding_preset_wizard,auth_branding.group_auth_branding_manager,1,1,1,1
+access_auth_branding_schedule_wizard_manager,auth.branding.schedule.wizard.manager,model_auth_branding_schedule_wizard,auth_branding.group_auth_branding_manager,1,1,1,1

@@ -5,21 +5,43 @@
         <xpath expr="//t[@t-set='body_classname']" position="replace">
             <t t-set="ab_preview" t-value="request.env.context.get('ab_preview_config')" />
             <t
-                t-set="ab_company_id"
-                t-value="ab_preview.get('company_id') if ab_preview else (int(request.params.get('company_id')) if request.params.get('company_id') else (res_company.id if res_company else request.env.company.id))"
-            />
-            <t
                 t-set="ab"
-                t-value="ab_preview if ab_preview else request.env['auth.branding.config'].sudo().get_or_create(company_id=ab_company_id)"
+                t-value="ab_preview if ab_preview else request.env['auth.branding.config']._get_request_config(company_id=request.params.get('company_id'))._get_frontend_values()"
             />
-            <t t-set="ab_is_dict" t-value="bool(ab_preview)" />
+            <t t-set="ab_is_dict" t-value="True" />
+            <t
+                t-set="ab_company_id"
+                t-value="ab.get('company_id') if ab_is_dict else ab.company_id.id"
+            />
             <t t-set="ab_template" t-value="ab.get('template') if ab_is_dict else ab.template" />
             <t t-set="ab_glassmorphism" t-value="ab.get('glassmorphism') if ab_is_dict else ab.glassmorphism" />
             <t t-set="ab_split_alignment" t-value="ab.get('split_alignment') if ab_is_dict else ab.split_alignment" />
             <t t-set="ab_bg_type" t-value="ab.get('background_type') if ab_is_dict else ab.background_type" />
+            <t t-set="ab_dark_mode" t-value="ab.get('dark_mode') or 'off'" />
+            <t t-set="ab_preview_mode" t-value="ab.get('preview_mode') if ab_preview else False" />
+            <t
+                t-set="ab_image_route"
+                t-value="'/auth_branding/preview/image/' if ab_preview_mode == 'draft' else '/auth_branding/image/'"
+            />
+            <t
+                t-set="ab_page"
+                t-value="ab.get('page') if ab_preview else ('signup' if request.httprequest.path.startswith('/web/signup') else ('reset' if request.httprequest.path.startswith('/web/reset_password') else 'login'))"
+            />
+            <t
+                t-set="ab_page_title_template"
+                t-value="ab.get('page_title_signup') if ab_page == 'signup' else (ab.get('page_title_reset') if ab_page == 'reset' else ab.get('page_title'))"
+            />
+            <t
+                t-set="title"
+                t-value="(ab_page_title_template or 'Odoo').replace('{company}', res_company.display_name if res_company else request.env.company.display_name)"
+            />
+            <t
+                t-set="x_icon"
+                t-value="('%sfavicon?company_id=%s' % (ab_image_route, ab_company_id)) if ab.get('favicon') else '/web/static/img/favicon.ico'"
+            />
             <t
                 t-set="body_classname"
-                t-value="'bg-100 ab-template-' + ab_template + (' ab-glass' if ab_glassmorphism else '') + (' ab-split-right' if ab_split_alignment == 'right' else '') + (' ab-bg-animated' if ab_bg_type == 'animated_gradient' else '')"
+                t-value="'ab-template-' + ab_template + (' ab-glass' if ab_glassmorphism else '') + (' ab-split-right' if ab_split_alignment == 'right' else '') + (' ab-bg-animated' if ab_bg_type == 'animated_gradient' else '') + (' ab-bg-image' if ab_bg_type == 'image' else '') + ' ab-social-' + (ab.get('social_button_style') or 'rounded') + (' ab-social-hide-labels' if ab.get('hide_social_labels') else '') + ' ab-dark-' + ab_dark_mode"
             />
         </xpath>
 
@@ -32,17 +54,41 @@
             <t t-set="ab_show_powered_by_odoo" t-value="ab.get('show_powered_by_odoo') if ab_is_dict else ab.show_powered_by_odoo" />
 
             <!-- Custom Content Variables -->
-            <t t-set="ab_welcome_title" t-value="ab.get('login_welcome_title') if ab_is_dict else ab.login_welcome_title" />
-            <t t-set="ab_welcome_subtitle" t-value="ab.get('login_welcome_subtitle') if ab_is_dict else ab.login_welcome_subtitle" />
-            <t t-set="ab_terms_url" t-value="ab.get('terms_url') if ab_is_dict else ab.terms_url" />
-            <t t-set="ab_privacy_url" t-value="ab.get('privacy_url') if ab_is_dict else ab.privacy_url" />
+            <t t-set="ab_welcome_title" t-value="ab.get('signup_welcome_title') if ab_page == 'signup' else (ab.get('reset_welcome_title') if ab_page == 'reset' else ab.get('login_welcome_title'))" />
+            <t t-set="ab_welcome_subtitle" t-value="ab.get('signup_welcome_subtitle') if ab_page == 'signup' else (ab.get('reset_welcome_subtitle') if ab_page == 'reset' else ab.get('login_welcome_subtitle'))" />
+            <t t-set="ab_terms_url" t-value="ab.get('terms_url')" />
+            <t t-set="ab_privacy_url" t-value="ab.get('privacy_url')" />
             <t t-set="ab_terms_label" t-value="ab.get('terms_label') if ab_is_dict else ab.terms_label" />
             <t t-set="ab_privacy_label" t-value="ab.get('privacy_label') if ab_is_dict else ab.privacy_label" />
             <t t-set="ab_custom_footer_text" t-value="ab.get('custom_footer_text') if ab_is_dict else ab.custom_footer_text" />
+            <t t-set="ab_powered_by_text" t-value="ab.get('powered_by_text') or 'Powered by Odoo'" />
+            <t t-set="ab_powered_by_url" t-value="ab.get('powered_by_url') or 'https://www.odoo.com'" />
+            <t t-set="ab_show_loading" t-value="ab.get('show_loading_animation')" />
+            <t t-set="ab_loading_type" t-value="ab.get('loading_animation_type') or 'spinner'" />
 
             <!-- Inject Dynamic CSS or Link -->
             <style t-if="ab_is_preview" t-out="ab.get('inline_style', '')" />
             <link t-else="" rel="stylesheet" t-attf-href="/auth_branding/theme.css?company_id={{ab_company_id}}" />
+            <span
+                t-if="ab_is_preview"
+                data-auth-branding-preview="1"
+                t-att-data-preview-mode="ab_preview_mode"
+                class="d-none"
+            />
+
+            <div
+                t-if="ab_show_loading or ab_is_preview"
+                t-attf-class="ab-page-loader ab-loading-#{ab_loading_type} #{'d-none' if not ab_show_loading else ''}"
+                data-ab-visible="show_loading_animation"
+                aria-hidden="true"
+            >
+                <span class="ab-loader-spinner" />
+                <span class="ab-loader-progress" />
+                <t t-if="ab_has_logo">
+                    <img t-attf-src="#{ab_image_route}company_logo?company_id=#{ab_company_id}" alt="" class="ab-loader-logo" />
+                </t>
+                <span t-else="" class="ab-loader-pulse" />
+            </div>
 
             <!-- Background Overlay (for fullbleed templates and images) -->
             <div
@@ -51,70 +97,118 @@
             />
 
             <!-- Split Aside Branding Panel (only used in split template) -->
-            <div class="ab-split-aside" t-if="ab_template == 'split'">
+            <div class="ab-split-aside" t-if="ab_template in ('split', 'sidebar')">
                 <div class="ab-branding-content">
                     <t t-if="ab_has_logo">
                         <img
-                            t-attf-src="/auth_branding/image/company_logo?company_id={{ab_company_id}}{{ '&amp;dbname='+db if db else '' }}"
-                            alt="Logo"
+                            t-attf-src="#{ab_image_route}company_logo?company_id=#{ab_company_id}#{'&amp;dbname='+db if db else ''}"
+                            alt="Company logo"
                             class="ab-logo"
                         />
                     </t>
                     <t t-else="">
                         <img
                             t-attf-src="/web/binary/company_logo{{ '?dbname='+db if db else '' }}"
-                            alt="Logo"
+                            alt="Company logo"
                             class="ab-logo"
                         />
                     </t>
-                    <h2 t-if="ab_tagline" class="ab-tagline mt-4 h4"><t t-out="ab_tagline" /></h2>
+                    <h2
+                        t-if="ab_tagline or ab_is_preview"
+                        t-attf-class="ab-tagline mt-4 h4 #{'d-none' if not ab_tagline else ''}"
+                        data-ab-text="tagline"
+                    ><t t-out="ab_tagline" /></h2>
                 </div>
             </div>
         </xpath>
 
         <xpath expr="//div[hasclass('text-center', 'pb-3', 'border-bottom', 'mb-4')]" position="replace">
             <!-- Center Header inside the card -->
-            <div t-attf-class="text-center pb-3 border-bottom mb-4 ab-card-header #{'d-none' if ab_template == 'split' else ''}">
+            <div t-attf-class="text-center pb-3 border-bottom mb-4 ab-card-header #{'d-none' if ab_template in ('split', 'sidebar') else ''}">
                 <t t-if="ab_has_logo">
                     <img
-                        t-attf-src="/auth_branding/image/company_logo?company_id={{ab_company_id}}{{ '&amp;dbname='+db if db else '' }}"
-                        alt="Logo"
+                        t-attf-src="#{ab_image_route}company_logo?company_id=#{ab_company_id}#{'&amp;dbname='+db if db else ''}"
+                        alt="Company logo"
                         class="ab-logo"
                     />
                 </t>
                 <t t-else="">
                     <img
                         t-attf-src="/web/binary/company_logo{{ '?dbname='+db if db else '' }}"
-                        alt="Logo"
+                        alt="Company logo"
                         class="ab-logo"
                     />
                 </t>
-                <p t-if="ab_tagline" class="ab-tagline mt-2 text-muted mb-0"><t t-out="ab_tagline" /></p>
+                <p
+                    t-if="ab_tagline or ab_is_preview"
+                    t-attf-class="ab-tagline mt-2 text-muted mb-0 #{'d-none' if not ab_tagline else ''}"
+                    data-ab-text="tagline"
+                ><t t-out="ab_tagline" /></p>
             </div>
         </xpath>
 
         <!-- Inject welcome title/subtitle above the login form (before the t-out="0" slot) -->
         <xpath expr="//t[@t-out='0']" position="before">
-            <div t-if="ab_welcome_title or ab_welcome_subtitle" class="ab-welcome-block text-center mb-3">
-                <h4 t-if="ab_welcome_title" class="ab-welcome-title mb-1 fw-semibold"><t t-out="ab_welcome_title" /></h4>
-                <p t-if="ab_welcome_subtitle" class="ab-welcome-subtitle small text-muted mb-0"><t t-out="ab_welcome_subtitle" /></p>
+            <div t-if="ab_welcome_title or ab_welcome_subtitle or ab_is_preview" class="ab-welcome-block text-center mb-3">
+                <h4
+                    t-if="ab_welcome_title or ab_is_preview"
+                    t-attf-class="ab-welcome-title mb-1 fw-semibold #{'d-none' if not ab_welcome_title else ''}"
+                    data-ab-text="login_welcome_title"
+                ><t t-out="ab_welcome_title" /></h4>
+                <p
+                    t-if="ab_welcome_subtitle or ab_is_preview"
+                    t-attf-class="ab-welcome-subtitle small text-muted mb-0 #{'d-none' if not ab_welcome_subtitle else ''}"
+                    data-ab-text="login_welcome_subtitle"
+                ><t t-out="ab_welcome_subtitle" /></p>
             </div>
         </xpath>
 
         <!-- Replace default footer with enhanced version -->
         <xpath expr="//div[hasclass('text-center', 'small', 'mt-4', 'pt-3', 'border-top')]" position="replace">
             <div t-if="not disable_footer" class="text-center small mt-4 pt-3 border-top">
-                <div t-if="(not disable_database_manager and ab_show_manage_databases) or ab_show_powered_by_odoo" class="mb-1">
-                    <t t-if="not disable_database_manager and ab_show_manage_databases">
-                        <a t-attf-class="#{ab_show_powered_by_odoo and 'border-end pe-2 me-1' or ''}" href="/web/database/manager">Manage Databases</a>
-                    </t>
-                    <a t-if="ab_show_powered_by_odoo" href="https://www.odoo.com?utm_source=db&amp;utm_medium=auth" target="_blank">Powered by <span>Odoo</span></a>
+                <div t-if="(not disable_database_manager and ab_show_manage_databases) or ab_show_powered_by_odoo or ab_is_preview" class="mb-1">
+                    <a
+                        t-if="not disable_database_manager and (ab_show_manage_databases or ab_is_preview)"
+                        t-attf-class="#{ab_show_powered_by_odoo and 'border-end pe-2 me-1' or ''} #{'d-none' if not ab_show_manage_databases else ''}"
+                        data-ab-visible="show_manage_databases"
+                        href="/web/database/manager"
+                    >Manage Databases</a>
+                    <a
+                        t-if="ab_show_powered_by_odoo or ab_is_preview"
+                        t-attf-class="#{'d-none' if not ab_show_powered_by_odoo else ''}"
+                        data-ab-visible="show_powered_by_odoo"
+                        data-ab-link="powered_by_url"
+                        data-ab-text="powered_by_text"
+                        t-att-href="ab_powered_by_url"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    ><t t-out="ab_powered_by_text" /></a>
                 </div>
-                <div t-if="ab_terms_url or ab_privacy_url" class="mt-1">
-                    <a t-if="ab_terms_url" t-att-href="ab_terms_url" target="_blank" class="text-muted me-2"><t t-out="ab_terms_label or 'Terms of Service'" /></a>
-                    <a t-if="ab_privacy_url" t-att-href="ab_privacy_url" target="_blank" class="text-muted"><t t-out="ab_privacy_label or 'Privacy Policy'" /></a>
+                <div t-if="ab_terms_url or ab_privacy_url or ab_is_preview" class="mt-1">
+                    <a
+                        t-if="ab_terms_url or ab_is_preview"
+                        t-att-href="ab_terms_url or '#'"
+                        t-attf-class="text-muted me-2 #{'d-none' if not ab_terms_url else ''}"
+                        data-ab-link="terms_url"
+                        data-ab-text="terms_label"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    ><t t-out="ab_terms_label or 'Terms of Service'" /></a>
+                    <a
+                        t-if="ab_privacy_url or ab_is_preview"
+                        t-att-href="ab_privacy_url or '#'"
+                        t-attf-class="text-muted #{'d-none' if not ab_privacy_url else ''}"
+                        data-ab-link="privacy_url"
+                        data-ab-text="privacy_label"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    ><t t-out="ab_privacy_label or 'Privacy Policy'" /></a>
                 </div>
-                <p t-if="ab_custom_footer_text" class="text-muted mt-1 mb-0"><t t-out="ab_custom_footer_text" /></p>
+                <p
+                    t-if="ab_custom_footer_text or ab_is_preview"
+                    t-attf-class="text-muted mt-1 mb-0 #{'d-none' if not ab_custom_footer_text else ''}"
+                    data-ab-text="custom_footer_text"
+                ><t t-out="ab_custom_footer_text" /></p>
             </div>
         </xpath>
     </template>

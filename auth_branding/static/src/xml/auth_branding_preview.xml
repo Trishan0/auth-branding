@@ -6,9 +6,11 @@
         <div class="d-flex align-items-center ab-color-field">
             <input type="color" class="form-control form-control-sm form-control-color me-2 p-1" 
                    t-att-value="color" 
+                   t-att-disabled="props.readonly"
                    t-on-input="onColorInput" />
             <input type="text" class="form-control form-control-sm w-auto" 
                    t-att-value="state.color" 
+                   t-att-disabled="props.readonly"
                    t-on-input="onTextInput" 
                    maxlength="7" 
                    placeholder="#000000" />
@@ -18,8 +20,10 @@
     <!-- AuthBrandingTemplatePicker -->
     <t t-name="auth_branding.TemplatePicker" owl="1">
         <div class="d-flex gap-3 ab-template-picker flex-wrap">
-            <div class="ab-template-card" 
+            <button type="button" class="ab-template-card"
                  t-att-class="{ 'active': selected === 'centered' }"
+                 t-att-aria-pressed="selected === 'centered' ? 'true' : 'false'"
+                 t-att-disabled="props.readonly"
                  t-on-click="() => this.selectTemplate('centered')">
                 <div class="ab-mockup-centered">
                     <div class="ab-mockup-bg"></div>
@@ -29,10 +33,44 @@
                 <div class="ab-check" t-if="selected === 'centered'">
                     <i class="fa fa-check text-white"></i>
                 </div>
-            </div>
+            </button>
 
-            <div class="ab-template-card" 
+            <button type="button" class="ab-template-card"
+                 t-att-class="{ 'active': selected === 'minimal' }"
+                 t-att-aria-pressed="selected === 'minimal' ? 'true' : 'false'"
+                 t-att-disabled="props.readonly"
+                 t-on-click="() => this.selectTemplate('minimal')">
+                <div class="ab-mockup-centered ab-mockup-minimal">
+                    <div class="ab-mockup-bg"></div>
+                    <div class="ab-mockup-form card bg-white"></div>
+                </div>
+                <div class="text-center mt-2 fw-bold small">Minimal</div>
+                <div class="ab-check" t-if="selected === 'minimal'">
+                    <i class="fa fa-check text-white"></i>
+                </div>
+            </button>
+
+            <button type="button" class="ab-template-card"
+                 t-att-class="{ 'active': selected === 'sidebar' }"
+                 t-att-aria-pressed="selected === 'sidebar' ? 'true' : 'false'"
+                 t-att-disabled="props.readonly"
+                 t-on-click="() => this.selectTemplate('sidebar')">
+                <div class="ab-mockup-split ab-mockup-sidebar d-flex">
+                    <div class="ab-mockup-aside bg-secondary h-100"></div>
+                    <div class="ab-mockup-form-area h-100 d-flex align-items-center justify-content-center">
+                        <div class="ab-mockup-form card bg-white w-75 h-50"></div>
+                    </div>
+                </div>
+                <div class="text-center mt-2 fw-bold small">Sidebar</div>
+                <div class="ab-check" t-if="selected === 'sidebar'">
+                    <i class="fa fa-check text-white"></i>
+                </div>
+            </button>
+
+            <button type="button" class="ab-template-card"
                  t-att-class="{ 'active': selected === 'split' }"
+                 t-att-aria-pressed="selected === 'split' ? 'true' : 'false'"
+                 t-att-disabled="props.readonly"
                  t-on-click="() => this.selectTemplate('split')">
                 <div class="ab-mockup-split d-flex">
                     <div class="ab-mockup-aside bg-secondary w-50 h-100"></div>
@@ -44,10 +82,12 @@
                 <div class="ab-check" t-if="selected === 'split'">
                     <i class="fa fa-check text-white"></i>
                 </div>
-            </div>
+            </button>
 
-            <div class="ab-template-card" 
+            <button type="button" class="ab-template-card"
                  t-att-class="{ 'active': selected === 'fullbleed' }"
+                 t-att-aria-pressed="selected === 'fullbleed' ? 'true' : 'false'"
+                 t-att-disabled="props.readonly"
                  t-on-click="() => this.selectTemplate('fullbleed')">
                 <div class="ab-mockup-fullbleed">
                     <div class="ab-mockup-bg bg-secondary opacity-50"></div>
@@ -57,24 +97,61 @@
                 <div class="ab-check" t-if="selected === 'fullbleed'">
                     <i class="fa fa-check text-white"></i>
                 </div>
-            </div>
+            </button>
         </div>
     </t>
 
     <!-- AuthBrandingPreview -->
     <t t-name="auth_branding.PreviewWidget" owl="1">
-        <div class="ab-preview-widget d-flex flex-column h-100 ps-xl-4 border-start">
-            <div class="d-flex mb-3 gap-2 flex-wrap">
-                <button class="btn btn-sm" t-att-class="state.page === 'login' ? 'btn-primary' : 'btn-outline-secondary'" t-on-click="() => this.setPage('login')">Login</button>
-                <button class="btn btn-sm" t-att-class="state.page === 'signup' ? 'btn-primary' : 'btn-outline-secondary'" t-on-click="() => this.setPage('signup')">Sign Up</button>
-                <button class="btn btn-sm" t-att-class="state.page === 'reset' ? 'btn-primary' : 'btn-outline-secondary'" t-on-click="() => this.setPage('reset')">Reset Password</button>
-                <span class="ms-auto text-muted small align-self-center">
-                    <i class="fa fa-spin fa-spinner me-1" t-if="!state.iframeSrc"/><t t-if="state.iframeSrc">Live Preview</t>
-                </span>
+        <div class="ab-preview-widget d-flex flex-column h-100">
+            <div class="ab-preview-toolbar d-flex align-items-center gap-2 flex-wrap mb-3">
+                <div class="btn-group" role="group" aria-label="Preview source">
+                    <button type="button" class="btn btn-sm" t-att-class="state.mode === 'draft' ? 'btn-secondary' : 'btn-outline-secondary'" t-on-click="() => this.setMode('draft')" title="Preview the current editor values">Draft</button>
+                    <button type="button" class="btn btn-sm" t-att-class="state.mode === 'published' ? 'btn-secondary' : 'btn-outline-secondary'" t-on-click="() => this.setMode('published')" title="Preview what users currently see">Published</button>
+                </div>
+                <div class="btn-group" role="group" aria-label="Authentication page">
+                    <button type="button" class="btn btn-sm" t-att-class="state.page === 'login' ? 'btn-primary' : 'btn-outline-secondary'" t-on-click="() => this.setPage('login')">Login</button>
+                    <button type="button" class="btn btn-sm" t-att-class="state.page === 'signup' ? 'btn-primary' : 'btn-outline-secondary'" t-on-click="() => this.setPage('signup')">Sign Up</button>
+                    <button type="button" class="btn btn-sm" t-att-class="state.page === 'reset' ? 'btn-primary' : 'btn-outline-secondary'" t-on-click="() => this.setPage('reset')">Reset</button>
+                </div>
+                <div class="btn-group ms-auto" role="group" aria-label="Preview device">
+                    <button type="button" class="btn btn-sm" t-att-class="state.device === 'desktop' ? 'btn-secondary' : 'btn-outline-secondary'" t-on-click="() => this.setDevice('desktop')" title="Desktop preview" aria-label="Desktop preview">
+                        <i class="fa fa-desktop"/>
+                    </button>
+                    <button type="button" class="btn btn-sm" t-att-class="state.device === 'tablet' ? 'btn-secondary' : 'btn-outline-secondary'" t-on-click="() => this.setDevice('tablet')" title="Tablet preview" aria-label="Tablet preview">
+                        <i class="fa fa-tablet"/>
+                    </button>
+                    <button type="button" class="btn btn-sm" t-att-class="state.device === 'mobile' ? 'btn-secondary' : 'btn-outline-secondary'" t-on-click="() => this.setDevice('mobile')" title="Mobile preview" aria-label="Mobile preview">
+                        <i class="fa fa-mobile"/>
+                    </button>
+                </div>
+                <a class="btn btn-sm btn-outline-secondary" t-att-href="state.iframeSrc || '#'" target="_blank" rel="noopener noreferrer" title="Open preview in a new tab" aria-label="Open preview in a new tab">
+                    <i class="fa fa-external-link"/>
+                </a>
+                <a class="btn btn-sm btn-outline-secondary" t-att-href="livePageUrl" target="_blank" rel="noopener noreferrer" title="Open the live authentication page" aria-label="Open the live authentication page">
+                    <i class="fa fa-globe"/>
+                </a>
             </div>
-            
-            <div class="ab-preview-container rounded border shadow-sm align-self-start" style="background: #e9ecef;">
-                <iframe t-att-src="state.iframeSrc" class="ab-preview-iframe" frameborder="0"></iframe>
+
+            <div class="ab-preview-status d-flex align-items-center mb-2 small text-muted">
+                <span t-if="state.ready &amp;&amp; state.mode === 'draft'"><i class="fa fa-pencil text-primary me-1"/>Draft preview</span>
+                <span t-elif="state.ready"><i class="fa fa-check-circle text-success me-1"/>Published snapshot</span>
+                <span t-else=""><i class="fa fa-spin fa-spinner me-1"/>Refreshing preview</span>
+                <span class="ms-auto text-capitalize"><t t-out="state.device"/></span>
+            </div>
+            <div class="ab-preview-shell rounded-3">
+                <div class="ab-preview-container rounded border shadow-sm" t-att-class="'ab-device-' + state.device">
+                    <div class="ab-preview-loading" t-if="!state.iframeSrc">
+                        <i class="fa fa-spin fa-spinner me-2"/>Preparing preview…
+                    </div>
+                <iframe
+                    t-ref="previewFrame"
+                    t-att-src="state.iframeSrc"
+                    t-on-load="onIframeLoad"
+                    class="ab-preview-iframe"
+                    frameborder="0"
+                ></iframe>
+                </div>
             </div>
         </div>
     </t>

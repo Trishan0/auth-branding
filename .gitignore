@@ -54,6 +54,7 @@ cover/
 # Translations
 *.mo
 *.pot
+!auth_branding/i18n/auth_branding.pot
 
 # Django stuff:
 *.log
