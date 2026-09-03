@@ -28,4 +28,10 @@
         <field name="model_id" ref="model_auth_branding_version" />
         <field name="domain_force">[('company_id', 'in', company_ids)]</field>
     </record>
+
+    <record id="auth_branding_schedule_company_rule" model="ir.rule">
+        <field name="name">Authentication branding schedules: company isolation</field>
+        <field name="model_id" ref="model_auth_branding_schedule" />
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
 </odoo>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="auth_branding_schedule_wizard_view_form" model="ir.ui.view">
+        <field name="name">auth.branding.schedule.wizard.view.form</field>
+        <field name="model">auth.branding.schedule.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Schedule Branding Publish">
+                <field name="config_id" invisible="1" />
+                <field name="company_id" invisible="1" />
+                <sheet>
+                    <div class="alert alert-info" role="status">
+                        A snapshot of the current draft is captured now. You can keep editing afterward without changing this scheduled release.
+                    </div>
+                    <group>
+                        <field name="scheduled_at" />
+                        <field name="note" placeholder="e.g. New campaign launch" />
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_schedule" string="Schedule Publish" type="object" class="btn-primary" />
+                    <button string="Cancel" special="cancel" class="btn-secondary" />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_auth_branding_schedule_wizard" model="ir.actions.act_window">
+        <field name="name">Schedule Branding Publish</field>
+        <field name="res_model">auth.branding.schedule.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="auth_branding_schedule_wizard_view_form" />
+        <field name="target">new</field>
+    </record>
+</odoo>

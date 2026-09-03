@@ -8,6 +8,8 @@
                 <header>
                     <button name="action_save" string="Save Draft" type="object" />
                     <button name="action_publish" string="Publish" type="object" class="oe_highlight" />
+                    <button name="action_open_schedule_wizard" string="Schedule" type="object" icon="fa-clock-o" />
+                    <button name="action_open_schedules" string="Schedules" type="object" icon="fa-calendar" invisible="not has_schedules" />
                     <button name="action_discard_draft" string="Discard Draft" type="object" invisible="not active_version_id or not has_unpublished_changes" confirm="Discard the current draft and restore the published version?" />
                     <button name="action_open_setup_wizard" string="Quick Setup" type="object" icon="fa-magic" />
                     <button name="action_open_version_history" string="Version History" type="object" icon="fa-history" invisible="not version_ids" />
@@ -22,6 +24,8 @@
                     <field name="company_id" invisible="1" />
                     <field name="active_version_id" invisible="1" />
                     <field name="version_ids" invisible="1" />
+                    <field name="schedule_ids" invisible="1" />
+                    <field name="has_schedules" invisible="1" />
                     <field name="has_unpublished_changes" invisible="1" />
                 </header>
                 <sheet>

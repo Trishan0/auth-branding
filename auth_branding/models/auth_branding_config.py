@@ -370,12 +370,21 @@ class AuthBrandingConfig(models.Model):
     version_ids = fields.One2many(
         "auth.branding.version", "config_id", string="Published Versions", readonly=True
     )
+    schedule_ids = fields.One2many(
+        "auth.branding.schedule", "config_id", string="Scheduled Publishes", readonly=True
+    )
+    has_schedules = fields.Boolean(compute="_compute_has_schedules")
     published_at = fields.Datetime(
         related="active_version_id.published_at", string="Last Published", readonly=True
     )
     has_unpublished_changes = fields.Boolean(
         compute="_compute_has_unpublished_changes", string="Unpublished Changes"
     )
+
+    @api.depends("schedule_ids")
+    def _compute_has_schedules(self):
+        for config in self:
+            config.has_schedules = bool(config.schedule_ids)
 
     @api.depends(*VERSIONED_FIELDS, "active_version_id", "active_version_id.settings_snapshot")
     def _compute_has_unpublished_changes(self):
@@ -735,9 +744,39 @@ class AuthBrandingConfig(models.Model):
         }
         return action
 
-    def _create_published_version(self):
+    def action_open_schedule_wizard(self):
         self.ensure_one()
-        published_at = fields.Datetime.now()
+        action = self.env["ir.actions.actions"]._for_xml_id(
+            "auth_branding.action_auth_branding_schedule_wizard"
+        )
+        action["context"] = {
+            **self.env.context,
+            "default_config_id": self.id,
+        }
+        return action
+
+    def action_open_schedules(self):
+        self.ensure_one()
+        action = self.env["ir.actions.actions"]._for_xml_id(
+            "auth_branding.action_auth_branding_schedule"
+        )
+        action["domain"] = [("config_id", "=", self.id)]
+        action["context"] = {"default_config_id": self.id, "create": False}
+        return action
+
+    def _create_published_version(
+        self, settings_snapshot=None, assets=None, published_at=None, published_by=None
+    ):
+        self.ensure_one()
+        published_at = published_at or fields.Datetime.now()
+        settings_snapshot = (
+            self._get_snapshot_values()
+            if settings_snapshot is None
+            else settings_snapshot
+        )
+        assets = assets or {
+            field_name: self[field_name] for field_name in self.BINARY_FIELDS
+        }
         return self.env["auth.branding.version"].sudo().create(
             {
                 "name": _(
@@ -746,12 +785,13 @@ class AuthBrandingConfig(models.Model):
                     date=fields.Datetime.to_string(published_at),
                 ),
                 "config_id": self.id,
-                "settings_snapshot": self._get_snapshot_values(),
-                "company_logo": self.company_logo,
-                "favicon": self.favicon,
-                "background_image": self.background_image,
+                "settings_snapshot": settings_snapshot,
+                **{
+                    field_name: assets.get(field_name)
+                    for field_name in self.BINARY_FIELDS
+                },
                 "published_at": published_at,
-                "published_by": self.env.user.id,
+                "published_by": published_by or self.env.user.id,
             }
         )
 
