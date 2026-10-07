@@ -11,7 +11,7 @@
                 <field name="note" optional="show" />
                 <field name="state" widget="badge" />
                 <field name="executed_at" optional="hide" />
-                <button name="action_cancel" string="Cancel" type="object" icon="fa-ban" invisible="state != 'pending'" confirm="Cancel this scheduled publish?" />
+                <button name="action_cancel" string="Cancel" type="object" icon="block" invisible="state != 'pending'" confirm="Cancel this scheduled publish?" />
             </list>
         </field>
     </record>
@@ -40,7 +40,7 @@
                             <field name="version_id" invisible="not version_id" />
                         </group>
                     </group>
-                    <div class="alert alert-danger" invisible="state != 'failed'">
+                    <div class="alert alert-danger" role="alert" invisible="state != 'failed'">
                         <strong>Publishing failed.</strong>
                         <field name="error_message" nolabel="1" readonly="1" />
                     </div>

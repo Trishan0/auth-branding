@@ -1,6 +1,6 @@
 {
     "name": "Auth Branding",
-    "version": "19.0.3.0.0",
+    "version": "20.0.3.0.0",
     "author": "Trishan Fernando",
     "maintainer": "Trishan Fernando",
     "maintainers": ["Trishan Fernando"],
@@ -8,7 +8,7 @@
     "category": "Technical",
     "summary": "Visual auth page studio with presets, live preview and safe publishing",
     "description": """
-Auth Branding for Odoo 19
+Auth Branding for Odoo 20
 =========================
 
 Build company-specific authentication pages with guided themes, instant responsive
@@ -17,7 +17,7 @@ preview, accessible styling, draft publishing, rollback, and portable brand pack
     "depends": ["web", "auth_signup", "base_setup"],
     "data": [
         "security/auth_branding_security.xml",
-        "security/ir.model.access.csv",
+        "security/ir.access.csv",
         "data/auth_branding_preset_data.xml",
         "data/auth_branding_cron.xml",
         "wizard/auth_branding_wizard_views.xml",

@@ -32,10 +32,7 @@ class AuthBrandingImportWizard(models.TransientModel):
 
     def _decode_payload(self):
         self.ensure_one()
-        try:
-            raw = base64.b64decode(self.import_file or b"", validate=True)
-        except (ValueError, binascii.Error) as error:
-            raise UserError(_("The uploaded file is not valid base64 data.")) from error
+        raw = self.import_file.content if self.import_file else b""
         if len(raw) > self.MAX_FILE_SIZE:
             raise UserError(_("The branding import file cannot exceed 16 MB."))
         try:

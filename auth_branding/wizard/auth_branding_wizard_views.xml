@@ -61,7 +61,7 @@
 
                     <div invisible="state != 'review'">
                         <div class="text-center mb-4">
-                            <i class="fa fa-check-circle text-success fa-3x mb-2" />
+                            <i class="oi text-success oi-3x mb-2" data-icon="check_circle" title="Ready" />
                             <h3>Ready to apply</h3>
                             <p class="text-muted">Review the main choices below. You can continue editing them later in Brand Studio.</p>
                         </div>

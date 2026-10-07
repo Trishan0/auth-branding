@@ -2,6 +2,7 @@ import json
 from urllib.parse import quote
 
 from odoo.tests import HttpCase, tagged
+from odoo.tools import BinaryBytes
 
 
 @tagged("post_install", "-at_install")
@@ -41,7 +42,7 @@ class TestAuthBrandingController(HttpCase):
         config.write(
             {
                 "page_title": "Welcome to {company}",
-                "favicon": b"aGVsbG8=",
+                "favicon": BinaryBytes(b"hello"),
                 "social_button_style": "pill",
                 "hide_social_labels": True,
                 "template": "sidebar",

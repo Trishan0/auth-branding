@@ -1,8 +1,8 @@
-import base64
 import json
 
 from odoo.exceptions import UserError
 from odoo.tests.common import TransactionCase
+from odoo.tools import BinaryBytes
 
 
 class TestAuthBrandingImport(TransactionCase):
@@ -15,7 +15,7 @@ class TestAuthBrandingImport(TransactionCase):
         return self.env["auth.branding.import.wizard"].create(
             {
                 "config_id": self.config.id,
-                "import_file": base64.b64encode(json.dumps(payload).encode()),
+                "import_file": BinaryBytes(json.dumps(payload).encode()),
                 "import_filename": "brand.json",
             }
         )
@@ -25,7 +25,7 @@ class TestAuthBrandingImport(TransactionCase):
             {
                 "primary_color": "#123456",
                 "tagline": "Portable brand",
-                "company_logo": base64.b64encode(b"logo"),
+                "company_logo": BinaryBytes(b"logo"),
             }
         )
         payload = self.config._get_export_payload()
@@ -60,7 +60,7 @@ class TestAuthBrandingImport(TransactionCase):
             wizard.action_review()
 
     def test_missing_assets_do_not_clear_existing_draft_assets(self):
-        self.config.company_logo = base64.b64encode(b"existing")
+        self.config.company_logo = BinaryBytes(b"existing")
         payload = self.config._get_export_payload()
         payload.pop("assets")
         payload["settings"]["tagline"] = "No asset section"
@@ -76,7 +76,7 @@ class TestAuthBrandingImport(TransactionCase):
         payload = self.config._get_export_payload()
         wizard = self._wizard_for_payload(payload)
         wizard.action_review()
-        wizard.import_file = base64.b64encode(b"not json anymore")
+        wizard.import_file = BinaryBytes(b"not json anymore")
 
         with self.assertRaises(UserError):
             wizard.action_apply()
