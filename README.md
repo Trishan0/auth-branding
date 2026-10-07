@@ -2,7 +2,7 @@
   <img src="auth_branding/static/description/banner.png" alt="Auth Branding for Odoo — transform the default authentication experience into a branded login, signup, and password-reset journey" width="100%" />
 </p>
 
-<h1 align="center">Auth Branding for Odoo 19</h1>
+<h1 align="center">Auth Branding for Odoo 20</h1>
 
 <p align="center">
   <strong>Turn every sign-in into a polished, trusted brand experience.</strong><br />
@@ -10,8 +10,8 @@
 </p>
 
 <p align="center">
-  <a href="https://www.odoo.com/documentation/19.0/"><img src="https://img.shields.io/badge/Odoo-19.0-714B67?style=for-the-badge&amp;logo=odoo&amp;logoColor=white" alt="Odoo 19" /></a>
-  <img src="https://img.shields.io/badge/Module-19.0.3.0.0-5B5BD6?style=for-the-badge" alt="Module version 19.0.3.0.0" />
+  <a href="https://www.odoo.com/documentation/20.0/"><img src="https://img.shields.io/badge/Odoo-20.0-714B67?style=for-the-badge&amp;logo=odoo&amp;logoColor=white" alt="Odoo 20" /></a>
+  <img src="https://img.shields.io/badge/Module-20.0.3.0.0-5B5BD6?style=for-the-badge" alt="Module version 20.0.3.0.0" />
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-LGPL--3-2563EB?style=for-the-badge" alt="LGPL-3 license" /></a>
   <img src="https://img.shields.io/badge/Status-Beta-F59E0B?style=for-the-badge" alt="Beta status" />
 </p>
@@ -213,7 +213,7 @@ Custom CSS is intended for local selectors and declarations. Always inspect it i
 
 ## 🧪 Development and verification
 
-Install the module with tests in an Odoo 19 source checkout:
+Install the module with tests in an Odoo 20 source checkout:
 
 ```bash
 ./odoo-bin \
@@ -233,7 +233,7 @@ Test an upgrade against an existing database:
   -u auth_branding
 ```
 
-Frontend tests are registered in `web.assets_unit_tests`. Open `/web/tests` in an Odoo 19 development instance and filter for `auth_branding_accessibility`.
+Frontend tests are registered in `web.assets_unit_tests`. Open `/web/tests` in an Odoo 20 development instance and filter for `auth_branding_accessibility`.
 
 Recommended browser verification:
 
@@ -278,6 +278,14 @@ Yes. Export a versioned JSON package, import it into the destination database as
 </details>
 
 ## 🗺️ Release highlights
+
+### 20.0.3.0.0
+
+- Ported to Odoo 20: login layout parameters passed through the new QWeb `t-call` API.
+- Access rights and company isolation moved to the unified `ir.access` model.
+- Backend widgets migrated to Owl 3 and icons to Odoo 20 Material Symbols.
+- Binary assets handled through Odoo 20 `BinaryValue` (export, import, logo palette, draft comparison).
+- Browser test coverage for Brand Studio widgets and the login page.
 
 ### 19.0.3.0.0
 
