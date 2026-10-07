@@ -8,13 +8,13 @@
                 <header>
                     <button name="action_save" string="Save Draft" type="object" />
                     <button name="action_publish" string="Publish" type="object" class="oe_highlight" />
-                    <button name="action_open_schedule_wizard" string="Schedule" type="object" icon="fa-clock-o" />
-                    <button name="action_open_schedules" string="Schedules" type="object" icon="fa-calendar" invisible="not has_schedules" />
+                    <button name="action_open_schedule_wizard" string="Schedule" type="object" icon="schedule" />
+                    <button name="action_open_schedules" string="Schedules" type="object" icon="calendar_today" invisible="not has_schedules" />
                     <button name="action_discard_draft" string="Discard Draft" type="object" invisible="not active_version_id or not has_unpublished_changes" confirm="Discard the current draft and restore the published version?" />
-                    <button name="action_open_setup_wizard" string="Quick Setup" type="object" icon="fa-magic" />
-                    <button name="action_open_version_history" string="Version History" type="object" icon="fa-history" invisible="not version_ids" />
-                    <button name="action_export_branding" string="Export" type="object" icon="fa-download" />
-                    <button name="action_open_import_wizard" string="Import" type="object" icon="fa-upload" />
+                    <button name="action_open_setup_wizard" string="Quick Setup" type="object" icon="wand_stars" />
+                    <button name="action_open_version_history" string="Version History" type="object" icon="history" invisible="not version_ids" />
+                    <button name="action_export_branding" string="Export" type="object" icon="download" />
+                    <button name="action_open_import_wizard" string="Import" type="object" icon="upload" />
                     <button
                         name="action_reset_defaults"
                         string="Reset to Defaults"
@@ -38,12 +38,12 @@
                             </p>
                         </div>
                     </div>
-                    <div class="alert alert-warning d-flex align-items-center py-2" invisible="not has_unpublished_changes">
-                        <i class="fa fa-pencil me-2" />
+                    <div class="alert alert-warning d-flex align-items-center py-2" role="status" invisible="not has_unpublished_changes">
+                        <i class="oi me-2" data-icon="edit" title="Draft" />
                         <span>This is a draft. Publish when you are ready to update the live authentication pages.</span>
                     </div>
-                    <div class="alert alert-success d-flex align-items-center py-2" invisible="has_unpublished_changes or not active_version_id">
-                        <i class="fa fa-check-circle me-2" />
+                    <div class="alert alert-success d-flex align-items-center py-2" role="status" invisible="has_unpublished_changes or not active_version_id">
+                        <i class="oi me-2" data-icon="check_circle" title="Published" />
                         <span>Published and up to date.</span>
                         <field name="published_at" class="ms-auto" readonly="1" />
                     </div>
@@ -60,7 +60,7 @@
                                                     Applying a theme updates the preview first. Save only when you are happy with it.
                                                 </p>
                                             </div>
-                                            <button name="action_open_save_preset_wizard" string="Save Current Theme" type="object" class="btn-secondary" icon="fa-bookmark" />
+                                            <button name="action_open_save_preset_wizard" string="Save Current Theme" type="object" class="btn-secondary" icon="bookmark" />
                                         </div>
                                     </div>
                                     <widget name="auth_branding_preset_gallery" />
@@ -68,7 +68,7 @@
 
                                 <page string="Brand" name="brand">
                                     <div class="d-flex justify-content-end mb-2">
-                                        <button name="action_reset_section" string="Reset Brand" type="object" icon="fa-undo" class="btn-link" context="{'auth_branding_reset_section': 'brand'}" confirm="Reset only the Brand settings to their defaults?" />
+                                        <button name="action_reset_section" string="Reset Brand" type="object" icon="undo" class="btn-link" context="{'auth_branding_reset_section': 'brand'}" confirm="Reset only the Brand settings to their defaults?" />
                                     </div>
                                     <div class="alert alert-info border-0 py-2" role="status">
                                         Start with your identity. Changes appear in the preview without saving.
@@ -88,7 +88,7 @@
 
                                 <page string="Layout" name="layout">
                                     <div class="d-flex justify-content-end mb-2">
-                                        <button name="action_reset_section" string="Reset Layout" type="object" icon="fa-undo" class="btn-link" context="{'auth_branding_reset_section': 'layout'}" confirm="Reset only the Layout settings to their defaults?" />
+                                        <button name="action_reset_section" string="Reset Layout" type="object" icon="undo" class="btn-link" context="{'auth_branding_reset_section': 'layout'}" confirm="Reset only the Layout settings to their defaults?" />
                                     </div>
                                     <group string="Page Structure">
                                         <field name="template" widget="auth_branding_template_picker" nolabel="1" colspan="2" />
@@ -111,7 +111,7 @@
 
                                 <page string="Background" name="background">
                                     <div class="d-flex justify-content-end mb-2">
-                                        <button name="action_reset_section" string="Reset Background" type="object" icon="fa-undo" class="btn-link" context="{'auth_branding_reset_section': 'background'}" confirm="Reset only the Background settings to their defaults?" />
+                                        <button name="action_reset_section" string="Reset Background" type="object" icon="undo" class="btn-link" context="{'auth_branding_reset_section': 'background'}" confirm="Reset only the Background settings to their defaults?" />
                                     </div>
                                     <group string="Background Style">
                                         <field name="background_type" widget="radio" options="{'horizontal': true}" />
@@ -148,7 +148,7 @@
 
                                 <page string="Content" name="content">
                                     <div class="d-flex justify-content-end mb-2">
-                                        <button name="action_reset_section" string="Reset Content" type="object" icon="fa-undo" class="btn-link" context="{'auth_branding_reset_section': 'content'}" confirm="Reset only the Content settings to their defaults?" />
+                                        <button name="action_reset_section" string="Reset Content" type="object" icon="undo" class="btn-link" context="{'auth_branding_reset_section': 'content'}" confirm="Reset only the Content settings to their defaults?" />
                                     </div>
                                     <group string="Login Page">
                                         <field name="page_title" placeholder="Sign in to {company}" />
@@ -176,7 +176,7 @@
 
                                 <page string="Advanced" name="advanced">
                                     <div class="d-flex justify-content-end mb-2">
-                                        <button name="action_reset_section" string="Reset Advanced" type="object" icon="fa-undo" class="btn-link" context="{'auth_branding_reset_section': 'advanced'}" confirm="Reset only the Advanced settings to their defaults?" />
+                                        <button name="action_reset_section" string="Reset Advanced" type="object" icon="undo" class="btn-link" context="{'auth_branding_reset_section': 'advanced'}" confirm="Reset only the Advanced settings to their defaults?" />
                                     </div>
                                     <div class="alert alert-warning border-0 py-2" role="status">
                                         These options change links shown on every authentication page.
@@ -196,7 +196,7 @@
                                         <field name="hide_social_labels" widget="boolean_toggle" />
                                     </group>
                                     <group string="Custom CSS (Power Users)" colspan="2">
-                                        <div class="alert alert-info border-0 py-2" colspan="2">
+                                        <div class="alert alert-info border-0 py-2" role="status" colspan="2">
                                             Overrides are applied after the generated theme. External URLs, imports, and executable CSS are blocked.
                                         </div>
                                         <field name="custom_css" widget="ace" options="{'mode': 'css'}" nolabel="1" colspan="2" placeholder="body.ab-template-centered { /* your override */ }" />

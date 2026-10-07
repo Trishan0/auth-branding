@@ -4,6 +4,7 @@ from urllib.parse import urlsplit
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError, ValidationError
+from odoo.tools import BinaryValue
 
 
 class AuthBrandingConfig(models.Model):
@@ -396,9 +397,16 @@ class AuthBrandingConfig(models.Model):
                 continue
             version_values = config._get_version_values(config.active_version_id)
             config.has_unpublished_changes = any(
-                config[field_name] != version_values[field_name]
+                config._values_differ(config[field_name], version_values[field_name])
                 for field_name in self.VERSIONED_FIELDS
             )
+
+    @staticmethod
+    def _values_differ(value, other):
+        # Binary field values are BinaryValue objects without value equality.
+        if isinstance(value, BinaryValue) or isinstance(other, BinaryValue):
+            return (value.content if value else b"") != (other.content if other else b"")
+        return value != other
 
     @api.constrains(*COLOR_FIELDS)
     def _check_color_format(self):
@@ -684,7 +692,9 @@ class AuthBrandingConfig(models.Model):
         defaults.update(
             {
                 "default_config_id": self.id,
-                "default_company_logo": self.company_logo,
+                "default_company_logo": (
+                    self.company_logo.to_base64() if self.company_logo else False
+                ),
                 "default_tagline": self.tagline,
             }
         )
@@ -698,11 +708,7 @@ class AuthBrandingConfig(models.Model):
         self.ensure_one()
 
         def export_binary(value):
-            if not value:
-                return False
-            if isinstance(value, bytes):
-                return value.decode("ascii")
-            return str(value)
+            return value.to_base64() if value else False
 
         return {
             "format": self.EXPORT_FORMAT,

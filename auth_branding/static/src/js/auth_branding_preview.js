@@ -1,16 +1,17 @@
 /** @odoo-module **/
 
 import { registry } from "@web/core/registry";
-import { Component, onWillUnmount, useEffect, useRef, useState } from "@odoo/owl";
+import { Component, onWillUnmount, proxy, signal, useOnChange, useProps } from "@odoo/owl";
 import { standardFieldProps } from "@web/views/fields/standard_field_props";
+import { standardWidgetProps } from "@web/views/widgets/standard_widget_props";
 
 // 1. Color Field Component
 export class AuthBrandingColorField extends Component {
     static template = "auth_branding.ColorField";
-    static props = { ...standardFieldProps };
+    props = useProps({ ...standardFieldProps });
 
     setup() {
-        this.state = useState({
+        this.state = proxy({
             color: this.props.record.data[this.props.name] || "#000000",
         });
     }
@@ -46,7 +47,7 @@ registry.category("fields").add("auth_branding_color", {
 // 2. Template Picker Field Component
 export class AuthBrandingTemplatePicker extends Component {
     static template = "auth_branding.TemplatePicker";
-    static props = { ...standardFieldProps };
+    props = useProps({ ...standardFieldProps });
 
     get selected() {
         return this.props.record.data[this.props.name];
@@ -93,45 +94,50 @@ const BOOLEAN_FIELDS = new Set([
 // 3. Preview Widget
 export class AuthBrandingPreview extends Component {
     static template = "auth_branding.PreviewWidget";
-    static props = ["*"];
+    props = useProps({ ...standardWidgetProps });
+    previewFrame = signal(null);
 
     setup() {
-        this.state = useState({
+        this.state = proxy({
             page: "login",
             device: "desktop",
             mode: "draft",
             iframeSrc: "",
             ready: false,
         });
-        this.previewFrame = useRef("previewFrame");
         this.reloadTimeout = null;
 
-        useEffect(() => {
-            const data = this.props.record.data;
-            const newSrc = this.buildPreviewUrl(data);
-            this.state.ready = false;
-            clearTimeout(this.reloadTimeout);
-            this.reloadTimeout = setTimeout(() => {
-                this.state.iframeSrc = newSrc;
-            }, 120);
-        }, () => {
-            const data = this.props.record.data;
-            return [
-                this.state.page,
-                this.state.mode,
-                this.extractValue(data.company_id),
-                data.template,
-            ];
-        });
+        // Reload the iframe only when the page structure changes.
+        useOnChange(
+            () => {
+                const data = this.props.record.data;
+                return [
+                    this.state.page,
+                    this.state.mode,
+                    this.extractValue(data.company_id),
+                    data.template,
+                ];
+            },
+            () => {
+                const newSrc = this.buildPreviewUrl(this.props.record.data);
+                this.state.ready = false;
+                clearTimeout(this.reloadTimeout);
+                this.reloadTimeout = setTimeout(() => {
+                    this.state.iframeSrc = newSrc;
+                }, 120);
+            }
+        );
 
-        useEffect(() => {
-            this.sendPreviewUpdate();
-        }, () => [
-            this.state.iframeSrc,
-            ...PREVIEW_FIELDS.map((fieldName) =>
-                this.extractValue(this.props.record.data[fieldName])
-            ),
-        ]);
+        // Push every other change to the loaded iframe without reloading it.
+        useOnChange(
+            () => [
+                this.state.iframeSrc,
+                ...PREVIEW_FIELDS.map((fieldName) =>
+                    this.extractValue(this.props.record.data[fieldName])
+                ),
+            ],
+            () => this.sendPreviewUpdate()
+        );
 
         onWillUnmount(() => clearTimeout(this.reloadTimeout));
     }
@@ -194,7 +200,7 @@ export class AuthBrandingPreview extends Component {
         if (this.state.mode !== "draft") {
             return;
         }
-        const frameWindow = this.previewFrame.el?.contentWindow;
+        const frameWindow = this.previewFrame()?.contentWindow;
         if (!frameWindow) {
             return;
         }

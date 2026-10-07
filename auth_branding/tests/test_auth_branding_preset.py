@@ -1,5 +1,5 @@
 from odoo.exceptions import UserError, ValidationError
-from odoo.tests.common import TransactionCase
+from odoo.tests.common import TransactionCase, new_test_user
 
 
 class TestAuthBrandingPreset(TransactionCase):
@@ -36,10 +36,17 @@ class TestAuthBrandingPreset(TransactionCase):
         self.assertEqual(preset.primary_color, "#123456")
 
     def test_system_preset_is_protected(self):
+        # The superuser may update built-in presets (data loading), managers may not.
+        manager = new_test_user(
+            self.env,
+            login="auth_branding_manager",
+            groups="auth_branding.group_auth_branding_manager",
+        )
+        system_preset = self.system_preset.with_user(manager)
         with self.assertRaises(UserError):
-            self.system_preset.write({"name": "Changed"})
+            system_preset.write({"name": "Changed"})
         with self.assertRaises(UserError):
-            self.system_preset.unlink()
+            system_preset.unlink()
 
     def test_custom_preset_can_be_deleted(self):
         preset_id = self.env["auth.branding.preset"].create_from_config(

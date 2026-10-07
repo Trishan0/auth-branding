@@ -6,3 +6,4 @@ from . import test_auth_branding_preset_wizard
 from . import test_auth_branding_schedule
 from . import test_auth_branding_wizard
 from . import test_auth_branding_version
+from . import test_auth_branding_ui

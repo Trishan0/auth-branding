@@ -1,9 +1,10 @@
 /** @odoo-module **/
 
-import { Component } from "@odoo/owl";
+import { Component, useProps, usePlugin } from "@odoo/owl";
+import { NotificationPlugin } from "@web/core/notifications/notification_plugin";
 import { registry } from "@web/core/registry";
+import { standardWidgetProps } from "@web/views/widgets/standard_widget_props";
 import { _t } from "@web/core/l10n/translation";
-import { useService } from "@web/core/utils/hooks";
 
 
 function rgbFromHex(value, fallback) {
@@ -41,10 +42,10 @@ export function bestReadableColor(backgrounds) {
 
 export class AuthBrandingAccessibility extends Component {
     static template = "auth_branding.AccessibilityChecks";
-    static props = ["*"];
+    props = useProps({ ...standardWidgetProps });
 
     setup() {
-        this.notification = useService("notification");
+        this.notification = usePlugin(NotificationPlugin);
     }
 
     get checks() {

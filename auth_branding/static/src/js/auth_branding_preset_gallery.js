@@ -1,7 +1,9 @@
 /** @odoo-module **/
 
-import { Component, onWillStart, useState } from "@odoo/owl";
+import { Component, useProps, onWillStart, proxy, usePlugin } from "@odoo/owl";
+import { NotificationPlugin } from "@web/core/notifications/notification_plugin";
 import { registry } from "@web/core/registry";
+import { standardWidgetProps } from "@web/views/widgets/standard_widget_props";
 import { ConfirmationDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
 import { _t } from "@web/core/l10n/translation";
 import { useService } from "@web/core/utils/hooks";
@@ -9,13 +11,13 @@ import { useService } from "@web/core/utils/hooks";
 
 export class AuthBrandingPresetGallery extends Component {
     static template = "auth_branding.PresetGallery";
-    static props = ["*"];
+    props = useProps({ ...standardWidgetProps });
 
     setup() {
         this.orm = useService("orm");
-        this.notification = useService("notification");
+        this.notification = usePlugin(NotificationPlugin);
         this.dialog = useService("dialog");
-        this.state = useState({
+        this.state = proxy({
             loading: true,
             applyingId: null,
             selectedId: null,

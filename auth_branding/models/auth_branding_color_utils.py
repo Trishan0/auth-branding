@@ -7,6 +7,7 @@ from PIL import Image, UnidentifiedImageError
 
 from odoo import _
 from odoo.exceptions import ValidationError
+from odoo.tools import BinaryValue
 
 
 MAX_LOGO_BYTES = 5 * 1024 * 1024
@@ -24,13 +25,19 @@ def _color_score(item):
 
 
 def extract_logo_palette(image_data, color_count=2):
-    """Return prominent opaque colors from a base64-encoded logo."""
+    """Return prominent opaque colors from a logo.
+
+    ``image_data`` is either a binary field value or base64-encoded text.
+    """
     if not image_data:
         return []
-    try:
-        raw = base64.b64decode(image_data, validate=True)
-    except (ValueError, TypeError) as error:
-        raise ValidationError(_("The uploaded logo is not a valid image.")) from error
+    if isinstance(image_data, BinaryValue):
+        raw = image_data.content
+    else:
+        try:
+            raw = base64.b64decode(image_data, validate=True)
+        except (ValueError, TypeError) as error:
+            raise ValidationError(_("The uploaded logo is not a valid image.")) from error
     if len(raw) > MAX_LOGO_BYTES:
         raise ValidationError(_("Logo images must be smaller than 5 MB."))
 
@@ -38,9 +45,11 @@ def extract_logo_palette(image_data, color_count=2):
         with Image.open(BytesIO(raw)) as image:
             image.thumbnail((160, 160))
             rgba = image.convert("RGBA")
+            # Pillow 12 renamed getdata(); keep compatibility with older releases.
+            get_pixels = getattr(rgba, "get_flattened_data", rgba.getdata)
             pixels = [
                 (red, green, blue)
-                for red, green, blue, alpha in rgba.getdata()
+                for red, green, blue, alpha in get_pixels()
                 if alpha >= 96
             ]
     except (UnidentifiedImageError, OSError, Image.DecompressionBombError) as error:

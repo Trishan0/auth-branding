@@ -402,12 +402,11 @@ body.ab-template-sidebar .ab-split-aside {{
         }
         config_values.update(color_values)
 
-        get_param = request.env["ir.config_parameter"].sudo().get_param
-        config_values["auth_signup_uninvited"] = get_param(
-            "auth_signup.invitation_scope", "b2b"
+        config_values["auth_signup_uninvited"] = (
+            request.env["res.users"].sudo()._get_signup_invitation_scope()
         )
         config_values["auth_signup_reset_password"] = (
-            get_param("auth_signup.reset_password", "False").lower() == "true"
+            request.env["ir.config_parameter"].sudo().get_bool("auth_signup.reset_password")
         )
         config_values["inline_style"] = Markup(
             self._build_theme_css(config_values)
@@ -492,10 +491,10 @@ body.ab-template-sidebar .ab-split-aside {{
     )
     def get_preview_image(self, field, **kwargs):
         if field not in self._ALLOWED_IMAGE_FIELDS:
-            return request.not_found()
+            raise request.not_found()
         config = self._get_config(kwargs.get("company_id"))
         if not config[field]:
-            return request.not_found()
+            raise request.not_found()
         response = request.env["ir.binary"]._get_stream_from(
             config, field
         ).get_response()
@@ -531,12 +530,12 @@ body.ab-template-sidebar .ab-split-aside {{
     )
     def get_image(self, field, **kwargs):
         if field not in self._ALLOWED_IMAGE_FIELDS:
-            return request.not_found()
+            raise request.not_found()
 
         config = self._get_config(kwargs.get("company_id"))
         published_resource = config._get_published_resource()
         if not published_resource[field]:
-            return request.not_found()
+            raise request.not_found()
 
         etag, modified, headers = self._cache_headers(published_resource, field)
         headers.extend(
@@ -564,7 +563,7 @@ body.ab-template-sidebar .ab-split-aside {{
     def export_branding(self, config_id):
         config = request.env["auth.branding.config"].browse(config_id).exists()
         if not config:
-            return request.not_found()
+            raise request.not_found()
         config.check_access("read")
         payload = json.dumps(
             config._get_export_payload(), indent=2, sort_keys=True

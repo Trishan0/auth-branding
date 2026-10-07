@@ -1,9 +1,9 @@
-import base64
 from io import BytesIO
 
 from PIL import Image
 
 from odoo.tests.common import TransactionCase
+from odoo.tools import BinaryBytes
 
 from ..models.auth_branding_color_utils import extract_logo_palette
 
@@ -17,7 +17,7 @@ class TestAuthBrandingWizard(TransactionCase):
                 image.putpixel((x, y), (0, 68, 204))
         output = BytesIO()
         image.save(output, format="PNG")
-        return base64.b64encode(output.getvalue())
+        return BinaryBytes(output.getvalue())
 
     def test_logo_palette_extraction(self):
         palette = extract_logo_palette(self._test_logo())

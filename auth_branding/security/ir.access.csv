@@ -1,0 +1,16 @@
+id,name,model_id,group_id/id,operation,domain
+access_auth_branding_config_manager,auth.branding.config.manager,auth.branding.config,auth_branding.group_auth_branding_manager,crud,
+access_auth_branding_config_user,auth.branding.config.user,auth.branding.config,base.group_user,r,
+access_auth_branding_config_public,auth.branding.config.public,auth.branding.config,base.group_public,r,
+access_auth_branding_preset_manager,auth.branding.preset.manager,auth.branding.preset,auth_branding.group_auth_branding_manager,crud,
+access_auth_branding_preset_user,auth.branding.preset.user,auth.branding.preset,base.group_user,r,
+access_auth_branding_wizard_manager,auth.branding.wizard.manager,auth.branding.wizard,auth_branding.group_auth_branding_manager,crud,
+access_auth_branding_version_manager,auth.branding.version.manager,auth.branding.version,auth_branding.group_auth_branding_manager,r,
+access_auth_branding_schedule_manager,auth.branding.schedule.manager,auth.branding.schedule,auth_branding.group_auth_branding_manager,cru,
+access_auth_branding_import_wizard_manager,auth.branding.import.wizard.manager,auth.branding.import.wizard,auth_branding.group_auth_branding_manager,crud,
+access_auth_branding_preset_wizard_manager,auth.branding.preset.wizard.manager,auth.branding.preset.wizard,auth_branding.group_auth_branding_manager,crud,
+access_auth_branding_schedule_wizard_manager,auth.branding.schedule.wizard.manager,auth.branding.schedule.wizard,auth_branding.group_auth_branding_manager,crud,
+auth_branding_config_company_rule,Authentication branding: company isolation,auth.branding.config,,crud,"['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]"
+auth_branding_preset_company_rule,Authentication branding presets: company isolation,auth.branding.preset,,crud,"['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]"
+auth_branding_version_company_rule,Authentication branding versions: company isolation,auth.branding.version,,crud,"[('company_id', 'in', company_ids)]"
+auth_branding_schedule_company_rule,Authentication branding schedules: company isolation,auth.branding.schedule,,crud,"[('company_id', 'in', company_ids)]"
